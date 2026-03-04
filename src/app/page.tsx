@@ -1,23 +1,22 @@
+
 'use client';
 
-import { useState, useEffect } from 'react';
 import { LinguaForm } from '@/components/LinguaForm';
 
 export default function Home() {
-  const [year, setYear] = useState<number | null>(null);
-
-  useEffect(() => {
-    setYear(new Date().getFullYear());
-  }, []);
-
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-4 bg-background">
-      <div className="w-full max-w-lg">
-        <LinguaForm />
-      </div>
-
-      <footer className="mt-8 text-muted-foreground text-sm">
-        <p>© {year || '2025'} Prathibha Puraskahara SJSVT. All rights reserved.</p>
+    <main className="min-h-screen bg-[#f0f4f8] py-8 px-4 sm:px-6">
+      <LinguaForm />
+      
+      <footer className="mt-12 text-center text-[#70757a] text-xs">
+        <p>Prathibha Puraskahara SJSVT. Never submit passwords through forms.</p>
+        <div className="mt-2 flex justify-center gap-4">
+          <span className="hover:underline cursor-pointer">Report Abuse</span>
+          <span>-</span>
+          <span className="hover:underline cursor-pointer">Terms of Service</span>
+          <span>-</span>
+          <span className="hover:underline cursor-pointer">Privacy Policy</span>
+        </div>
       </footer>
     </main>
   );

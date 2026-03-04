@@ -1,16 +1,10 @@
 {
   "placeholderImages": [
     {
-      "id": "hero-image",
-      "description": "Abstract purple and blue fluid background representing communication and technology",
-      "imageUrl": "https://picsum.photos/seed/lingua1/1200/800",
-      "imageHint": "abstract communication"
-    },
-    {
-      "id": "kannada-culture",
-      "description": "Modern representation of multilingual support",
-      "imageUrl": "https://picsum.photos/seed/lingua2/600/400",
-      "imageHint": "multilingual technology"
+      "id": "form-banner",
+      "description": "Temple deity and religious symbols banner for SJSVT",
+      "imageUrl": "https://picsum.photos/seed/sjsvt-banner/1200/300",
+      "imageHint": "temple banner"
     }
   ]
 }
