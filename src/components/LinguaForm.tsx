@@ -47,7 +47,7 @@ export function LinguaForm() {
   const translations = {
     en: {
       title: "Submit Your Information",
-      description: "We'll store your data securely and send you a personalized confirmation email.",
+      description: "Enter your details below to register for Prathibha Puraskahara SJSVT.",
       nameLabel: "Full Name",
       namePlaceholder: "Enter your name",
       emailLabel: "Email Address",
@@ -56,14 +56,14 @@ export function LinguaForm() {
       detailsPlaceholder: "Tell us more...",
       submitButton: "Submit Form",
       successTitle: "Submission Received!",
-      successDesc: "A personalized email has been generated for you.",
+      successDesc: "A confirmation email has been generated for you.",
       emailSubject: "Subject",
       emailBody: "Email Content",
       backButton: "Submit Another",
     },
     kn: {
       title: "ನಿಮ್ಮ ಮಾಹಿತಿಯನ್ನು ಸಲ್ಲಿಸಿ",
-      description: "ನಾವು ನಿಮ್ಮ ಡೇಟಾವನ್ನು ಸುರಕ್ಷಿತವಾಗಿ ಸಂಗ್ರಹಿಸುತ್ತೇವೆ ಮತ್ತು ನಿಮಗೆ ವೈಯಕ್ತಿಕಗೊಳಿಸಿದ ದೃಢೀಕರಣ ಇಮೇಲ್ ಕಳುಹಿಸುತ್ತೇವೆ.",
+      description: "ಪ್ರತಿಭಾ ಪುರಸ್ಕಾರ SJSVT ಗಾಗಿ ನೋಂದಾಯಿಸಲು ನಿಮ್ಮ ವಿವರಗಳನ್ನು ಕೆಳಗೆ ನಮೂದಿಸಿ.",
       nameLabel: "ಪೂರ್ಣ ಹೆಸರು",
       namePlaceholder: "ನಿಮ್ಮ ಹೆಸರನ್ನು ನಮೂದಿಸಿ",
       emailLabel: "ಇಮೇಲ್ ವಿಳಾಸ",
@@ -72,7 +72,7 @@ export function LinguaForm() {
       detailsPlaceholder: "ನಮಗೆ ಇನ್ನಷ್ಟು ತಿಳಿಸಿ...",
       submitButton: "ಸಲ್ಲಿಸಿ",
       successTitle: "ಸಲ್ಲಿಸುವಿಕೆ ಸ್ವೀಕರಿಸಲಾಗಿದೆ!",
-      successDesc: "ನಿಮಗಾಗಿ ವೈಯಕ್ತಿಕಗೊಳಿಸಿದ ಇಮೇಲ್ ಅನ್ನು ರಚಿಸಲಾಗಿದೆ.",
+      successDesc: "ನಿಮಗಾಗಿ ದೃಢೀಕರಣ ಇಮೇಲ್ ಅನ್ನು ರಚಿಸಲಾಗಿದೆ.",
       emailSubject: "ವಿಷಯ",
       emailBody: "ಇಮೇಲ್ ವಿಷಯ",
       backButton: "ಮತ್ತೊಂದು ಸಲ್ಲಿಸಿ",
@@ -137,7 +137,7 @@ export function LinguaForm() {
       <CardHeader className="space-y-4">
         <div className="flex justify-between items-start">
           <Badge variant="outline" className="text-primary border-primary/20 bg-primary/5">
-            LinguaForm
+            SJSVT
           </Badge>
           <LanguageToggle current={lang} onChange={setLang} />
         </div>
