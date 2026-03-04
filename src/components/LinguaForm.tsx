@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -21,7 +20,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { submitLinguaForm, SubmissionResult } from '@/app/actions/submit-form';
-import { Loader2, CheckCircle2, Send, Mail, User, Info, FileText, X } from 'lucide-react';
+import { Loader2, CheckCircle2, Send, FileText } from 'lucide-react';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 const formSchema = z.object({
@@ -147,7 +146,6 @@ export function LinguaForm() {
 
   return (
     <div className="space-y-4 w-full max-w-2xl mx-auto pb-12">
-      {/* Banner Card */}
       <Card className="overflow-hidden border-none shadow-sm">
         <div className="relative w-full aspect-[4/1]">
           {banner && (
@@ -162,13 +160,11 @@ export function LinguaForm() {
         </div>
       </Card>
 
-      {/* Section Badge */}
       <div className="w-fit px-3 py-1 bg-[#d0e2f3] text-[#3c4043] rounded-t-lg text-sm font-medium border-x border-t border-border/50">
         Section 1 of 1
       </div>
 
-      {/* Title Card */}
-      <Card className="border-l-8 border-l-primary shadow-sm overflow-hidden">
+      <Card className="shadow-sm overflow-hidden">
         <CardContent className="pt-6 space-y-4">
           <h1 className="text-3xl font-bold tracking-tight text-[#202124]">{t.title}</h1>
           <p className="text-sm text-[#202124] leading-relaxed">{t.description}</p>
@@ -178,8 +174,7 @@ export function LinguaForm() {
         </CardContent>
       </Card>
 
-      {/* Language Selection Card */}
-      <Card className="border-l-8 border-l-primary shadow-sm">
+      <Card className="shadow-sm">
         <CardContent className="pt-6 space-y-4">
           <div className="space-y-3">
             <Label className="text-base font-semibold text-[#202124]">
@@ -203,10 +198,8 @@ export function LinguaForm() {
         </CardContent>
       </Card>
 
-      {/* Main Form Content */}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          {/* Name Field */}
           <Card className="shadow-sm">
             <CardContent className="pt-6">
               <FormField
@@ -221,6 +214,7 @@ export function LinguaForm() {
                       <Input 
                         placeholder={t.namePlaceholder} 
                         className="border-0 border-b rounded-none focus-visible:ring-0 focus-visible:border-primary px-0 text-base"
+                        suppressHydrationWarning
                         {...field} 
                       />
                     </FormControl>
@@ -231,7 +225,6 @@ export function LinguaForm() {
             </CardContent>
           </Card>
 
-          {/* Email Field */}
           <Card className="shadow-sm">
             <CardContent className="pt-6">
               <FormField
@@ -247,6 +240,7 @@ export function LinguaForm() {
                         placeholder={t.emailPlaceholder} 
                         type="email"
                         className="border-0 border-b rounded-none focus-visible:ring-0 focus-visible:border-primary px-0 text-base"
+                        suppressHydrationWarning
                         {...field} 
                       />
                     </FormControl>
@@ -257,7 +251,6 @@ export function LinguaForm() {
             </CardContent>
           </Card>
 
-          {/* Details Field */}
           <Card className="shadow-sm">
             <CardContent className="pt-6">
               <FormField
@@ -272,6 +265,7 @@ export function LinguaForm() {
                       <Textarea 
                         placeholder={t.detailsPlaceholder} 
                         className="border-0 border-b rounded-none focus-visible:ring-0 focus-visible:border-primary px-0 text-base min-h-[100px] resize-none"
+                        suppressHydrationWarning
                         {...field} 
                       />
                     </FormControl>
@@ -282,7 +276,6 @@ export function LinguaForm() {
             </CardContent>
           </Card>
 
-          {/* File Upload Field */}
           <Card className="shadow-sm">
             <CardContent className="pt-6 space-y-4">
               <Label className="text-base font-semibold text-[#202124]">
@@ -306,12 +299,12 @@ export function LinguaForm() {
             </CardContent>
           </Card>
 
-          {/* Submit Button */}
           <div className="flex items-center justify-between pt-4">
             <Button 
               type="submit" 
               className="px-8 h-10 font-medium" 
               disabled={isSubmitting}
+              suppressHydrationWarning
             >
               {isSubmitting ? (
                 <>
