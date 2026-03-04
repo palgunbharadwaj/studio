@@ -7,7 +7,6 @@ import * as z from 'zod';
 import { 
   Form, 
   FormControl, 
-  FormDescription, 
   FormField, 
   FormItem, 
   FormLabel, 
@@ -30,7 +29,7 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 export function LinguaForm() {
-  const [lang, setLang] = useState<'en' | 'kn'>('en');
+  const [lang, setLang] = useState<'en' | 'kn'>('kn');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [result, setResult] = useState<SubmissionResult | null>(null);
   const [file, setFile] = useState<File | null>(null);
@@ -48,41 +47,41 @@ export function LinguaForm() {
   const translations = {
     en: {
       brand: "Prathibha Puraskahara SJSVT",
-      title: "Submit Your Information",
-      description: "Enter your details below to register.",
+      title: "Prathibha Puraskahara 2024-2025",
+      description: "Recognition at the temple level for students who secured more than 85% in PUC and Ranks or more than 90% in SSLC/Degree/Job-oriented education in the March and April examinations of the academic years 2024 and 2025.",
       nameLabel: "Full Name",
       namePlaceholder: "Enter your name",
       emailLabel: "Email Address",
       emailPlaceholder: "example@email.com",
-      detailsLabel: "Additional Details",
-      detailsPlaceholder: "Tell us more...",
+      detailsLabel: "Additional Details (Course, Marks %, etc.)",
+      detailsPlaceholder: "Enter your marks and course details...",
       fileLabel: "Upload Document (PDF)",
       filePlaceholder: "Click to select file",
       submitButton: "Submit Form",
       successTitle: "Submission Received!",
-      successDesc: "A confirmation email has been generated for you.",
+      successDesc: "Your registration has been submitted successfully.",
       emailSubject: "Subject",
-      emailBody: "Email Content",
+      emailBody: "Confirmation Details",
       backButton: "Submit Another",
       processing: "Processing...",
     },
     kn: {
       brand: "ಪ್ರತಿಭಾ ಪುರಸ್ಕಾರ SJSVT",
-      title: "ನಿಮ್ಮ ಮಾಹಿತಿಯನ್ನು ಸಲ್ಲಿಸಿ",
-      description: "ನೋಂದಾಯಿಸಲು ನಿಮ್ಮ ವಿವರಗಳನ್ನು ಕೆಳಗೆ ನಮೂದಿಸಿ.",
+      title: "ಪ್ರತಿಭಾ ಪುರಸ್ಕಾರ 2024-2025",
+      description: "2024 ಮತ್ತು 2025ರ ಸಾಲಿನ ಮಾರ್ಚಿ ಮತ್ತು ಏಪ್ರಿಲ್ ನಲ್ಲಿ ನಡೆದ ಪಿ.ಯು.ಸಿ ಪರೀಕ್ಷೆಯಲ್ಲಿ ಶೇ.85 ಕ್ಕಿಂತ ಹಾಗೂ ಎಸ್.ಎಸ್.ಎಲ್.ಸಿ/ಪದವಿ/ಉದ್ಯೋಗಾಧಾರಿತ ಶಿಕ್ಷಣದಲ್ಲಿ ರ‍್ಯಾಂಕ್‌ ಅಥವಾ ಶೇ.90 ಕ್ಕಿಂತ ಹೆಚ್ಚು ಅಂಕ ಪಡೆದ ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ದೇವಾಲಯದ ಮಟ್ಟದಲ್ಲಿ ಪುರಸ್ಕಾರ.",
       nameLabel: "ಪೂರ್ಣ ಹೆಸರು",
       namePlaceholder: "ನಿಮ್ಮ ಹೆಸರನ್ನು ನಮೂದಿಸಿ",
       emailLabel: "ಇಮೇಲ್ ವಿಳಾಸ",
       emailPlaceholder: "example@email.com",
-      detailsLabel: "ಹೆಚ್ಚುವರಿ ವಿವರಗಳು",
-      detailsPlaceholder: "ನಮಗೆ ಇನ್ನಷ್ಟು ತಿಳಿಸಿ...",
+      detailsLabel: "ಹೆಚ್ಚುವರಿ ವಿವರಗಳು (ಕೋರ್ಸ್, ಅಂಕಗಳು %, ಇತ್ಯಾದಿ)",
+      detailsPlaceholder: "ನಿಮ್ಮ ಅಂಕಗಳು ಮತ್ತು ಕೋರ್ಸ್ ವಿವರಗಳನ್ನು ನಮೂದಿಸಿ...",
       fileLabel: "ದಾಖಲೆಯನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ (PDF)",
       filePlaceholder: "ಫೈಲ್ ಆಯ್ಕೆ ಮಾಡಲು ಕ್ಲಿಕ್ ಮಾಡಿ",
       submitButton: "ಸಲ್ಲಿಸಿ",
       successTitle: "ಸಲ್ಲಿಸುವಿಕೆ ಸ್ವೀಕರಿಸಲಾಗಿದೆ!",
-      successDesc: "ನಿಮಗಾಗಿ ದೃಢೀಕರಣ ಇಮೇಲ್ ಅನ್ನು ರಚಿಸಲಾಗಿದೆ.",
+      successDesc: "ನಿಮ್ಮ ನೋಂದಣಿಯನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಸಲ್ಲಿಸಲಾಗಿದೆ.",
       emailSubject: "ವಿಷಯ",
-      emailBody: "ಇಮೇಲ್ ವಿಷಯ",
+      emailBody: "ದೃಢೀಕರಣ ವಿವರಗಳು",
       backButton: "ಮತ್ತೊಂದು ಸಲ್ಲಿಸಿ",
       processing: "ಪ್ರಕ್ರಿಯೆಯಲ್ಲಿದೆ...",
     }
@@ -192,9 +191,9 @@ export function LinguaForm() {
           <h1 className="text-xl font-bold text-primary leading-tight">{t.brand}</h1>
           <LanguageToggle current={lang} onChange={setLang} />
         </div>
-        <div className="pt-2 border-t">
-          <CardTitle className="text-2xl font-bold text-foreground">{t.title}</CardTitle>
-          <CardDescription className="text-muted-foreground mt-1">{t.description}</CardDescription>
+        <div className="pt-4 border-t">
+          <CardTitle className="text-2xl font-bold text-foreground leading-snug">{t.title}</CardTitle>
+          <CardDescription className="text-muted-foreground mt-2 leading-relaxed text-sm">{t.description}</CardDescription>
         </div>
       </CardHeader>
       <CardContent>
@@ -210,7 +209,7 @@ export function LinguaForm() {
                     {t.nameLabel}
                   </FormLabel>
                   <FormControl>
-                    <Input placeholder={t.namePlaceholder} {...field} className="transition-all" suppressHydrationWarning />
+                    <Input placeholder={t.namePlaceholder} {...field} suppressHydrationWarning />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -227,7 +226,7 @@ export function LinguaForm() {
                     {t.emailLabel}
                   </FormLabel>
                   <FormControl>
-                    <Input placeholder={t.emailPlaceholder} type="email" {...field} className="transition-all" suppressHydrationWarning />
+                    <Input placeholder={t.emailPlaceholder} type="email" {...field} suppressHydrationWarning />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

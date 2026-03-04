@@ -4,7 +4,7 @@ import { FirebaseClientProvider } from '@/firebase';
 
 export const metadata: Metadata = {
   title: 'Prathibha Puraskahara SJSVT',
-  description: 'Clean and simple multilingual form submissions in English and Kannada.',
+  description: 'Multilingual registration form for Prathibha Puraskahara SJSVT in English and Kannada.',
 };
 
 export default function RootLayout({
