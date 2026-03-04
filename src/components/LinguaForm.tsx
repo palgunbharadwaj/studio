@@ -154,7 +154,6 @@ export function LinguaForm() {
               alt={banner.description} 
               fill 
               className="object-cover"
-              data-ai-hint={banner.imageHint}
             />
           )}
         </div>
@@ -164,12 +163,12 @@ export function LinguaForm() {
         Section 1 of 1
       </div>
 
-      <Card className="shadow-sm overflow-hidden">
+      <Card className="shadow-sm overflow-hidden border-t-8 border-t-primary">
         <CardContent className="pt-6 space-y-4">
           <h1 className="text-3xl font-bold tracking-tight text-[#202124]">{t.title}</h1>
           <p className="text-sm text-[#202124] leading-relaxed">{t.description}</p>
           <div className="text-xs text-[#70757a] border-t pt-2">
-            This form is automatically collecting data for registration.
+            This form is collecting data for registration for Prathibha Puraskahara SJSVT.
           </div>
         </CardContent>
       </Card>
