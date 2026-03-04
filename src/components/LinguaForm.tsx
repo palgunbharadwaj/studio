@@ -46,8 +46,9 @@ export function LinguaForm() {
 
   const translations = {
     en: {
+      brand: "Prathibha Puraskahara SJSVT",
       title: "Submit Your Information",
-      description: "Enter your details below to register for Prathibha Puraskahara SJSVT.",
+      description: "Enter your details below to register.",
       nameLabel: "Full Name",
       namePlaceholder: "Enter your name",
       emailLabel: "Email Address",
@@ -62,8 +63,9 @@ export function LinguaForm() {
       backButton: "Submit Another",
     },
     kn: {
+      brand: "ಪ್ರತಿಭಾ ಪುರಸ್ಕಾರ SJSVT",
       title: "ನಿಮ್ಮ ಮಾಹಿತಿಯನ್ನು ಸಲ್ಲಿಸಿ",
-      description: "ಪ್ರತಿಭಾ ಪುರಸ್ಕಾರ SJSVT ಗಾಗಿ ನೋಂದಾಯಿಸಲು ನಿಮ್ಮ ವಿವರಗಳನ್ನು ಕೆಳಗೆ ನಮೂದಿಸಿ.",
+      description: "ನೋಂದಾಯಿಸಲು ನಿಮ್ಮ ವಿವರಗಳನ್ನು ಕೆಳಗೆ ನಮೂದಿಸಿ.",
       nameLabel: "ಪೂರ್ಣ ಹೆಸರು",
       namePlaceholder: "ನಿಮ್ಮ ಹೆಸರನ್ನು ನಮೂದಿಸಿ",
       emailLabel: "ಇಮೇಲ್ ವಿಳಾಸ",
@@ -133,16 +135,19 @@ export function LinguaForm() {
   }
 
   return (
-    <Card className="shadow-2xl border-none ring-1 ring-border/50">
+    <Card className="shadow-2xl border bg-card">
       <CardHeader className="space-y-4">
-        <div className="flex justify-between items-start">
-          <Badge variant="outline" className="text-primary border-primary/20 bg-primary/5">
-            SJSVT
-          </Badge>
+        <div className="flex justify-between items-center">
+          <div className="flex flex-col">
+            <h1 className="text-xl font-bold text-primary">{t.brand}</h1>
+            <p className="text-sm font-medium text-accent">
+              {lang === 'en' ? 'ಪ್ರತಿಭಾ ಪುರಸ್ಕಾರ SJSVT' : 'Prathibha Puraskahara SJSVT'}
+            </p>
+          </div>
           <LanguageToggle current={lang} onChange={setLang} />
         </div>
-        <div>
-          <CardTitle className="text-2xl font-headline font-bold text-primary">{t.title}</CardTitle>
+        <div className="pt-2">
+          <CardTitle className="text-2xl font-bold text-foreground">{t.title}</CardTitle>
           <CardDescription className="text-muted-foreground mt-1">{t.description}</CardDescription>
         </div>
       </CardHeader>
@@ -159,7 +164,7 @@ export function LinguaForm() {
                     {t.nameLabel}
                   </FormLabel>
                   <FormControl>
-                    <Input placeholder={t.namePlaceholder} {...field} className="transition-all focus:ring-accent" />
+                    <Input placeholder={t.namePlaceholder} {...field} className="transition-all" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -176,11 +181,8 @@ export function LinguaForm() {
                     {t.emailLabel}
                   </FormLabel>
                   <FormControl>
-                    <Input placeholder={t.emailPlaceholder} type="email" {...field} className="transition-all focus:ring-accent" />
+                    <Input placeholder={t.emailPlaceholder} type="email" {...field} className="transition-all" />
                   </FormControl>
-                  <FormDescription className="text-xs">
-                    {lang === 'en' ? 'Your privacy is guaranteed.' : 'ನಿಮ್ಮ ಗೌಪ್ಯತೆಯನ್ನು ಖಾತರಿಪಡಿಸಲಾಗಿದೆ.'}
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -198,7 +200,7 @@ export function LinguaForm() {
                   <FormControl>
                     <Textarea 
                       placeholder={t.detailsPlaceholder} 
-                      className="min-h-[120px] transition-all focus:ring-accent resize-none" 
+                      className="min-h-[120px] transition-all resize-none" 
                       {...field} 
                     />
                   </FormControl>
@@ -209,7 +211,7 @@ export function LinguaForm() {
 
             <Button 
               type="submit" 
-              className="w-full h-12 text-base font-semibold transition-all hover:scale-[1.01] active:scale-[0.98]" 
+              className="w-full h-12 text-base font-semibold" 
               disabled={isSubmitting}
             >
               {isSubmitting ? (
