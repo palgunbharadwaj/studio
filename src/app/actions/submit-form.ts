@@ -1,4 +1,3 @@
-
 'use server';
 
 import { 
@@ -22,7 +21,6 @@ export async function submitLinguaForm(data: {
 }): Promise<SubmissionResult> {
   try {
     // In a real app, you would save to Firestore here.
-    // For now, we'll proceed directly to generating the AI email confirmation.
     
     const aiInput: PersonalizedConfirmationEmailInput = {
       userName: data.name,

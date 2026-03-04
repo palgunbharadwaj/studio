@@ -1,10 +1,9 @@
-
 import type {Metadata} from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
   title: 'LinguaForm - Multilingual Submissions',
-  description: 'Clean, simple, and AI-powered multilingual form submissions in English and Kannada.',
+  description: 'Clean, simple, and multilingual form submissions in English and Kannada.',
 };
 
 export default function RootLayout({

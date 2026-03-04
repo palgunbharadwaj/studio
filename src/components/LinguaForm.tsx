@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -57,7 +56,7 @@ export function LinguaForm() {
       detailsPlaceholder: "Tell us more...",
       submitButton: "Submit Form",
       successTitle: "Submission Received!",
-      successDesc: "An AI-powered personalized email has been generated for you.",
+      successDesc: "A personalized email has been generated for you.",
       emailSubject: "Subject",
       emailBody: "Email Content",
       backButton: "Submit Another",
@@ -73,7 +72,7 @@ export function LinguaForm() {
       detailsPlaceholder: "ನಮಗೆ ಇನ್ನಷ್ಟು ತಿಳಿಸಿ...",
       submitButton: "ಸಲ್ಲಿಸಿ",
       successTitle: "ಸಲ್ಲಿಸುವಿಕೆ ಸ್ವೀಕರಿಸಲಾಗಿದೆ!",
-      successDesc: "ನಿಮಗಾಗಿ AI-ಚಾಲಿತ ವೈಯಕ್ತಿಕಗೊಳಿಸಿದ ಇಮೇಲ್ ಅನ್ನು ರಚಿಸಲಾಗಿದೆ.",
+      successDesc: "ನಿಮಗಾಗಿ ವೈಯಕ್ತಿಕಗೊಳಿಸಿದ ಇಮೇಲ್ ಅನ್ನು ರಚಿಸಲಾಗಿದೆ.",
       emailSubject: "ವಿಷಯ",
       emailBody: "ಇಮೇಲ್ ವಿಷಯ",
       backButton: "ಮತ್ತೊಂದು ಸಲ್ಲಿಸಿ",
@@ -138,7 +137,7 @@ export function LinguaForm() {
       <CardHeader className="space-y-4">
         <div className="flex justify-between items-start">
           <Badge variant="outline" className="text-primary border-primary/20 bg-primary/5">
-            LinguaForm AI
+            LinguaForm
           </Badge>
           <LanguageToggle current={lang} onChange={setLang} />
         </div>
