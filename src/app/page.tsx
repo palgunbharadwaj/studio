@@ -15,7 +15,7 @@ export default function Home() {
       <LinguaForm />
       
       <footer className="mt-16 text-center text-[#70757a] text-sm max-w-2xl mx-auto border-t pt-8">
-        <p>© {year} Prathibha Puraskahara SJSVT. Never submit passwords through forms.</p>
+        <p>© {year} Prathibha Puraskahara SJSVT.</p>
         <div className="mt-4 flex justify-center gap-6 font-medium">
           <span className="hover:underline cursor-pointer">Report Abuse</span>
           <span className="text-muted-foreground/40">•</span>
