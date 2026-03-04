@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -19,8 +20,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { LanguageToggle } from './LanguageToggle';
 import { submitLinguaForm, SubmissionResult } from '@/app/actions/submit-form';
-import { Loader2, CheckCircle2, Send, Mail, User, Info } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+import { Loader2, CheckCircle2, Send, Mail, User, Info, FileText, X } from 'lucide-react';
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -34,6 +34,8 @@ export function LinguaForm() {
   const [lang, setLang] = useState<'en' | 'kn'>('en');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [result, setResult] = useState<SubmissionResult | null>(null);
+  const [file, setFile] = useState<File | null>(null);
+  const [fileError, setFileError] = useState<string | null>(null);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -47,6 +49,7 @@ export function LinguaForm() {
   const translations = {
     en: {
       brand: "Prathibha Puraskahara SJSVT",
+      brandKn: "ಪ್ರತಿಭಾ ಪುರಸ್ಕಾರ SJSVT",
       title: "Submit Your Information",
       description: "Enter your details below to register.",
       nameLabel: "Full Name",
@@ -55,15 +58,19 @@ export function LinguaForm() {
       emailPlaceholder: "example@email.com",
       detailsLabel: "Additional Details",
       detailsPlaceholder: "Tell us more...",
+      fileLabel: "Upload Document (PDF)",
+      filePlaceholder: "Click to select file",
       submitButton: "Submit Form",
       successTitle: "Submission Received!",
       successDesc: "A confirmation email has been generated for you.",
       emailSubject: "Subject",
       emailBody: "Email Content",
       backButton: "Submit Another",
+      processing: "Processing...",
     },
     kn: {
       brand: "ಪ್ರತಿಭಾ ಪುರಸ್ಕಾರ SJSVT",
+      brandKn: "Prathibha Puraskahara SJSVT",
       title: "ನಿಮ್ಮ ಮಾಹಿತಿಯನ್ನು ಸಲ್ಲಿಸಿ",
       description: "ನೋಂದಾಯಿಸಲು ನಿಮ್ಮ ವಿವರಗಳನ್ನು ಕೆಳಗೆ ನಮೂದಿಸಿ.",
       nameLabel: "ಪೂರ್ಣ ಹೆಸರು",
@@ -72,23 +79,69 @@ export function LinguaForm() {
       emailPlaceholder: "example@email.com",
       detailsLabel: "ಹೆಚ್ಚುವರಿ ವಿವರಗಳು",
       detailsPlaceholder: "ನಮಗೆ ಇನ್ನಷ್ಟು ತಿಳಿಸಿ...",
+      fileLabel: "ದಾಖಲೆಯನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ (PDF)",
+      filePlaceholder: "ಫೈಲ್ ಆಯ್ಕೆ ಮಾಡಲು ಕ್ಲಿಕ್ ಮಾಡಿ",
       submitButton: "ಸಲ್ಲಿಸಿ",
       successTitle: "ಸಲ್ಲಿಸುವಿಕೆ ಸ್ವೀಕರಿಸಲಾಗಿದೆ!",
       successDesc: "ನಿಮಗಾಗಿ ದೃಢೀಕರಣ ಇಮೇಲ್ ಅನ್ನು ರಚಿಸಲಾಗಿದೆ.",
       emailSubject: "ವಿಷಯ",
       emailBody: "ಇಮೇಲ್ ವಿಷಯ",
       backButton: "ಮತ್ತೊಂದು ಸಲ್ಲಿಸಿ",
+      processing: "ಪ್ರಕ್ರಿಯೆಯಲ್ಲಿದೆ...",
     }
   };
 
   const t = translations[lang];
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0];
+    setFileError(null);
+    if (selectedFile) {
+      if (selectedFile.type !== 'application/pdf') {
+        setFileError(lang === 'en' ? 'Only PDF files are allowed.' : 'ಕೇವಲ PDF ಫೈಲ್‌ಗಳನ್ನು ಮಾತ್ರ ಅನುಮತಿಸಲಾಗಿದೆ.');
+        setFile(null);
+        return;
+      }
+      if (selectedFile.size > 2 * 1024 * 1024) {
+        setFileError(lang === 'en' ? 'File size must be less than 2MB.' : 'ಫೈಲ್ ಗಾತ್ರ 2MB ಗಿಂತ ಕಡಿಮೆ ಇರಬೇಕು.');
+        setFile(null);
+        return;
+      }
+      setFile(selectedFile);
+    }
+  };
+
+  const removeFile = () => {
+    setFile(null);
+    setFileError(null);
+  };
+
+  const toBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = error => reject(error);
+    });
+  };
+
   async function onSubmit(values: FormValues) {
     setIsSubmitting(true);
     setResult(null);
+    
+    let documentBase64 = '';
+    if (file) {
+      try {
+        documentBase64 = await toBase64(file);
+      } catch (err) {
+        console.error("File conversion error", err);
+      }
+    }
+
     const response = await submitLinguaForm({
       ...values,
       language: lang,
+      documentBase64,
     });
     setResult(response);
     setIsSubmitting(false);
@@ -122,6 +175,7 @@ export function LinguaForm() {
                 variant="outline" 
                 onClick={() => {
                   setResult(null);
+                  setFile(null);
                   form.reset();
                 }}
               >
@@ -135,25 +189,25 @@ export function LinguaForm() {
   }
 
   return (
-    <Card className="shadow-2xl border bg-card">
-      <CardHeader className="space-y-4">
-        <div className="flex justify-between items-center">
+    <Card className="shadow-2xl border bg-card overflow-hidden">
+      <CardHeader className="space-y-4 pb-4">
+        <div className="flex justify-between items-start gap-4">
           <div className="flex flex-col">
-            <h1 className="text-xl font-bold text-primary">{t.brand}</h1>
-            <p className="text-sm font-medium text-accent">
-              {lang === 'en' ? 'ಪ್ರತಿಭಾ ಪುರಸ್ಕಾರ SJSVT' : 'Prathibha Puraskahara SJSVT'}
+            <h1 className="text-xl font-bold text-primary leading-tight">{t.brand}</h1>
+            <p className="text-sm font-medium text-accent mt-0.5">
+              {t.brandKn}
             </p>
           </div>
           <LanguageToggle current={lang} onChange={setLang} />
         </div>
-        <div className="pt-2">
+        <div className="pt-2 border-t">
           <CardTitle className="text-2xl font-bold text-foreground">{t.title}</CardTitle>
           <CardDescription className="text-muted-foreground mt-1">{t.description}</CardDescription>
         </div>
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
             <FormField
               control={form.control}
               name="name"
@@ -164,7 +218,7 @@ export function LinguaForm() {
                     {t.nameLabel}
                   </FormLabel>
                   <FormControl>
-                    <Input placeholder={t.namePlaceholder} {...field} className="transition-all" />
+                    <Input placeholder={t.namePlaceholder} {...field} className="transition-all" suppressHydrationWarning />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -181,7 +235,7 @@ export function LinguaForm() {
                     {t.emailLabel}
                   </FormLabel>
                   <FormControl>
-                    <Input placeholder={t.emailPlaceholder} type="email" {...field} className="transition-all" />
+                    <Input placeholder={t.emailPlaceholder} type="email" {...field} className="transition-all" suppressHydrationWarning />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -200,8 +254,9 @@ export function LinguaForm() {
                   <FormControl>
                     <Textarea 
                       placeholder={t.detailsPlaceholder} 
-                      className="min-h-[120px] transition-all resize-none" 
+                      className="min-h-[100px] transition-all resize-none" 
                       {...field} 
+                      suppressHydrationWarning
                     />
                   </FormControl>
                   <FormMessage />
@@ -209,15 +264,49 @@ export function LinguaForm() {
               )}
             />
 
+            <div className="space-y-2">
+              <FormLabel className="flex items-center gap-2">
+                <FileText className="w-4 h-4 text-accent" />
+                {t.fileLabel}
+              </FormLabel>
+              <div className="relative">
+                {!file ? (
+                  <div className="relative group">
+                    <input
+                      type="file"
+                      accept=".pdf"
+                      onChange={handleFileChange}
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                    />
+                    <div className="flex items-center justify-center border-2 border-dashed rounded-md p-4 bg-muted/20 group-hover:bg-muted/40 transition-colors">
+                      <span className="text-sm text-muted-foreground">{t.filePlaceholder}</span>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-between p-3 border rounded-md bg-accent/5">
+                    <div className="flex items-center gap-2 overflow-hidden">
+                      <FileText className="w-4 h-4 text-accent shrink-0" />
+                      <span className="text-sm font-medium truncate">{file.name}</span>
+                    </div>
+                    <Button type="button" variant="ghost" size="icon" className="h-8 w-8 text-destructive" onClick={removeFile}>
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                )}
+              </div>
+              {fileError && <p className="text-xs font-medium text-destructive mt-1">{fileError}</p>}
+            </div>
+
             <Button 
               type="submit" 
-              className="w-full h-12 text-base font-semibold" 
+              className="w-full h-12 text-base font-semibold mt-4" 
               disabled={isSubmitting}
+              suppressHydrationWarning
             >
               {isSubmitting ? (
                 <>
                   <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                  {lang === 'en' ? 'Processing...' : 'ಪ್ರಕ್ರಿಯೆಯಲ್ಲಿದೆ...'}
+                  {t.processing}
                 </>
               ) : (
                 <>

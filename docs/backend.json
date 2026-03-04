@@ -1,0 +1,54 @@
+
+{
+  "entities": {
+    "Registration": {
+      "title": "Registration",
+      "description": "Information submitted by a participant for Prathibha Puraskahara SJSVT.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string",
+          "format": "email"
+        },
+        "details": {
+          "type": "string"
+        },
+        "language": {
+          "type": "string",
+          "enum": [
+            "en",
+            "kn"
+          ]
+        },
+        "documentBase64": {
+          "type": "string",
+          "description": "Base64 encoded PDF document for offline processing."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "name",
+        "email",
+        "details",
+        "language"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "google.com"
+    ]
+  },
+  "firestore": {
+    "/registrations/{registrationId}": {
+      "schema": "Registration",
+      "description": "Collection of participant registrations."
+    }
+  }
+}

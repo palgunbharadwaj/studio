@@ -1,3 +1,4 @@
+
 'use server';
 
 import { 
@@ -18,14 +19,16 @@ export async function submitLinguaForm(data: {
   email: string;
   details: string;
   language: 'en' | 'kn';
+  documentBase64?: string;
 }): Promise<SubmissionResult> {
   try {
-    // In a real app, you would save to Firestore here.
+    // In a production app, you would use firestore here to save 'data'.
+    // We have bootstrapped the backend, and firestore is available.
     
     const aiInput: PersonalizedConfirmationEmailInput = {
       userName: data.name,
       userEmail: data.email,
-      submissionDetails: data.details,
+      submissionDetails: `${data.details}${data.documentBase64 ? '\n(Document uploaded)' : ''}`,
       preferredLanguage: data.language,
     };
 
