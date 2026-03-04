@@ -1,4 +1,3 @@
-
 'use server';
 
 import { 
@@ -6,6 +5,8 @@ import {
   PersonalizedConfirmationEmailInput, 
   PersonalizedConfirmationEmailOutput 
 } from '@/ai/flows/personalized-confirmation-email';
+import { initializeFirebase } from '@/firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 export type SubmissionResult = {
   success: boolean;
@@ -22,17 +23,26 @@ export async function submitLinguaForm(data: {
   documentBase64?: string;
 }): Promise<SubmissionResult> {
   try {
-    // In a production app, you would use firestore here to save 'data'.
-    // We have bootstrapped the backend, and firestore is available.
+    const { firestore } = initializeFirebase();
     
-    const aiInput: PersonalizedConfirmationEmailInput = {
+    // Save submission to Firestore
+    await addDoc(collection(firestore, 'registrations'), {
+      name: data.name,
+      email: data.email,
+      details: data.details,
+      language: data.language,
+      documentBase64: data.documentBase64 || '',
+      createdAt: serverTimestamp(),
+    });
+
+    const emailInput: PersonalizedConfirmationEmailInput = {
       userName: data.name,
       userEmail: data.email,
       submissionDetails: `${data.details}${data.documentBase64 ? '\n(Document uploaded)' : ''}`,
       preferredLanguage: data.language,
     };
 
-    const emailPreview = await generatePersonalizedConfirmationEmail(aiInput);
+    const emailPreview = await generatePersonalizedConfirmationEmail(emailInput);
 
     return {
       success: true,

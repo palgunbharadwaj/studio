@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -49,7 +48,6 @@ export function LinguaForm() {
   const translations = {
     en: {
       brand: "Prathibha Puraskahara SJSVT",
-      brandKn: "ಪ್ರತಿಭಾ ಪುರಸ್ಕಾರ SJSVT",
       title: "Submit Your Information",
       description: "Enter your details below to register.",
       nameLabel: "Full Name",
@@ -70,7 +68,6 @@ export function LinguaForm() {
     },
     kn: {
       brand: "ಪ್ರತಿಭಾ ಪುರಸ್ಕಾರ SJSVT",
-      brandKn: "Prathibha Puraskahara SJSVT",
       title: "ನಿಮ್ಮ ಮಾಹಿತಿಯನ್ನು ಸಲ್ಲಿಸಿ",
       description: "ನೋಂದಾಯಿಸಲು ನಿಮ್ಮ ವಿವರಗಳನ್ನು ಕೆಳಗೆ ನಮೂದಿಸಿ.",
       nameLabel: "ಪೂರ್ಣ ಹೆಸರು",
@@ -191,13 +188,8 @@ export function LinguaForm() {
   return (
     <Card className="shadow-2xl border bg-card overflow-hidden">
       <CardHeader className="space-y-4 pb-4">
-        <div className="flex justify-between items-start gap-4">
-          <div className="flex flex-col">
-            <h1 className="text-xl font-bold text-primary leading-tight">{t.brand}</h1>
-            <p className="text-sm font-medium text-accent mt-0.5">
-              {t.brandKn}
-            </p>
-          </div>
+        <div className="flex justify-between items-center gap-4">
+          <h1 className="text-xl font-bold text-primary leading-tight">{t.brand}</h1>
           <LanguageToggle current={lang} onChange={setLang} />
         </div>
         <div className="pt-2 border-t">

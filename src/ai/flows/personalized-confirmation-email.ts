@@ -1,6 +1,6 @@
 'use server';
 /**
- * @fileOverview A Genkit flow for generating personalized confirmation emails.
+ * @fileOverview A flow for generating personalized confirmation emails.
  *
  * - generatePersonalizedConfirmationEmail - A function that handles the email generation process.
  * - PersonalizedConfirmationEmailInput - The input type for the generatePersonalizedConfirmationEmail function.
@@ -12,13 +12,13 @@ import {z} from 'genkit';
 
 const PersonalizedConfirmationEmailInputSchema = z.object({
   userName: z.string().describe('The name of the user who submitted the form.').default('User'),
-  userEmail: z.string().email().describe('The email address of the user. This is for record and not directly used in the email content generation.'),
+  userEmail: z.string().email().describe('The email address of the user.'),
   submissionDetails: z
     .string()
-    .describe('A formatted string or summary of the details submitted by the user in the form.'),
+    .describe('A formatted string or summary of the details submitted by the user.'),
   preferredLanguage: z
     .enum(['en', 'kn'])
-    .describe('The user\'s preferred language for the email (\'en\' for English, \'kn\' for Kannada).'),
+    .describe('The user\'s preferred language (\'en\' for English, \'kn\' for Kannada).'),
 });
 export type PersonalizedConfirmationEmailInput = z.infer<
   typeof PersonalizedConfirmationEmailInputSchema
