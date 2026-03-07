@@ -373,12 +373,6 @@ export function LinguaForm() {
 
   return (
     <div className="space-y-3 w-full max-w-xl mx-auto pb-8">
-      <Card className="overflow-hidden border-none shadow-sm">
-        <div className="relative w-full aspect-[4/1]">
-          {banner && <Image src={banner.imageUrl} alt={banner.description} fill className="object-cover" priority />}
-        </div>
-      </Card>
-
       <Card className="shadow-sm overflow-hidden border-none">
         <CardContent className="p-5 space-y-2">
           <div className="flex items-start gap-3">
