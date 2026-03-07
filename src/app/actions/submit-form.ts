@@ -1,7 +1,10 @@
-'use server';
+
+'use client';
 
 import { initializeFirebase } from '@/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { errorEmitter } from '@/firebase/error-emitter';
+import { FirestorePermissionError } from '@/firebase/errors';
 
 export type SubmissionResult = {
   success: boolean;
@@ -9,24 +12,22 @@ export type SubmissionResult = {
   error?: string;
 };
 
-export async function submitLinguaForm(data: {
-  name: string;
-  email: string;
-  details: string;
-  language: 'en' | 'kn';
-  documentBase64?: string;
-}): Promise<SubmissionResult> {
+export async function submitLinguaForm(data: any): Promise<SubmissionResult> {
+  const { firestore } = initializeFirebase();
+  
   try {
-    const { firestore } = initializeFirebase();
+    const docRef = collection(firestore, 'registrations');
     
-    // Save submission to Firestore
-    await addDoc(collection(firestore, 'registrations'), {
-      name: data.name,
-      email: data.email,
-      details: data.details,
-      language: data.language,
-      documentBase64: data.documentBase64 || '',
+    addDoc(docRef, {
+      ...data,
       createdAt: serverTimestamp(),
+    }).catch(async (serverError) => {
+      const permissionError = new FirestorePermissionError({
+        path: 'registrations',
+        operation: 'create',
+        requestResourceData: data,
+      });
+      errorEmitter.emit('permission-error', permissionError);
     });
 
     return {
@@ -34,7 +35,6 @@ export async function submitLinguaForm(data: {
       message: data.language === 'en' ? 'Submission successful!' : 'ಸಲ್ಲಿಸುವಿಕೆ ಯಶಸ್ವಿಯಾಗಿದೆ!',
     };
   } catch (error) {
-    console.error('Submission error:', error);
     return {
       success: false,
       message: 'An error occurred during submission.',

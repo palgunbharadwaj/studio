@@ -6,44 +6,75 @@
       "description": "Information submitted by a participant for Prathibha Puraskahara SJSVT.",
       "type": "object",
       "properties": {
-        "name": {
-          "type": "string"
-        },
         "email": {
           "type": "string",
           "format": "email"
         },
-        "details": {
-          "type": "string"
-        },
         "language": {
           "type": "string",
-          "enum": [
-            "en",
-            "kn"
-          ]
+          "enum": ["en", "kn"]
         },
-        "documentBase64": {
+        "studentName": {
+          "type": "string"
+        },
+        "relationship": {
           "type": "string",
-          "description": "Base64 encoded PDF document for offline processing."
+          "enum": ["SO", "DO"]
+        },
+        "fatherName": {
+          "type": "string"
+        },
+        "motherName": {
+          "type": "string"
+        },
+        "course": {
+          "type": "string"
+        },
+        "board": {
+          "type": "string"
+        },
+        "pucStream": {
+          "type": "string"
+        },
+        "combination": {
+          "type": "string"
+        },
+        "percentage": {
+          "type": "string"
+        },
+        "marksObtained": {
+          "type": "string"
+        },
+        "totalMarks": {
+          "type": "string"
+        },
+        "cgpa": {
+          "type": "string"
+        },
+        "yearOfPassing": {
+          "type": "string"
+        },
+        "otherCourse": {
+          "type": "string"
+        },
+        "photoBase64": {
+          "type": "string",
+          "description": "Base64 encoded student photo (JPG/JPEG)."
+        },
+        "marksCardBase64": {
+          "type": "string",
+          "description": "Base64 encoded marks card (PDF/DOC)."
         },
         "createdAt": {
           "type": "string",
           "format": "date-time"
         }
       },
-      "required": [
-        "name",
-        "email",
-        "details",
-        "language"
-      ]
+      "required": ["studentName", "email", "language", "course"]
     }
   },
   "auth": {
-    "providers": [
-      "google.com"
-    ]
+    "providers": ["google.com"]
   },
   "firestore": {
     "/registrations/{registrationId}": {
