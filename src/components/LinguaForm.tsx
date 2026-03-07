@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -104,15 +103,11 @@ export function LinguaForm() {
         const cgpa = parseFloat(cgpaValue);
         if (!isNaN(cgpa)) {
           if (cgpa < 9.0 || cgpa > 10.0) {
-            const errorMsg = lang === 'en'
-              ? "Enter Valid CGPA"
-              : "ಸರಿಯಾದ ಸಿಜಿಪಿಎ ನಮೂದಿಸಿ";
+            const errorMsg = lang === 'en' ? "Enter Valid CGPA" : "ಸರಿಯಾದ ಸಿಜಿಪಿಎ ನಮೂದಿಸಿ";
             setEligibilityError(errorMsg);
           }
         } else if (cgpaValue.trim() !== '') {
-          const errorMsg = lang === 'en'
-            ? "Enter Valid CGPA"
-            : "ಸರಿಯಾದ ಸಿಜಿಪಿಎ ನಮೂದಿಸಿ";
+          const errorMsg = lang === 'en' ? "Enter Valid CGPA" : "ಸರಿಯಾದ ಸಿಜಿಪಿಎ ನಮೂದಿಸಿ";
           setEligibilityError(errorMsg);
         }
       }
@@ -155,76 +150,12 @@ export function LinguaForm() {
       boards: ['State', 'CBSE', 'ICSE'],
       streams: ['Science', 'Commerce', 'Arts'],
       years: ['2024-2025', '2023-2024'],
-      scienceCombinations: [
-        'PCMB (Physics, Chemistry, Mathematics, Biology)',
-        'PCMC (Physics, Chemistry, Mathematics, Computer Science)',
-        'PCME (Physics, Chemistry, Mathematics, Electronics)',
-        'PCMS (Physics, Chemistry, Mathematics, Statistics)',
-        'PCMH (Physics, Chemistry, Mathematics, Home Science)',
-        'PCAG (Physics, Chemistry, Agriculture, Mathematics/Biology)',
-        'Other'
-      ],
-      commerceCombinations: [
-        'EGBA (Economics, Geography, Business Studies, Accountancy)',
-        'ECBA (Economics, Commerce, Business Studies, Accountancy)',
-        'ESBA (Economics, Sociology, Business Studies, Accountancy)',
-        'EBAC (Economics, Business Studies, Accountancy, Computer Science)',
-        'EMBA (Economics, Mathematics, Business Studies, Accountancy)',
-        'ECSA (Economics, Computer Science, Statistics, Accountancy)',
-        'Other'
-      ],
-      artsCombinations: [
-        'HEPS (History, Economics, Political Science, Sociology)',
-        'HEPPsy (History, Economics, Political Science, Psychology)',
-        'HESP (History, Economics, Sociology, Psychology)',
-        'HEBA (History, Economics, Business, Accountancy)',
-        'HEGG (History, Economics, Geography, Geology)',
-        'HESF (History, Economics, Sociology, Fine Arts)',
-        'Other'
-      ],
-      engineeringCourses: [
-        'CSE (Computer Science and Engineering)',
-        'AIML (Artificial Intelligence and Machine Learning)',
-        'ISE (Information Science and Engineering)',
-        'ECE (Electronics and Communication Engineering)',
-        'EEE (Electrical and Electronics Engineering)',
-        'Mechanical (Mechanical Engineering)',
-        'Civil (Civil Engineering)',
-        'IP (Industrial Production Engineering)',
-        'EIE (Electronics and Instrumentation Engineering)',
-        'ECS (Electronics & Computer Science Engineering)',
-        'CSBS (Computer Science and Business Systems)',
-        'Mechatronics Engineering',
-        'Automobile Engineering',
-        'Aerospace Engineering',
-        'Chemical Engineering',
-        'Biotechnology Engineering',
-        'Data Science and Engineering',
-        'AIDS (Artificial Intelligence and Data Science Engineering)',
-        'Robotics and Automation Engineering',
-        'Other'
-      ],
-      diplomaCourses: [
-        'Diploma in Computer Science & Engineering (CSE)',
-        'Diploma in Electronics & Communication Engineering (ECE)',
-        'Diploma in Electrical & Electronics Engineering (EEE)',
-        'Diploma in Mechanical Engineering',
-        'Diploma in Civil Engineering',
-        'Diploma in Automobile Engineering',
-        'Other'
-      ],
-      degreeCourses: [
-        'D.Pharma (Diploma in Pharmacy)',
-        'B.Pharma (Bachelor of Pharmacy)',
-        'B.Sc (Bachelor of Science)',
-        'B.Com (Bachelor of Commerce)',
-        'B.A (Bachelor of Arts)',
-        'BCA (Bachelor of Computer Applications)',
-        'BBA (Bachelor of Business Administration)',
-        'BSW (Bachelor of Social Work)',
-        'B.Sc Nursing (Bachelor of Science in Nursing)',
-        'Other'
-      ]
+      scienceCombinations: ['PCMB', 'PCMC', 'PCME', 'PCMS', 'Other'],
+      commerceCombinations: ['EGBA', 'ECBA', 'ESBA', 'EBAC', 'EMBA', 'ECSA', 'Other'],
+      artsCombinations: ['HEPS', 'HEPPsy', 'HESP', 'HEBA', 'HEGG', 'HESF', 'Other'],
+      engineeringCourses: ['CSE', 'AIML', 'ISE', 'ECE', 'EEE', 'Mechanical', 'Civil', 'Other'],
+      diplomaCourses: ['CSE Diploma', 'ECE Diploma', 'EEE Diploma', 'Mech Diploma', 'Civil Diploma', 'Other'],
+      degreeCourses: ['B.Sc', 'B.Com', 'B.A', 'BCA', 'BBA', 'B.Pharma', 'Nursing', 'Other']
     },
     kn: {
       title: "ಪ್ರತಿಭಾ ಪುರಸ್ಕಾರ 2024-2025:",
@@ -261,76 +192,12 @@ export function LinguaForm() {
       boards: ['ರಾಜ್ಯ (State)', 'ಸಿಬಿಎಸ್ ಇ (CBSE)', 'ಐಸಿಎಸ್ ಇ (ICSE)'],
       streams: ['ವಿಜ್ಞಾನ (Science)', 'ವಾಣಿಜ್ಯ (Commerce)', 'ಕಲೆ (Arts)'],
       years: ['2024-2025', '2023-2024'],
-      scienceCombinations: [
-        'PCMB (ಭೌತಶಾಸ್ತ್ರ, ರಸಾಯನಶಾಸ್ತ್ರ, ಗಣಿತ, ಜೀವಶಾಸ್ತ್ರ)',
-        'PCMC (ಭೌತಶಾಸ್ತ್ರ, ರಸಾಯನಶಾಸ್ತ್ರ, ಗಣಿತ, ಕಂಪ್ಯೂಟರ್ ಸೈನ್ಸ್)',
-        'PCME (ಭೌತಶಾಸ್ತ್ರ, ರಸಾಯನಶಾಸ್ತ್ರ, ಗಣಿತ, ಎಲೆಕ್ಟ್ರಾನಿಕ್ಸ್)',
-        'PCMS (ಭೌತಶಾಸ್ತ್ರ, ರಸಾಯನಶಾಸ್ತ್ರ, ಗಣಿತ, ಸಂಖ್ಯಾಶಾಸ್ತ್ರ)',
-        'PCMH (ಭೌತಶಾಸ್ತ್ರ, ರಸಾಯನಶಾಸ್ತ್ರ, ಗಣಿತ, ಗೃಹ ವಿಜ್ಞಾನ)',
-        'PCAG (ಭೌತಶಾಸ್ತ್ರ, ರಸಾಯನಶಾಸ್ತ್ರ, ಕೃಷಿ ವಿಜ್ಞಾನ, ಗಣಿತ ಅಥವಾ ಜೀವಶಾಸ್ತ್ರ)',
-        'ಇತರೆ'
-      ],
-      commerceCombinations: [
-        'ECBA (ಅರ್ಥಶಾಸ್ತ್ರ, ವಾಣಿಜ್ಯ, ವ್ಯವಹಾರ ಅಧ್ಯಯನಗಳು, ಲೆಕ್ಕಶಾಸ್ತ್ರ)',
-        'EBAC (ಅರ್ಥಶಾಸ್ತ್ರ, ವ್ಯವಹಾರ ಅಧ್ಯಯನಗಳು, ಲೆಕ್ಕಶಾಸ್ತ್ರ, ಕಂಪ್ಯೂಟರ್ ಸೈನ್ಸ್)',
-        'ESBA (ಅರ್ಥಶಾಸ್ತ್ರ, ಸಮಾಜಶಾಸ್ತ್ರ, ವ್ಯವಹಾರ ಅಧ್ಯಯನಗಳು, ಲೆಕ್ಕಶಾಸ್ತ್ರ)',
-        'EGBA (ಅರ್ಥಶಾಸ್ತ್ರ, ಭೂಗೋಳಶಾಸ್ತ್ರ, ವ್ಯವಹಾರ ಅಧ್ಯಯನಗಳು, ಲೆಕ್ಕಶಾಸ್ತ್ರ)',
-        'EMBA (ಅರ್ಥಶಾಸ್ತ್ರ, ಗಣಿತ, ವ್ಯವಹಾರ ಅಧ್ಯಯನಗಳು, ಲೆಕ್ಕಶಾಸ್ತ್ರ)',
-        'ECSA (ಅರ್ಥಶಾಸ್ತ್ರ, ಕಂಪ್ಯೂಟರ್ ಸೈನ್ಸ್, ಸಂಖ್ಯಾಶಾಸ್ತ್ರ, ಲೆಕ್ಕಶಾಸ್ತ್ರ)',
-        'ಇತರೆ'
-      ],
-      artsCombinations: [
-        'HEPS (ಇತಿಹಾಸ, ಅರ್ಥಶಾಸ್ತ್ರ, ರಾಜ್ಯಶಾಸ್ತ್ರ, ಸಮಾಜಶಾಸ್ತ್ರ)',
-        'HEPPsy (ಇತಿಹಾಸ, ಅರ್ಥಶಾಸ್ತ್ರ, ರಾಜ್ಯಶಾಸ್ತ್ರ, ಮನೋವಿಜ್ಞಾನ)',
-        'HESP (ಇತಿಹಾಸ, ಅರ್ಥಶಾಸ್ತ್ರ, ಸಮಾಜಶಾಸ್ತ್ರ, ಮನೋವಿಜ್ಞಾನ)',
-        'HEBA (ಇತಿಹಾಸ, ಅರ್ಥಶಾಸ್ತ್ರ, ವ್ಯವಹಾರ ಅಧ್ಯಯನಗಳು, ಲೆಕ್ಕಶಾಸ್ತ್ರ)',
-        'HEGG (ಇತಿಹಾಸ, ಅರ್ಥಶಾಸ್ತ್ರ, ಭೂಗೋಳಶಾಸ್ತ್ರ, ಭೂಗರ್ಭಶಾಸ್ತ್ರ)',
-        'HESF (ಇತಿಹಾಸ, ಅರ್ಥಶಾಸ್ತ್ರ, ಸಮಾಜಶಾಸ್ತ್ರ, ಲಲಿತಕಲೆಗಳು)',
-        'ಇತರೆ'
-      ],
-      engineeringCourses: [
-        'CSE (ಕಂಪ್ಯೂಟರ್ ಸೈನ್ಸ್ ಮತ್ತು ಇಂಜಿನಿಯರಿಂಗ್)',
-        'AIML (ಕೃತಕ ಬುದ್ಧಿಮತ್ತೆ ಮತ್ತು ಯಂತ್ರ ಕಲಿಕೆ)',
-        'ISE (ಮಾಹಿತಿ ವಿಜ್ಞಾನ ಮತ್ತು ಇಂಜಿನಿಯರಿಂಗ್)',
-        'ECE (ಎಲೆಕ್ಟ್ರಾನಿಕ್ಸ್ ಮತ್ತು ಸಂವಹನ ಇಂಜಿನಿಯರಿಂಗ್)',
-        'EEE (ವಿದ್ಯುತ್ ಮತ್ತು ಎಲೆಕ್ಲಯಾನಿಕ್ಸ್ ಇಂಜಿನಿಯರಿಂಗ್)',
-        'Mechanical (ಮೆಕಾನಿಕಲ್ ಇಂಜಿನಿಯರಿಂಗ್)',
-        'Civil (ಸಿವಿಲ್ ಇಂಜಿನಿಯರಿಂಗ್)',
-        'IP (ಕೈಗಾರಿಕಾ ಉತ್ಪಾದನಾ ಇಂಜಿನಿಯರಿಂಗ್)',
-        'EIE (ಎಲೆಕ್ಟ್ರಾನಿಕ್ಸ್ ಮತ್ತು ಇನ್ಸ್ಟ್ರುಮೆಂಟೇಶನ್ ಇಂಜಿನಿಯರಿಂಗ್)',
-        'ECS (ಎಲೆಕ್ಟ್ರಾನಿಕ್ಸ್ ಮತ್ತು ಕಂಪ್ಯೂಟರ್ ಸೈನ್ಸ್ ಇಂಜಿನಿಯರಿಂಗ್)',
-        'CSBS (ಕಂಪ್ಯೂಟರ್ ಸೈನ್ಸ್ ಮತ್ತು ವ್ಯವಹಾರ ವ್ಯವಸ್ಥೆಗಳು)',
-        'Mechatronics (ಮೆಕಾಟ್ರಾನಿಕ್ಸ್ ಇಂಜಿನಿಯರಿಂಗ್)',
-        'Automobile (ಆಟೋಮೊಬೈಲ್ ಇಂಜಿನಿಯರಿಂಗ್)',
-        'Aerospace (ಏರೋಸ್ಪೇಸ್ ಇಂಜಿನಿಯರಿಂಗ್)',
-        'Chemical (ರಾಸಾಯನಿಕ ಇಂಜಿನಿಯರಿಂಗ್)',
-        'Biotechnology (ಜೈವಿಕ ತಂತ್ರಜ್ಞಾನ ಇಂಜಿನಿಯರಿಂಗ್)',
-        'Data Science (ದತ್ತಾಂಶ ವಿಜ್ಞಾನ ಮತ್ತು ಇಂಜಿನಿಯರಿಂಗ್)',
-        'AI & Data Science (ಕೃತಕ ಬುದ್ಧಿಮತ್ತೆ ಮತ್ತು ದತ್ತಾಂಶ ವಿಜ್ಞಾನ ಇಂಜಿನಿಯರಿಂಗ್)',
-        'Robotics & Automation (ರೋಬೋಟಿಕ್ಸ್ ಮತ್ತು ಸ್ವಯಂಚಾಲಿತ ಇಂಜಿನಿಯರಿಂಗ್)',
-        'ಇತರೆ'
-      ],
-      diplomaCourses: [
-        'ಕಂಪ್ಯೂಟರ್ ಸೈನ್ಸ್ ಮತ್ತು ಇಂಜಿನಿಯರಿಂಗ್ ಡಿಪ್ಲೊಮಾ',
-        'ಎಲೆಕ್ಟ್ರಾನಿಕ್ಸ್ ಮತ್ತು ಕಮ್ಯುನಿಕೇಶನ್ ಇಂಜಿನಿಯರಿಂಗ್ ಡಿಪ್ಲೊಮಾ',
-        'ಎಲೆಕ್ಟ್ರಿಕಲ್ ಮತ್ತು ಎಲೆಕ್ಟ್ರಾನಿಕ್ಸ್ ಇಂಜಿನಿಯರಿಂಗ್ ಡಿಪ್ಲೊಮಾ',
-        'ಮೆಕಾನಿಕಲ್ ಇಂಜಿನಿಯರಿಂಗ್ ಡಿಪ್ಲೊಮಾ',
-        'ಸಿವಿಲ್ ಇಂಜಿನಿಯರಿಂಗ್ ಡಿಪ್ಲೊಮಾ',
-        'ಆಟೋಮೊಬೈಲ್ ಇಂಜಿನಿಯರಿಂಗ್ ಡಿಪ್ಲೊಮಾ',
-        'ಇತರೆ'
-      ],
-      degreeCourses: [
-        'ಡಿ.ಫಾರ್ಮಾ',
-        'ಬಿ.ಫಾರ್ಮಾ',
-        'ಬಿ.ಎಸ್ಸಿ',
-        'ಬಿ.ಕಾಂ',
-        'ಬಿ.ಎ.',
-        'ಬಿ.ಸಿ.ಎ.',
-        'ಬಿ.ಬಿ.ಎ.',
-        'ಬಿಎಸ್ ಡಬ್ಲ್ಯೂ',
-        'ಬಿ.ಎಸ್ಸಿ ನರ್ಸಿಂಗ್',
-        'ಇತರೆ'
-      ]
+      scienceCombinations: ['PCMB', 'PCMC', 'PCME', 'PCMS', 'ಇತರೆ'],
+      commerceCombinations: ['EGBA', 'ECBA', 'ESBA', 'EBAC', 'EMBA', 'ECSA', 'ಇತರೆ'],
+      artsCombinations: ['HEPS', 'HEPPsy', 'HESP', 'HEBA', 'HEGG', 'HESF', 'ಇತರೆ'],
+      engineeringCourses: ['CSE', 'AIML', 'ISE', 'ECE', 'EEE', 'Mechanical', 'Civil', 'ಇತರೆ'],
+      diplomaCourses: ['CSE Diploma', 'ECE Diploma', 'EEE Diploma', 'Mech Diploma', 'Civil Diploma', 'ಇತರೆ'],
+      degreeCourses: ['ಬಿ.ಎಸ್ಸಿ', 'ಬಿ.ಕಾಂ', 'ಬಿ.ಎ.', 'ಬಿ.ಸಿ.ಎ.', 'ಬಿ.ಬಿ.ಎ.', 'ಬಿ.ಫಾರ್ಮಾ', 'ನರ್ಸಿಂಗ್', 'ಇತರೆ']
     }
   };
 
@@ -509,16 +376,14 @@ export function LinguaForm() {
               )} />
 
               {selectedCourse === 'SSLC' && (
-                <div className="space-y-3 pt-2">
-                  <FormField control={form.control} name="board" render={({ field }) => (
-                    <FormItem className="space-y-1.5">
-                      <FormLabel className="text-[11px] font-semibold">{t.boardLabel} *</FormLabel>
-                      <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-2">
-                        {t.boards.map(b => <div key={b} className="flex items-center space-x-2"><RadioGroupItem value={b} id={b} className="h-3.5 w-3.5 cursor-pointer" /><Label htmlFor={b} className="text-[11px] cursor-pointer">{b}</Label></div>)}
-                      </RadioGroup>
-                    </FormItem>
-                  )} />
-                </div>
+                <FormField control={form.control} name="board" render={({ field }) => (
+                  <FormItem className="space-y-1.5">
+                    <FormLabel className="text-[11px] font-semibold">{t.boardLabel} *</FormLabel>
+                    <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-2">
+                      {t.boards.map(b => <div key={b} className="flex items-center space-x-2"><RadioGroupItem value={b} id={b} className="h-3.5 w-3.5 cursor-pointer" /><Label htmlFor={b} className="text-[11px] cursor-pointer">{b}</Label></div>)}
+                    </RadioGroup>
+                  </FormItem>
+                )} />
               )}
 
               {selectedCourse === 'PUC' && (
@@ -540,9 +405,7 @@ export function LinguaForm() {
                         <FormItem className="space-y-1.5">
                           <FormLabel className="text-[11px] font-semibold">{t.combinationLabel} *</FormLabel>
                           <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-2">
-                            {options.map(c => (
-                              <div key={c} className="flex items-center space-x-2"><RadioGroupItem value={c} id={c} className="h-3.5 w-3.5 cursor-pointer" /><Label htmlFor={c} className="text-[11px] cursor-pointer">{c}</Label></div>
-                            ))}
+                            {options.map(c => <div key={c} className="flex items-center space-x-2"><RadioGroupItem value={c} id={c} className="h-3.5 w-3.5 cursor-pointer" /><Label htmlFor={c} className="text-[11px] cursor-pointer">{c}</Label></div>)}
                           </RadioGroup>
                         </FormItem>
                       );
@@ -551,43 +414,17 @@ export function LinguaForm() {
                 </div>
               )}
 
-              {selectedCourse === 'Engineering' && (
-                <div className="space-y-3 pt-2">
-                  <FormField control={form.control} name="branch" render={({ field }) => (
-                    <FormItem className="space-y-1.5">
-                      <FormLabel className="text-[11px] font-semibold">{t.branchLabel} *</FormLabel>
-                      <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-2">
-                        {t.engineeringCourses.map(c => <div key={c} className="flex items-center space-x-2"><RadioGroupItem value={c} id={c} className="h-3.5 w-3.5 cursor-pointer" /><Label htmlFor={c} className="text-[11px] cursor-pointer">{c}</Label></div>)}
-                      </RadioGroup>
-                    </FormItem>
-                  )} />
-                </div>
-              )}
-
-              {selectedCourse === 'Diploma' && (
-                <div className="space-y-3 pt-2">
-                  <FormField control={form.control} name="branch" render={({ field }) => (
-                    <FormItem className="space-y-1.5">
-                      <FormLabel className="text-[11px] font-semibold">{t.branchLabel} *</FormLabel>
-                      <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-2">
-                        {t.diplomaCourses.map(c => <div key={c} className="flex items-center space-x-2"><RadioGroupItem value={c} id={c} className="h-3.5 w-3.5 cursor-pointer" /><Label htmlFor={c} className="text-[11px] cursor-pointer">{c}</Label></div>)}
-                      </RadioGroup>
-                    </FormItem>
-                  )} />
-                </div>
-              )}
-
-              {selectedCourse === 'Degree' && (
-                <div className="space-y-3 pt-2">
-                  <FormField control={form.control} name="branch" render={({ field }) => (
-                    <FormItem className="space-y-1.5">
-                      <FormLabel className="text-[11px] font-semibold">{t.courseLabel} *</FormLabel>
-                      <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-2">
-                        {t.degreeCourses.map(c => <div key={c} className="flex items-center space-x-2"><RadioGroupItem value={c} id={c} className="h-3.5 w-3.5 cursor-pointer" /><Label htmlFor={c} className="text-[11px] cursor-pointer">{c}</Label></div>)}
-                      </RadioGroup>
-                    </FormItem>
-                  )} />
-                </div>
+              {(['Diploma', 'Degree', 'Engineering'].includes(selectedCourse || '')) && (
+                <FormField control={form.control} name="branch" render={({ field }) => (
+                  <FormItem className="space-y-1.5">
+                    <FormLabel className="text-[11px] font-semibold">{selectedCourse === 'Degree' ? t.courseLabel : t.branchLabel} *</FormLabel>
+                    <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-2">
+                      {(selectedCourse === 'Engineering' ? t.engineeringCourses : selectedCourse === 'Diploma' ? t.diplomaCourses : t.degreeCourses).map(c => (
+                        <div key={c} className="flex items-center space-x-2"><RadioGroupItem value={c} id={c} className="h-3.5 w-3.5 cursor-pointer" /><Label htmlFor={c} className="text-[11px] cursor-pointer">{c}</Label></div>
+                      ))}
+                    </RadioGroup>
+                  </FormItem>
+                )} />
               )}
 
               {selectedCourse === 'Other' && (
@@ -631,9 +468,7 @@ export function LinguaForm() {
                   )}
 
                   <FormField control={form.control} name="yearOfPassing" render={({ field }) => {
-                    const yearsToShow = (['Diploma', 'Degree', 'Engineering'].includes(selectedCourse || '')) 
-                      ? [t.years[0]] 
-                      : t.years;
+                    const yearsToShow = (['Diploma', 'Degree', 'Engineering'].includes(selectedCourse || '')) ? [t.years[0]] : t.years;
                     return (
                       <FormItem className="space-y-1.5">
                         <FormLabel className="text-[11px] font-semibold">{t.yearPassingLabel} *</FormLabel>

@@ -1,4 +1,3 @@
-
 'use client';
 
 import { initializeFirebase } from '@/firebase';
@@ -20,7 +19,7 @@ export async function submitLinguaForm(data: any): Promise<SubmissionResult> {
   try {
     const docRef = collection(firestore, 'registrations');
     
-    // Fire and forget mutation (background sync)
+    // Create submission record
     addDoc(docRef, {
       ...data,
       createdAt: serverTimestamp(),
@@ -33,7 +32,7 @@ export async function submitLinguaForm(data: any): Promise<SubmissionResult> {
       errorEmitter.emit('permission-error', permissionError);
     });
 
-    // Construct detailed summary for AI generation
+    // Construct submission summary for AI context
     const submissionDetails = `
       Course: ${data.course}
       Academic Year: 2024-2025
@@ -41,7 +40,7 @@ export async function submitLinguaForm(data: any): Promise<SubmissionResult> {
       Result: ${data.percentage ? data.percentage + '%' : data.cgpa + ' CGPA'}
     `.trim();
 
-    // Call Genkit flow to generate personalized confirmation content
+    // Call Genkit flow to generate personalized confirmation content in the correct language
     const emailData = await generatePersonalizedConfirmationEmail({
       userName: data.studentName,
       userEmail: data.email,

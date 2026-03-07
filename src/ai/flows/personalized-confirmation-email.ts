@@ -1,6 +1,6 @@
 'use server';
 /**
- * @fileOverview A flow for generating personalized confirmation emails.
+ * @fileOverview A flow for generating personalized confirmation emails in the user's preferred language.
  *
  * - generatePersonalizedConfirmationEmail - A function that handles the email generation process.
  * - PersonalizedConfirmationEmailInput - The input type for the generatePersonalizedConfirmationEmail function.
@@ -45,7 +45,21 @@ const prompt = ai.definePrompt({
   name: 'personalizedConfirmationEmailPrompt',
   input: {schema: PersonalizedConfirmationEmailInputSchema},
   output: {schema: PersonalizedConfirmationEmailOutputSchema},
-  prompt: `You are an assistant tasked with generating personalized confirmation emails.\nGenerate a confirmation email in {{preferredLanguage}} for the user named "{{userName}}".\nThe email should acknowledge their submission for "Prathibha Puraskahara SJSVT" and include the following details:\n\nSubmission Details:\n{{{submissionDetails}}}\n\nThe email should have a clear subject line and a polite, personalized body.\nEnsure the entire response is in the specified language, and set the 'language' field in the output to the language used.`,
+  prompt: `You are an assistant tasked with generating personalized confirmation emails for "Prathibha Puraskahara SJSVT".
+
+Generate a confirmation email strictly in the language: {{preferredLanguage}}.
+If the language is 'kn', the output MUST be in Kannada. If 'en', it MUST be in English.
+
+User Name: {{userName}}
+Submission Details:
+{{{submissionDetails}}}
+
+Requirements:
+1. Acknowledge the submission for "Prathibha Puraskahara SJSVT" for the academic year 2024-2025.
+2. The subject line should be professional and clear.
+3. The body should be polite and personalized.
+4. Ensure the entire response (subject and body) is in the specified language.
+5. Set the 'language' field in the output to the language used.`,
 });
 
 const personalizedConfirmationEmailFlow = ai.defineFlow(
