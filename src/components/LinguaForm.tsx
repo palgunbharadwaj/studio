@@ -49,6 +49,7 @@ export function LinguaForm() {
   const [result, setResult] = useState<SubmissionResult | null>(null);
   const [eligibilityError, setEligibilityError] = useState<string | null>(null);
   const [totalMarksError, setTotalMarksError] = useState<string | null>(null);
+  const [alphabetError, setAlphabetError] = useState<{[key: string]: string | null}>({});
   
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [marksFile, setMarksFile] = useState<File | null>(null);
@@ -67,11 +68,37 @@ export function LinguaForm() {
     },
   });
 
+  const studentName = useWatch({ control: form.control, name: 'studentName' });
+  const fatherName = useWatch({ control: form.control, name: 'fatherName' });
+  const motherName = useWatch({ control: form.control, name: 'motherName' });
   const selectedCourse = useWatch({ control: form.control, name: 'course' });
   const selectedStream = useWatch({ control: form.control, name: 'pucStream' });
   const marksObtained = useWatch({ control: form.control, name: 'marksObtained' });
   const totalMarks = useWatch({ control: form.control, name: 'totalMarks' });
   const cgpaValue = useWatch({ control: form.control, name: 'cgpa' });
+
+  // Alphabet script validation
+  useEffect(() => {
+    const errors: {[key: string]: string | null} = {};
+    const englishRegex = /^[A-Za-z\s\.]+$/;
+    const kannadaRegex = /^[\u0C80-\u0CFF\s\.]+$/;
+    
+    const checkField = (field: string, value: string | undefined) => {
+      if (!value || value.trim() === '') return;
+      const regex = lang === 'en' ? englishRegex : kannadaRegex;
+      if (!regex.test(value)) {
+        errors[field] = lang === 'en' 
+          ? "Please use only English alphabets." 
+          : "ದಯವಿಟ್ಟು ಕನ್ನಡ ಅಕ್ಷರಗಳನ್ನು ಮಾತ್ರ ಬಳಸಿ.";
+      }
+    };
+
+    checkField('studentName', studentName);
+    checkField('fatherName', fatherName);
+    checkField('motherName', motherName);
+    
+    setAlphabetError(errors);
+  }, [studentName, fatherName, motherName, lang]);
 
   useEffect(() => {
     setEligibilityError(null);
@@ -173,7 +200,7 @@ export function LinguaForm() {
       percentageLabel: "Percentage (%)",
       marksObtainedLabel: "Marks Obtained",
       totalMarksLabel: "Total Marks",
-      yearPassingLabel: "Year Of Passing",
+      yearPassingLabel: "ಉತ್ತೀರ್ಣರಾದ ವರ್ಷ",
       cgpaLabel: "CGPA",
       otherCourseLabel: "Please specify other course",
       docsTitle: "Documents",
@@ -250,7 +277,7 @@ export function LinguaForm() {
   };
 
   async function onSubmit(values: FormValues) {
-    if (eligibilityError || totalMarksError) return;
+    if (eligibilityError || totalMarksError || Object.keys(alphabetError).length > 0) return;
     
     setIsSubmitting(true);
     try {
@@ -304,7 +331,7 @@ export function LinguaForm() {
 
   return (
     <div className="space-y-3 w-full max-w-xl mx-auto pb-8 cursor-default">
-      <Card className="shadow-sm overflow-hidden border-none">
+      <Card className="shadow-sm overflow-hidden border-none cursor-default">
         <CardContent className="p-5 space-y-2">
           <div className="space-y-1">
             <h1 className="text-sm font-bold tracking-tight text-[#202124]">{t.title}</h1>
@@ -314,7 +341,7 @@ export function LinguaForm() {
         </CardContent>
       </Card>
 
-      <Card className="shadow-sm border-none">
+      <Card className="shadow-sm border-none cursor-default">
         <CardContent className="p-5">
           <div className="space-y-3">
             <Label className="text-[11px] font-semibold text-[#202124]">{t.langLabel} <span className="text-destructive">*</span></Label>
@@ -334,7 +361,7 @@ export function LinguaForm() {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
-          <Card className="shadow-sm border-none">
+          <Card className="shadow-sm border-none cursor-default">
             <CardContent className="p-5">
               <FormField control={form.control} name="email" render={({ field }) => (
                 <FormItem className="space-y-1.5">
@@ -346,13 +373,14 @@ export function LinguaForm() {
             </CardContent>
           </Card>
 
-          <Card className="shadow-sm border-none">
+          <Card className="shadow-sm border-none cursor-default">
             <CardContent className="p-5 space-y-4">
               <div className="flex items-center gap-2 pb-2 border-b"><User className="w-3.5 h-3.5 text-primary" /><h2 className="text-[12px] font-bold">{t.personalDetailsHeader}</h2></div>
               <FormField control={form.control} name="studentName" render={({ field }) => (
                 <FormItem className="space-y-1.5">
                   <FormLabel className="text-[11px] font-semibold">{t.studentNameLabel} <span className="text-destructive">*</span></FormLabel>
                   <FormControl><Input placeholder={lang === 'en' ? "Enter student name" : "ವಿದ್ಯಾರ್ಥಿಯ ಹೆಸರನ್ನು ನಮೂದಿಸಿ"} className="h-8 text-[11px] bg-muted/20 cursor-text" {...field} /></FormControl>
+                  {alphabetError.studentName && <p className="text-[9px] text-destructive font-medium">{alphabetError.studentName}</p>}
                   <FormMessage className="text-[9px]" />
                 </FormItem>
               )} />
@@ -370,6 +398,7 @@ export function LinguaForm() {
                 <FormItem className="space-y-1.5">
                   <FormLabel className="text-[11px] font-semibold">{t.fatherNameLabel} <span className="text-destructive">*</span></FormLabel>
                   <FormControl><Input className="h-8 text-[11px] bg-muted/20 cursor-text" {...field} /></FormControl>
+                  {alphabetError.fatherName && <p className="text-[9px] text-destructive font-medium">{alphabetError.fatherName}</p>}
                   <FormMessage className="text-[9px]" />
                 </FormItem>
               )} />
@@ -377,13 +406,14 @@ export function LinguaForm() {
                 <FormItem className="space-y-1.5">
                   <FormLabel className="text-[11px] font-semibold">{t.motherNameLabel} <span className="text-destructive">*</span></FormLabel>
                   <FormControl><Input className="h-8 text-[11px] bg-muted/20 cursor-text" {...field} /></FormControl>
+                  {alphabetError.motherName && <p className="text-[9px] text-destructive font-medium">{alphabetError.motherName}</p>}
                   <FormMessage className="text-[9px]" />
                 </FormItem>
               )} />
             </CardContent>
           </Card>
 
-          <Card className="shadow-sm border-none">
+          <Card className="shadow-sm border-none cursor-default">
             <CardContent className="p-5 space-y-4">
               <div className="flex items-center gap-2 pb-2 border-b"><GraduationCap className="w-3.5 h-3.5 text-primary" /><h2 className="text-[12px] font-bold">{t.academicDetailsHeader}</h2></div>
               <FormField control={form.control} name="course" render={({ field }) => (
@@ -535,7 +565,7 @@ export function LinguaForm() {
             </CardContent>
           </Card>
 
-          <Card className="shadow-sm border-none">
+          <Card className="shadow-sm border-none cursor-default">
             <CardContent className="p-5 space-y-4">
               <div className="flex items-center gap-2 pb-2 border-b"><FileCheck className="w-3.5 h-3.5 text-primary" /><h2 className="text-[12px] font-bold">{t.docsTitle}</h2></div>
               <div className="space-y-3">
@@ -552,7 +582,7 @@ export function LinguaForm() {
           </Card>
 
           <div className="flex pt-1">
-            <Button type="submit" className="w-full h-8 text-[11px] font-bold rounded-md shadow cursor-pointer" disabled={isSubmitting || !!eligibilityError || !!totalMarksError}>
+            <Button type="submit" className="w-full h-8 text-[11px] font-bold rounded-md shadow cursor-pointer" disabled={isSubmitting || !!eligibilityError || !!totalMarksError || Object.keys(alphabetError).length > 0}>
               {isSubmitting ? <><Loader2 className="mr-2 h-3 w-3 animate-spin" /> {t.processing}</> : <><Send className="mr-2 h-3 w-3" /> {t.submitButton}</>}
             </Button>
           </div>
