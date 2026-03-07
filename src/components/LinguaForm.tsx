@@ -70,6 +70,8 @@ export function LinguaForm() {
       title: "Prathibha Puraskahara 2024-2025:",
       description: "Recognition at the temple level for students who secured more than 85% in PUC and Ranks or more than 90% in SSLC/Degree/Job-oriented education in the March and April examinations of the academic years 2024 and 2025.",
       langLabel: "Choose Language / ಭಾಷೆ ಆಯ್ಕೆಮಾಡಿ",
+      personalDetailsHeader: "Personal Details",
+      academicDetailsHeader: "Academic Details",
       emailLabel: "Email",
       studentNameLabel: "Student Name",
       relationshipLabel: "S/O or D/O",
@@ -170,9 +172,11 @@ export function LinguaForm() {
       ]
     },
     kn: {
-      title: "ಪ್ರತಿಭಾ ಪುರಸ್ಕಾರ 2024-2025:",
-      description: "2024 ಮತ್ತು 2025ರ ಸಾಲಿನ ಮಾರ್ಚಿ ಮತ್ತು ಏಪ್ರಿಲ್ ನಲ್ಲಿ ನಡೆದ ಪಿ.ಯು.ಸಿ ಪರೀಕ್ಷೆಯಲ್ಲಿ ಶೇ.85 ಕ್ಕಿಂತ ಹಾಗೂ ಎಸ್.ಎಸ್.ಎಲ್.ಸಿ/ಪದವಿ/ಉದ್ಯೋಗಾಧಾರಿತ ಶಿಕ್ಷಣದಲ್ಲಿ ರ‍್ಯಾಂಕ್‌ ಅಥವಾ ಶೇ.90 ಕ್ಕಿಂತ ಹೆಚ್ಚು ಅಂಕ ಪಡೆದ ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ದೇವಾಲಯದ ಮಟ್ಟದಲ್ಲಿ ಪುರಸ್ಕಾರ.",
+      title: "ಪತಿಭಾ ಪುರಸಾರ 2024-2025:",
+      description: "2024 ಮ 2025ರ ಸಾಲಿನ ಮಾ ಮ ಏಪಿಲ್ ನಲಿ ನಡೆದ ಪಿ.ಯು.ಸಿ ಪರೀಕೆಯಲಿ ಶೇ.85 ಕ್ಕಿಂತ ಹಾಗೂ ಎಸ್.ಎಸ್.ಎಲ್.ಸಿ/ಪದವಿ/ಉದ್ಯೋಗಾಧಾರಿತ ಶಿಕ್ಷಣದಲ್ಲಿ ರ‍್ಯಾಂಕ್‌ ಅಥವಾ ಶೇ.90 ಕ್ಕಿಂತ ಹೆಚ್ಚು ಅಂಕ ಪಡೆದ ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ದೇವಾಲಯದ ಮಟ್ಟದಲ್ಲಿ ಪುರಸ್ಕಾರ.",
       langLabel: "Choose Language / ಭಾಷೆ ಆಯ್ಕೆಮಾಡಿ",
+      personalDetailsHeader: "ವೈಯಕ್ತಿಕ ವಿವರಗಳು",
+      academicDetailsHeader: "ಶೈಕ್ಷಣಿಕ ವಿವರಗಳು",
       emailLabel: "ಇಮೇಲ್ ವಿಳಾಸ",
       studentNameLabel: "ವಿದ್ಯಾರ್ಥಿಯ ಹೆಸರು",
       relationshipLabel: "S/O ಅಥವಾ D/O",
@@ -382,7 +386,7 @@ export function LinguaForm() {
 
           <Card className="shadow-sm border-none">
             <CardContent className="p-5 space-y-4">
-              <div className="flex items-center gap-2 pb-2 border-b"><User className="w-3.5 h-3.5 text-primary" /><h2 className="text-[12px] font-bold">Personal Details</h2></div>
+              <div className="flex items-center gap-2 pb-2 border-b"><User className="w-3.5 h-3.5 text-primary" /><h2 className="text-[12px] font-bold">{t.personalDetailsHeader}</h2></div>
               <FormField control={form.control} name="studentName" render={({ field }) => (
                 <FormItem className="space-y-1.5">
                   <FormLabel className="text-[11px] font-semibold">{t.studentNameLabel} <span className="text-destructive">*</span></FormLabel>
@@ -419,7 +423,7 @@ export function LinguaForm() {
 
           <Card className="shadow-sm border-none">
             <CardContent className="p-5 space-y-4">
-              <div className="flex items-center gap-2 pb-2 border-b"><GraduationCap className="w-3.5 h-3.5 text-primary" /><h2 className="text-[12px] font-bold">Academic Details</h2></div>
+              <div className="flex items-center gap-2 pb-2 border-b"><GraduationCap className="w-3.5 h-3.5 text-primary" /><h2 className="text-[12px] font-bold">{t.academicDetailsHeader}</h2></div>
               <FormField control={form.control} name="course" render={({ field }) => (
                 <FormItem className="space-y-1.5">
                   <FormLabel className="text-[11px] font-semibold">{t.courseLabel} <span className="text-destructive">*</span></FormLabel>
@@ -584,3 +588,4 @@ export function LinguaForm() {
     </div>
   );
 }
+
