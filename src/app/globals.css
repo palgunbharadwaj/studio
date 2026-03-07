@@ -54,5 +54,6 @@
   }
   body {
     @apply bg-background text-foreground;
+    cursor: auto; /* Ensure standard cursor behavior */
   }
 }
