@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -177,7 +176,7 @@ export function LinguaForm() {
       langLabel: "Choose Language / ಭಾಷೆ ಆಯ್ಕೆಮಾಡಿ",
       personalDetailsHeader: "ವೈಯಕ್ತಿಕ ವಿವರಗಳು",
       academicDetailsHeader: "ಶೈಕ್ಷಣಿಕ ವಿವರಗಳು",
-      emailLabel: "ಇಮೇಲ್ ವಿಳಾಸ",
+      emailLabel: "ಇಮೇಲ್",
       studentNameLabel: "ವಿದ್ಯಾರ್ಥಿಯ ಹೆಸರು",
       relationshipLabel: "S/O ಅಥವಾ D/O",
       fatherNameLabel: "ತಂದೆಯ ಹೆಸರು",
@@ -588,4 +587,3 @@ export function LinguaForm() {
     </div>
   );
 }
-
