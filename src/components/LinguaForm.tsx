@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -20,7 +20,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { submitLinguaForm, SubmissionResult } from '@/app/actions/submit-form';
-import { Loader2, CheckCircle2, Send, FileText, Info, User, GraduationCap, FileCheck } from 'lucide-react';
+import { Loader2, CheckCircle2, Send, Info, User, GraduationCap, FileCheck } from 'lucide-react';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 const formSchema = z.object({
@@ -30,7 +30,6 @@ const formSchema = z.object({
   fatherName: z.string().min(2, { message: "Father's name is required." }),
   motherName: z.string().min(2, { message: "Mother's name is required." }),
   course: z.enum(['SSLC', 'PUC', 'Diploma', 'Degree', 'Engineering', 'Other'], { required_error: "Course is required." }),
-  // Academic details
   board: z.string().optional(),
   pucStream: z.enum(['Science', 'Commerce', 'Arts']).optional(),
   combination: z.string().optional(),
@@ -40,6 +39,7 @@ const formSchema = z.object({
   yearOfPassing: z.string().optional(),
   cgpa: z.string().optional(),
   otherCourse: z.string().optional(),
+  branch: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -51,7 +51,6 @@ export function LinguaForm() {
   
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [marksFile, setMarksFile] = useState<File | null>(null);
-  const [fileError, setFileError] = useState<string | null>(null);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -80,7 +79,8 @@ export function LinguaForm() {
       boardLabel: "Board",
       streamLabel: "Stream",
       combinationLabel: "Combination",
-      percentageLabel: "Percentage",
+      branchLabel: "Branch / Branch Selection",
+      percentageLabel: "Percentage (%)",
       marksObtainedLabel: "Marks Obtained",
       totalMarksLabel: "Total Marks",
       yearPassingLabel: "Year Of Passing",
@@ -95,6 +95,79 @@ export function LinguaForm() {
       successDesc: "Your registration has been submitted successfully.",
       backButton: "Submit Another",
       requiredNote: "* Indicates required question",
+      boards: ['State', 'CBSE', 'ICSE'],
+      streams: ['Science', 'Commerce', 'Arts'],
+      years: ['2024-2025', '2023-2024'],
+      scienceCombinations: [
+        'PCMB (Physics, Chemistry, Mathematics, Biology)',
+        'PCMC (Physics, Chemistry, Mathematics, Computer Science)',
+        'PCME (Physics, Chemistry, Mathematics, Electronics)',
+        'PCMS (Physics, Chemistry, Mathematics, Statistics)',
+        'PCMH (Physics, Chemistry, Mathematics, Home Science)',
+        'PCAG (Physics, Chemistry, Agriculture, Mathematics/Biology)',
+        'Other'
+      ],
+      commerceCombinations: [
+        'EGBA (Economics, Geography, Business Studies, Accountancy)',
+        'ECBA (Economics, Commerce, Business Studies, Accountancy)',
+        'ESBA (Economics, Sociology, Business Studies, Accountancy)',
+        'EBAC (Economics, Business Studies, Accountancy, Computer Science)',
+        'EMBA (Economics, Mathematics, Business Studies, Accountancy)',
+        'ECSA (Economics, Computer Science, Statistics, Accountancy)',
+        'Other'
+      ],
+      artsCombinations: [
+        'HEPS (History, Economics, Political Science, Sociology)',
+        'HEPPsy (History, Economics, Political Science, Psychology)',
+        'HESP (History, Economics, Sociology, Psychology)',
+        'HEBA (History, Economics, Business, Accountancy)',
+        'HEGG (History, Economics, Geography, Geology)',
+        'HESF (History, Economics, Sociology, Fine Arts)',
+        'Other'
+      ],
+      engineeringCourses: [
+        'CSE (Computer Science and Engineering)',
+        'AIML (Artificial Intelligence and Machine Learning)',
+        'ISE (Information Science and Engineering)',
+        'ECE (Electronics and Communication Engineering)',
+        'EEE (Electrical and Electronics Engineering)',
+        'Mechanical (Mechanical Engineering)',
+        'Civil (Civil Engineering)',
+        'IP (Industrial Production Engineering)',
+        'EIE (Electronics and Instrumentation Engineering)',
+        'ECS (Electronics & Computer Science Engineering)',
+        'CSBS (Computer Science and Business Systems)',
+        'Mechatronics Engineering',
+        'Automobile Engineering',
+        'Aerospace Engineering',
+        'Chemical Engineering',
+        'Biotechnology Engineering',
+        'Data Science and Engineering',
+        'AIDS (Artificial Intelligence and Data Science Engineering)',
+        'Robotics and Automation Engineering',
+        'Other'
+      ],
+      diplomaCourses: [
+        'Diploma in Computer Science & Engineering (CSE)',
+        'Diploma in Electronics & Communication Engineering (ECE)',
+        'Diploma in Electrical & Electronics Engineering (EEE)',
+        'Diploma in Mechanical Engineering',
+        'Diploma in Civil Engineering',
+        'Diploma in Automobile Engineering',
+        'Other'
+      ],
+      degreeCourses: [
+        'D.Pharma (Diploma in Pharmacy)',
+        'B.Pharma (Bachelor of Pharmacy)',
+        'B.Sc (Bachelor of Science)',
+        'B.Com (Bachelor of Commerce)',
+        'B.A (Bachelor of Arts)',
+        'BCA (Bachelor of Computer Applications)',
+        'BBA (Bachelor of Business Administration)',
+        'BSW (Bachelor of Social Work)',
+        'B.Sc Nursing (Bachelor of Science in Nursing)',
+        'Other'
+      ]
     },
     kn: {
       title: "ಪ್ರತಿಭಾ ಪುರಸ್ಕಾರ 2024-2025:",
@@ -109,6 +182,7 @@ export function LinguaForm() {
       boardLabel: "ಮಂಡಳಿ",
       streamLabel: "ವಿಭಾಗ",
       combinationLabel: "ವಿಷಯಗಳು",
+      branchLabel: "ವಿಭಾಗ",
       percentageLabel: "ಶೇಕಡಾ (%)",
       marksObtainedLabel: "ಗಳಿಸಿದ ಅಂಕಗಳು",
       totalMarksLabel: "ಒಟ್ಟು ಅಂಕಗಳು",
@@ -124,6 +198,79 @@ export function LinguaForm() {
       successDesc: "ನಿಮ್ಮ ನೋಂದಣಿಯನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಸಲ್ಲಿಸಲಾಗಿದೆ.",
       backButton: "ಮತ್ತೊಂದು ಸಲ್ಲಿಸಿ",
       requiredNote: "* ಕಡ್ಡಾಯ ಪ್ರಶ್ನೆಯನ್ನು ಸೂಚಿಸುತ್ತದೆ",
+      boards: ['ರಾಜ್ಯ (State)', 'ಸಿಬಿಎಸ್ ಇ (CBSE)', 'ಐಸಿಎಸ್ ಇ (ICSE)'],
+      streams: ['ವಿಜ್ಞಾನ (Science)', 'ವಾಣಿಜ್ಯ (Commerce)', 'ಕಲೆ (Arts)'],
+      years: ['2024-2025', '2023-2024'],
+      scienceCombinations: [
+        'PCMB (ಭೌತಶಾಸ್ತ್ರ, ರಸಾಯನಶಾಸ್ತ್ರ, ಗಣಿತ, ಜೀವಶಾಸ್ತ್ರ)',
+        'PCMC (ಭೌತಶಾಸ್ತ್ರ, ರಸಾಯನಶಾಸ್ತ್ರ, ಗಣಿತ, ಕಂಪ್ಯೂಟರ್ ಸೈನ್ಸ್)',
+        'PCME (ಭೌತಶಾಸ್ತ್ರ, ರಸಾಯನಶಾಸ್ತ್ರ, ಗಣಿತ, ಎಲೆಕ್ಟ್ರಾನಿಕ್ಸ್)',
+        'PCMS (ಭೌತಶಾಸ್ತ್ರ, ರಸಾಯನಶಾಸ್ತ್ರ, ಗಣಿತ, ಸಂಖ್ಯಾಶಾಸ್ತ್ರ)',
+        'PCMH (ಭೌತಶಾಸ್ತ್ರ, ರಸಾಯನಶಾಸ್ತ್ರ, ಗಣಿತ, ಗೃಹ ವಿಜ್ಞಾನ)',
+        'PCAG (ಭೌತಶಾಸ್ತ್ರ, ರಸಾಯನಶಾಸ್ತ್ರ, ಕೃಷಿ ವಿಜ್ಞಾನ, ಗಣಿತ ಅಥವಾ ಜೀವಶಾಸ್ತ್ರ)',
+        'ಇತರೆ'
+      ],
+      commerceCombinations: [
+        'ECBA (ಅರ್ಥಶಾಸ್ತ್ರ, ವಾಣಿಜ್ಯ, ವ್ಯವಹಾರ ಅಧ್ಯಯನಗಳು, ಲೆಕ್ಕಶಾಸ್ತ್ರ)',
+        'EBAC (ಅರ್ಥಶಾಸ್ತ್ರ, ವ್ಯವಹಾರ ಅಧ್ಯಯನಗಳು, ಲೆಕ್ಕಶಾಸ್ತ್ರ, ಕಂಪ್ಯೂಟರ್ ಸೈನ್ಸ್)',
+        'ESBA (ಅರ್ಥಶಾಸ್ತ್ರ, ಸಮಾಜಶಾಸ್ತ್ರ, ವ್ಯವಹಾರ ಅಧ್ಯಯನಗಳು, ಲೆಕ್ಕಶಾಸ್ತ್ರ)',
+        'EGBA (ಅರ್ಥಶಾಸ್ತ್ರ, ಭೂಗೋಳಶಾಸ್ತ್ರ, ವ್ಯವಹಾರ ಅಧ್ಯಯನಗಳು, ಲೆಕ್ಕಶಾಸ್ತ್ರ)',
+        'EMBA (ಅರ್ಥಶಾಸ್ತ್ರ, ಗಣಿತ, ವ್ಯವಹಾರ ಅಧ್ಯಯನಗಳು, ಲೆಕ್ಕಶಾಸ್ತ್ರ)',
+        'ECSA (ಅರ್ಥಶಾಸ್ತ್ರ, ಕಂಪ್ಯೂಟರ್ ಸೈನ್ಸ್, ಸಂಖ್ಯಾಶಾಸ್ತ್ರ, ಲೆಕ್ಕಶಾಸ್ತ್ರ)',
+        'ಇತರೆ'
+      ],
+      artsCombinations: [
+        'HEPS (ಇತಿಹಾಸ, ಅರ್ಥಶಾಸ್ತ್ರ, ರಾಜ್ಯಶಾಸ್ತ್ರ, ಸಮಾಜಶಾಸ್ತ್ರ)',
+        'HEPPsy (ಇತಿಹಾಸ, ಅರ್ಥಶಾಸ್ತ್ರ, ರಾಜ್ಯಶಾಸ್ತ್ರ, ಮನೋವಿಜ್ಞಾನ)',
+        'HESP (ಇತಿಹಾಸ, ಅರ್ಥಶಾಸ್ತ್ರ, ಸಮಾಜಶಾಸ್ತ್ರ, ಮನೋವಿಜ್ಞಾನ)',
+        'HEBA (ಇತಿಹಾಸ, ಅರ್ಥಶಾಸ್ತ್ರ, ವ್ಯವಹಾರ ಅಧ್ಯಯನಗಳು, ಲೆಕ್ಕಶಾಸ್ತ್ರ)',
+        'HEGG (ಇತಿಹಾಸ, ಅರ್ಥಶಾಸ್ತ್ರ, ಭೂಗೋಳಶಾಸ್ತ್ರ, ಭೂಗರ್ಭಶಾಸ್ತ್ರ)',
+        'HESF (ಇತಿಹಾಸ, ಅರ್ಥಶಾಸ್ತ್ರ, ಸಮಾಜಶಾಸ್ತ್ರ, ಲಲಿತಕಲೆಗಳು)',
+        'ಇತರೆ'
+      ],
+      engineeringCourses: [
+        'CSE (ಕಂಪ್ಯೂಟರ್ ಸೈನ್ಸ್ ಮತ್ತು ಇಂಜಿನಿಯರಿಂಗ್)',
+        'AIML (ಕೃತಕ ಬುದ್ಧಿಮತ್ತೆ ಮತ್ತು ಯಂತ್ರ ಕಲಿಕೆ)',
+        'ISE (ಮಾಹಿತಿ ವಿಜ್ಞಾನ ಮತ್ತು ಇಂಜಿನಿಯರಿಂಗ್)',
+        'ECE (ಎಲೆಕ್ಟ್ರಾನಿಕ್ಸ್ ಮತ್ತು ಸಂವಹನ ಇಂಜಿನಿಯರಿಂಗ್)',
+        'EEE (ವಿದ್ಯುತ್ ಮತ್ತು ಎಲೆಕ್ಟ್ರಾನಿಕ್ಸ್ ಇಂಜಿನಿಯರಿಂಗ್)',
+        'Mechanical (ಮೆಕಾನಿಕಲ್ ಇಂಜಿನಿಯರಿಂಗ್)',
+        'Civil (ಸಿವಿಲ್ ಇಂಜಿನಿಯರಿಂಗ್)',
+        'IP (ಕೈಗಾರಿಕಾ ಉತ್ಪಾದನಾ ಇಂಜಿನಿಯರಿಂಗ್)',
+        'EIE (ಎಲೆಕ್ಟ್ರಾನಿಕ್ಸ್ ಮತ್ತು ಇನ್ಸ್ಟ್ರುಮೆಂಟೇಶನ್ ಇಂಜಿನಿಯರಿಂಗ್)',
+        'ECS (ಎಲೆಕ್ಟ್ರಾನಿಕ್ಸ್ ಮತ್ತು ಕಂಪ್ಯೂಟರ್ ಸೈನ್ಸ್ ಇಂಜಿನಿಯರಿಂಗ್)',
+        'CSBS (ಕಂಪ್ಯೂಟರ್ ಸೈನ್ಸ್ ಮತ್ತು ವ್ಯವಹಾರ ವ್ಯವಸ್ಥೆಗಳು)',
+        'Mechatronics (ಮೆಕಾಟ್ರಾನಿಕ್ಸ್ ಇಂಜಿನಿಯರಿಂಗ್)',
+        'Automobile (ಆಟೋಮೊಬೈಲ್ ಇಂಜಿನಿಯರಿಂಗ್)',
+        'Aerospace (ಏರೋಸ್ಪೇಸ್ ಇಂಜಿನಿಯರಿಂಗ್)',
+        'Chemical (ರಾಸಾಯನಿಕ ಇಂಜಿನಿಯರಿಂಗ್)',
+        'Biotechnology (ಜೈವಿಕ ತಂತ್ರಜ್ಞಾನ ಇಂಜಿನಿಯರಿಂಗ್)',
+        'Data Science (ದತ್ತಾಂಶ ವಿಜ್ಞಾನ ಮತ್ತು ಇಂಜಿನಿಯರಿಂಗ್)',
+        'AI & Data Science (ಕೃತಕ ಬುದ್ಧಿಮತ್ತೆ ಮತ್ತು ದತ್ತಾಂಶ ವಿಜ್ಞಾನ ಇಂಜಿನಿಯರಿಂಗ್)',
+        'Robotics & Automation (ರೋಬೋಟಿಕ್ಸ್ ಮತ್ತು ಸ್ವಯಂಚಾಲಿತ ಇಂಜಿನಿಯರಿಂಗ್)',
+        'ಇತರೆ'
+      ],
+      diplomaCourses: [
+        'ಕಂಪ್ಯೂಟರ್ ಸೈನ್ಸ್ ಮತ್ತು ಇಂಜಿನಿಯರಿಂಗ್ ಡಿಪ್ಲೊಮಾ',
+        'ಎಲೆಕ್ಟ್ರಾನಿಕ್ಸ್ ಮತ್ತು ಕಮ್ಯುನಿಕೇಶನ್ ಇಂಜಿನಿಯರಿಂಗ್ ಡಿಪ್ಲೊಮಾ',
+        'ಎಲೆಕ್ಟ್ರಿಕಲ್ ಮತ್ತು ಎಲೆಕ್ಟ್ರಾನಿಕ್ಸ್ ಇಂಜಿನಿಯರಿಂಗ್ ಡಿಪ್ಲೊಮಾ',
+        'ಮೆಕಾನಿಕಲ್ ಇಂಜಿನಿಯರಿಂಗ್ ಡಿಪ್ಲೊಮಾ',
+        'ಸಿವಿಲ್ ಇಂಜಿನಿಯರಿಂಗ್ ಡಿಪ್ಲೊಮಾ',
+        'ಆಟೋಮೊಬೈಲ್ ಇಂಜಿನಿಯರಿಂಗ್ ಡಿಪ್ಲೊಮಾ',
+        'ಇತರೆ'
+      ],
+      degreeCourses: [
+        'ಡಿ.ಫಾರ್ಮಾ',
+        'ಬಿ.ಫಾರ್ಮಾ',
+        'ಬಿ.ಎಸ್ಸಿ',
+        'ಬಿ.ಕಾಂ',
+        'ಬಿ.ಎ.',
+        'ಬಿ.ಸಿ.ಎ.',
+        'ಬಿ.ಬಿ.ಎ.',
+        'ಬಿಎಸ್ ಡಬ್ಲ್ಯೂ',
+        'ಬಿ.ಎಸ್ಸಿ ನರ್ಸಿಂಗ್',
+        'ಇತರೆ'
+      ]
     }
   };
 
@@ -278,7 +425,17 @@ export function LinguaForm() {
                   <FormLabel className="text-[11px] font-semibold">{t.courseLabel} <span className="text-destructive">*</span></FormLabel>
                   <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-2">
                     {['SSLC', 'PUC', 'Diploma', 'Degree', 'Engineering', 'Other'].map((c) => (
-                      <div key={c} className="flex items-center space-x-2"><RadioGroupItem value={c} id={c} className="h-3.5 w-3.5" /><Label htmlFor={c} className="text-[11px]">{c === 'PUC' ? '2nd PUC' : c === 'SSLC' ? 'SSLC/10th' : c}</Label></div>
+                      <div key={c} className="flex items-center space-x-2">
+                        <RadioGroupItem value={c} id={c} className="h-3.5 w-3.5" />
+                        <Label htmlFor={c} className="text-[11px]">
+                          {c === 'PUC' ? (lang === 'en' ? '2nd PUC' : 'ದ್ವಿತೀಯ ಪಿ.ಯು.ಸಿ') : 
+                           c === 'SSLC' ? (lang === 'en' ? 'SSLC/10th' : 'ಎಸ್.ಎಸ್.ಎಲ್.ಸಿ. / 10 ನೇ ತರಗತಿ') : 
+                           c === 'Diploma' ? (lang === 'en' ? 'Diploma' : 'ಡಿಪ್ಲೊಮಾ') :
+                           c === 'Degree' ? (lang === 'en' ? 'Degree' : 'ಪದವಿ') :
+                           c === 'Engineering' ? (lang === 'en' ? 'Engineering' : 'ಇಂಜಿನಿಯರಿಂಗ್') :
+                           (lang === 'en' ? 'Other' : 'ಇತರೆ')}
+                        </Label>
+                      </div>
                     ))}
                   </RadioGroup>
                   <FormMessage className="text-[9px]" />
@@ -291,7 +448,7 @@ export function LinguaForm() {
                     <FormItem className="space-y-1.5">
                       <FormLabel className="text-[11px] font-semibold">{t.boardLabel} *</FormLabel>
                       <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-2">
-                        {['State', 'CBSE', 'ICSE'].map(b => <div key={b} className="flex items-center space-x-2"><RadioGroupItem value={b} id={b} className="h-3.5 w-3.5" /><Label htmlFor={b} className="text-[11px]">{b}</Label></div>)}
+                        {t.boards.map(b => <div key={b} className="flex items-center space-x-2"><RadioGroupItem value={b} id={b} className="h-3.5 w-3.5" /><Label htmlFor={b} className="text-[11px]">{b}</Label></div>)}
                       </RadioGroup>
                     </FormItem>
                   )} />
@@ -304,7 +461,7 @@ export function LinguaForm() {
                     <FormItem className="space-y-1.5">
                       <FormLabel className="text-[11px] font-semibold">{t.streamLabel} *</FormLabel>
                       <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-2">
-                        {['Science', 'Commerce', 'Arts'].map(s => <div key={s} className="flex items-center space-x-2"><RadioGroupItem value={s} id={s} className="h-3.5 w-3.5" /><Label htmlFor={s} className="text-[11px]">{s}</Label></div>)}
+                        {t.streams.map(s => <div key={s} className="flex items-center space-x-2"><RadioGroupItem value={s} id={s} className="h-3.5 w-3.5" /><Label htmlFor={s} className="text-[11px]">{s}</Label></div>)}
                       </RadioGroup>
                     </FormItem>
                   )} />
@@ -313,9 +470,9 @@ export function LinguaForm() {
                       <FormItem className="space-y-1.5">
                         <FormLabel className="text-[11px] font-semibold">{t.combinationLabel} *</FormLabel>
                         <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-2">
-                          {selectedStream === 'Science' && ['PCMB', 'PCMC', 'PCME', 'PCMS', 'PCMH', 'PCAG', 'Other'].map(c => <div key={c} className="flex items-center space-x-2"><RadioGroupItem value={c} id={c} className="h-3.5 w-3.5" /><Label htmlFor={c} className="text-[11px]">{c}</Label></div>)}
-                          {selectedStream === 'Commerce' && ['EGBA', 'ECBA', 'ESBA', 'EBAC', 'EMBA', 'ECSA', 'Other'].map(c => <div key={c} className="flex items-center space-x-2"><RadioGroupItem value={c} id={c} className="h-3.5 w-3.5" /><Label htmlFor={c} className="text-[11px]">{c}</Label></div>)}
-                          {selectedStream === 'Arts' && ['HEPS', 'HEPPsy', 'HESP', 'HEBA', 'HEGG', 'HESF', 'Other'].map(c => <div key={c} className="flex items-center space-x-2"><RadioGroupItem value={c} id={c} className="h-3.5 w-3.5" /><Label htmlFor={c} className="text-[11px]">{c}</Label></div>)}
+                          {(selectedStream === 'Science' ? t.scienceCombinations : selectedStream === 'Commerce' ? t.commerceCombinations : t.artsCombinations).map(c => (
+                            <div key={c} className="flex items-center space-x-2"><RadioGroupItem value={c} id={c} className="h-3.5 w-3.5" /><Label htmlFor={c} className="text-[11px]">{c}</Label></div>
+                          ))}
                         </RadioGroup>
                       </FormItem>
                     )} />
@@ -323,22 +480,76 @@ export function LinguaForm() {
                 </div>
               )}
 
+              {selectedCourse === 'Engineering' && (
+                <div className="space-y-3 pt-2">
+                  <FormField control={form.control} name="branch" render={({ field }) => (
+                    <FormItem className="space-y-1.5">
+                      <FormLabel className="text-[11px] font-semibold">{t.branchLabel} *</FormLabel>
+                      <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-2">
+                        {t.engineeringCourses.map(c => <div key={c} className="flex items-center space-x-2"><RadioGroupItem value={c} id={c} className="h-3.5 w-3.5" /><Label htmlFor={c} className="text-[11px]">{c}</Label></div>)}
+                      </RadioGroup>
+                    </FormItem>
+                  )} />
+                </div>
+              )}
+
+              {selectedCourse === 'Diploma' && (
+                <div className="space-y-3 pt-2">
+                  <FormField control={form.control} name="branch" render={({ field }) => (
+                    <FormItem className="space-y-1.5">
+                      <FormLabel className="text-[11px] font-semibold">{t.branchLabel} *</FormLabel>
+                      <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-2">
+                        {t.diplomaCourses.map(c => <div key={c} className="flex items-center space-x-2"><RadioGroupItem value={c} id={c} className="h-3.5 w-3.5" /><Label htmlFor={c} className="text-[11px]">{c}</Label></div>)}
+                      </RadioGroup>
+                    </FormItem>
+                  )} />
+                </div>
+              )}
+
+              {selectedCourse === 'Degree' && (
+                <div className="space-y-3 pt-2">
+                  <FormField control={form.control} name="branch" render={({ field }) => (
+                    <FormItem className="space-y-1.5">
+                      <FormLabel className="text-[11px] font-semibold">{t.courseLabel} *</FormLabel>
+                      <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-2">
+                        {t.degreeCourses.map(c => <div key={c} className="flex items-center space-x-2"><RadioGroupItem value={c} id={c} className="h-3.5 w-3.5" /><Label htmlFor={c} className="text-[11px]">{c}</Label></div>)}
+                      </RadioGroup>
+                    </FormItem>
+                  )} />
+                </div>
+              )}
+
+              {selectedCourse === 'Other' && (
+                <FormField control={form.control} name="otherCourse" render={({ field }) => (
+                  <FormItem className="space-y-1.5"><FormLabel className="text-[11px] font-semibold">{t.otherCourseLabel} *</FormLabel><FormControl><Input className="h-8 text-[11px] bg-muted/20" {...field} /></FormControl></FormItem>
+                )} />
+              )}
+
               {(['SSLC', 'PUC', 'Diploma', 'Degree', 'Engineering'].includes(selectedCourse || '')) && (
                 <div className="space-y-3">
-                  <FormField control={form.control} name="percentage" render={({ field }) => (
-                    <FormItem className="space-y-1.5"><FormLabel className="text-[11px] font-semibold">{t.percentageLabel} *</FormLabel><FormControl><Input className="h-8 text-[11px] bg-muted/20" {...field} /></FormControl></FormItem>
-                  )} />
-                  <FormField control={form.control} name="marksObtained" render={({ field }) => (
-                    <FormItem className="space-y-1.5"><FormLabel className="text-[11px] font-semibold">{t.marksObtainedLabel} *</FormLabel><FormControl><Input className="h-8 text-[11px] bg-muted/20" {...field} /></FormControl></FormItem>
-                  )} />
-                  <FormField control={form.control} name="totalMarks" render={({ field }) => (
-                    <FormItem className="space-y-1.5"><FormLabel className="text-[11px] font-semibold">{t.totalMarksLabel} *</FormLabel><FormControl><Input className="h-8 text-[11px] bg-muted/20" {...field} /></FormControl></FormItem>
-                  )} />
+                  {(['SSLC', 'PUC'].includes(selectedCourse || '')) && (
+                    <>
+                      <FormField control={form.control} name="percentage" render={({ field }) => (
+                        <FormItem className="space-y-1.5"><FormLabel className="text-[11px] font-semibold">{t.percentageLabel} *</FormLabel><FormControl><Input className="h-8 text-[11px] bg-muted/20" {...field} /></FormControl></FormItem>
+                      )} />
+                      <FormField control={form.control} name="marksObtained" render={({ field }) => (
+                        <FormItem className="space-y-1.5"><FormLabel className="text-[11px] font-semibold">{t.marksObtainedLabel} *</FormLabel><FormControl><Input className="h-8 text-[11px] bg-muted/20" {...field} /></FormControl></FormItem>
+                      )} />
+                      <FormField control={form.control} name="totalMarks" render={({ field }) => (
+                        <FormItem className="space-y-1.5"><FormLabel className="text-[11px] font-semibold">{t.totalMarksLabel} *</FormLabel><FormControl><Input className="h-8 text-[11px] bg-muted/20" {...field} /></FormControl></FormItem>
+                      )} />
+                    </>
+                  )}
+                  {(['Diploma', 'Degree', 'Engineering'].includes(selectedCourse || '')) && (
+                    <FormField control={form.control} name="cgpa" render={({ field }) => (
+                      <FormItem className="space-y-1.5"><FormLabel className="text-[11px] font-semibold">{t.cgpaLabel} *</FormLabel><FormControl><Input className="h-8 text-[11px] bg-muted/20" {...field} /></FormControl></FormItem>
+                    )} />
+                  )}
                   <FormField control={form.control} name="yearOfPassing" render={({ field }) => (
                     <FormItem className="space-y-1.5">
                       <FormLabel className="text-[11px] font-semibold">{t.yearPassingLabel} *</FormLabel>
                       <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-2">
-                        {['2024-2025', '2023-2024'].map(y => <div key={y} className="flex items-center space-x-2"><RadioGroupItem value={y} id={y} className="h-3.5 w-3.5" /><Label htmlFor={y} className="text-[11px]">{y}</Label></div>)}
+                        {t.years.map(y => <div key={y} className="flex items-center space-x-2"><RadioGroupItem value={y} id={y} className="h-3.5 w-3.5" /><Label htmlFor={y} className="text-[11px]">{y}</Label></div>)}
                       </RadioGroup>
                     </FormItem>
                   )} />
