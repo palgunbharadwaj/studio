@@ -29,7 +29,7 @@ const formSchema = z.object({
   motherName: z.string().min(2, { message: "Mother's name is required." }),
   course: z.enum(['SSLC', 'PUC', 'Diploma', 'Degree', 'Engineering', 'Other'], { required_error: "Course is required." }),
   board: z.string().optional(),
-  pucStream: z.enum(['Science', 'Commerce', 'Arts']).optional(),
+  pucStream: z.string().optional(),
   combination: z.string().optional(),
   percentage: z.string().optional(),
   marksObtained: z.string().optional(),
@@ -388,11 +388,11 @@ export function LinguaForm() {
           <div className="space-y-3">
             <Label className="text-[11px] font-semibold text-[#202124]">{t.langLabel} <span className="text-destructive">*</span></Label>
             <RadioGroup value={lang} onValueChange={(v) => setLang(v as 'en' | 'kn')} className="flex flex-col gap-2">
-              <div className="flex items-center space-x-3 py-1 cursor-pointer" onClick={() => setLang('en')}>
+              <div className="flex items-center space-x-3 py-1" onClick={() => setLang('en')}>
                 <RadioGroupItem value="en" id="en" className="h-3.5 w-3.5" />
                 <Label htmlFor="en" className="cursor-pointer font-medium text-[11px]">English</Label>
               </div>
-              <div className="flex items-center space-x-3 py-1 cursor-pointer" onClick={() => setLang('kn')}>
+              <div className="flex items-center space-x-3 py-1" onClick={() => setLang('kn')}>
                 <RadioGroupItem value="kn" id="kn" className="h-3.5 w-3.5" />
                 <Label htmlFor="kn" className="cursor-pointer font-medium text-[11px]">ಕನ್ನಡ</Label>
               </div>
@@ -501,16 +501,21 @@ export function LinguaForm() {
                     </FormItem>
                   )} />
                   {selectedStream && (
-                    <FormField control={form.control} name="combination" render={({ field }) => (
-                      <FormItem className="space-y-1.5">
-                        <FormLabel className="text-[11px] font-semibold">{t.combinationLabel} *</FormLabel>
-                        <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-2">
-                          {(selectedStream === 'Science' ? t.scienceCombinations : selectedStream === 'Commerce' ? t.commerceCombinations : t.artsCombinations).map(c => (
-                            <div key={c} className="flex items-center space-x-2"><RadioGroupItem value={c} id={c} className="h-3.5 w-3.5" /><Label htmlFor={c} className="text-[11px]">{c}</Label></div>
-                          ))}
-                        </RadioGroup>
-                      </FormItem>
-                    )} />
+                    <FormField control={form.control} name="combination" render={({ field }) => {
+                      const isScience = selectedStream === 'Science' || selectedStream === 'ವಿಜ್ಞಾನ (Science)';
+                      const isCommerce = selectedStream === 'Commerce' || selectedStream === 'ವಾಣಿಜ್ಯ (Commerce)';
+                      const options = isScience ? t.scienceCombinations : isCommerce ? t.commerceCombinations : t.artsCombinations;
+                      return (
+                        <FormItem className="space-y-1.5">
+                          <FormLabel className="text-[11px] font-semibold">{t.combinationLabel} *</FormLabel>
+                          <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-2">
+                            {options.map(c => (
+                              <div key={c} className="flex items-center space-x-2"><RadioGroupItem value={c} id={c} className="h-3.5 w-3.5" /><Label htmlFor={c} className="text-[11px]">{c}</Label></div>
+                            ))}
+                          </RadioGroup>
+                        </FormItem>
+                      );
+                    }} />
                   )}
                 </div>
               )}
@@ -577,9 +582,9 @@ export function LinguaForm() {
                   )} />
 
                   {eligibilityError && (
-                    <Alert variant="destructive" className="py-2 px-3 flex items-center gap-2">
-                      <AlertCircle className="h-4 w-4 shrink-0" />
-                      <AlertDescription className="text-[10px] leading-tight">
+                    <Alert variant="destructive" className="py-2 px-3 flex items-center gap-2 border-destructive/20 bg-destructive/5">
+                      <AlertCircle className="h-3.5 w-3.5 shrink-0" />
+                      <AlertDescription className="text-[10px] leading-tight font-medium">
                         {eligibilityError}
                       </AlertDescription>
                     </Alert>
