@@ -76,7 +76,7 @@ export function LinguaForm() {
   const totalMarks = useWatch({ control: form.control, name: 'totalMarks' });
   const cgpaValue = useWatch({ control: form.control, name: 'cgpa' });
 
-  // Alphabet script validation
+  // Script validation: Only respective script for each mode
   useEffect(() => {
     const errors: {[key: string]: string | null} = {};
     const englishRegex = /^[A-Za-z\s\.]+$/;
@@ -99,6 +99,7 @@ export function LinguaForm() {
     setAlphabetError(errors);
   }, [studentName, fatherName, motherName, lang]);
 
+  // Validation logic: Marks, Eligibility, Totals
   useEffect(() => {
     setEligibilityError(null);
     setTotalMarksError(null);
@@ -120,6 +121,7 @@ export function LinguaForm() {
         const total = parseFloat(totalMarks);
         
         if (!isNaN(marks) && !isNaN(total) && total > 0) {
+          // Strict total marks validation
           if (selectedCourse === 'SSLC' && totalMarks !== '625') {
             const errorMsg = lang === 'en' 
               ? "Total marks for SSLC must be 625." 
@@ -148,6 +150,7 @@ export function LinguaForm() {
           const roundedPercentage = calculatedPercentage.toFixed(2);
           form.setValue('percentage', roundedPercentage);
 
+          // Eligibility thresholds: 85% for PUC, 90% for others
           let minRequired = (selectedCourse === 'PUC') ? 85 : 90;
 
           if (calculatedPercentage < minRequired) {
@@ -211,12 +214,59 @@ export function LinguaForm() {
       requiredNote: "* Indicates required question",
       confMessage: "Confirmation message generated:",
       boards: ['State', 'CBSE', 'ICSE'],
-      scienceCombinations: ['PCMB (Phy, Chem, Math, Bio)', 'PCMC (Phy, Chem, Math, Comp)', 'PCME (Phy, Chem, Math, Elec)', 'PCMS (Phy, Chem, Math, Stat)', 'Other'],
-      commerceCombinations: ['EGBA (Econ, Geog, Bus, Acc)', 'ECBA (Econ, Comp, Bus, Acc)', 'ESBA (Econ, Stat, Bus, Acc)', 'EBAC (Econ, Bus, Acc, Civics)', 'EMBA (Econ, Math, Bus, Acc)', 'ECSA (Econ, Comp, Stat, Acc)', 'Other'],
-      artsCombinations: ['HEPS (Hist, Econ, PolSci, Soc)', 'HEPPsy (Hist, Econ, PolSci, Psych)', 'HESP (Hist, Econ, Soc, Psych)', 'HEBA (Hist, Econ, Bus, Acc)', 'HEGG (Hist, Econ, Geog, Guj)', 'HESF (Hist, Econ, Soc, FineArts)', 'Other'],
-      engineeringCourses: ['Computer Science & Engineering (CSE)', 'Artificial Intelligence & Machine Learning (AI&ML)', 'Information Science & Engineering (ISE)', 'Electronics & Communication Engineering (ECE)', 'Electrical & Electronics Engineering (EEE)', 'Mechanical Engineering', 'Civil Engineering', 'Other'],
-      diplomaCourses: ['Diploma in Computer Science', 'Diploma in Electronics & Communication', 'Diploma in Electrical & Electronics', 'Diploma in Mechanical Engineering', 'Diploma in Civil Engineering', 'Other'],
-      degreeCourses: ['B.Sc (Bachelor of Science)', 'B.Com (Bachelor of Commerce)', 'B.A (Bachelor of Arts)', 'BCA (Bachelor of Computer Applications)', 'BBA (Bachelor of Business Administration)', 'B.Pharma (Bachelor of Pharmacy)', 'B.Sc Nursing', 'Other']
+      scienceCombinations: [
+        'PCMB (Physics, Chemistry, Mathematics, Biology)', 
+        'PCMC (Physics, Chemistry, Mathematics, Computer Science)', 
+        'PCME (Physics, Chemistry, Mathematics, Electronics)', 
+        'PCMS (Physics, Chemistry, Mathematics, Statistics)', 
+        'Other'
+      ],
+      commerceCombinations: [
+        'EGBA (Economics, Geography, Business Studies, Accountancy)', 
+        'ECBA (Economics, Computer Science, Business Studies, Accountancy)', 
+        'ESBA (Economics, Statistics, Business Studies, Accountancy)', 
+        'EBAC (Economics, Business Studies, Accountancy, Civics)', 
+        'EMBA (Economics, Mathematics, Business Studies, Accountancy)', 
+        'ECSA (Economics, Computer Science, Statistics, Accountancy)', 
+        'Other'
+      ],
+      artsCombinations: [
+        'HEPS (History, Economics, Political Science, Sociology)', 
+        'HEPPsy (History, Economics, Political Science, Psychology)', 
+        'HESP (History, Economics, Sociology, Psychology)', 
+        'HEBA (History, Economics, Business Studies, Accountancy)', 
+        'HEGG (History, Economics, Geography, Geology)', 
+        'HESF (History, Economics, Sociology, Fine Arts)', 
+        'Other'
+      ],
+      engineeringCourses: [
+        'Computer Science & Engineering (CSE)', 
+        'Artificial Intelligence & Machine Learning (AI&ML)', 
+        'Information Science & Engineering (ISE)', 
+        'Electronics & Communication Engineering (ECE)', 
+        'Electrical & Electronics Engineering (EEE)', 
+        'Mechanical Engineering', 
+        'Civil Engineering', 
+        'Other'
+      ],
+      diplomaCourses: [
+        'Diploma in Computer Science', 
+        'Diploma in Electronics & Communication', 
+        'Diploma in Electrical & Electronics', 
+        'Diploma in Mechanical Engineering', 
+        'Diploma in Civil Engineering', 
+        'Other'
+      ],
+      degreeCourses: [
+        'B.Sc (Bachelor of Science)', 
+        'B.Com (Bachelor of Commerce)', 
+        'B.A (Bachelor of Arts)', 
+        'BCA (Bachelor of Computer Applications)', 
+        'BBA (Bachelor of Business Administration)', 
+        'B.Pharma (Bachelor of Pharmacy)', 
+        'B.Sc Nursing', 
+        'Other'
+      ]
     },
     kn: {
       title: "ಪ್ರತಿಭಾ ಪುರಸ್ಕಾರ 2024-2025:",
@@ -250,12 +300,59 @@ export function LinguaForm() {
       requiredNote: "* ಕಡ್ಡಾಯ ಪ್ರಶ್ನೆಯನ್ನು ಸೂಚಿಸುತ್ತದೆ",
       confMessage: "ದೃಢೀಕರಣ ಸಂದೇಶ ರಚಿಸಲಾಗಿದೆ:",
       boards: ['ರಾಜ್ಯ (State)', 'ಸಿಬಿಎಸ್ ಇ (CBSE)', 'ಐಸಿಎಸ್ ಇ (ICSE)'],
-      scienceCombinations: ['PCMB', 'PCMC', 'PCME', 'PCMS', 'ಇತರೆ'],
-      commerceCombinations: ['EGBA', 'ECBA', 'ESBA', 'EBAC', 'EMBA', 'ECSA', 'ಇತರೆ'],
-      artsCombinations: ['HEPS', 'HEPPsy', 'HESP', 'HEBA', 'HEGG', 'HESF', 'ಇತರೆ'],
-      engineeringCourses: ['Computer Science & Engineering (CSE)', 'Artificial Intelligence & Machine Learning (AI&ML)', 'Information Science & Engineering (ISE)', 'Electronics & Communication Engineering (ECE)', 'Electrical & Electronics Engineering (EEE)', 'Mechanical Engineering', 'Civil Engineering', 'ಇತರೆ'],
-      diplomaCourses: ['Diploma in Computer Science', 'Diploma in Electronics & Communication', 'Diploma in Electrical & Electronics', 'Diploma in Mechanical Engineering', 'Diploma in Civil Engineering', 'ಇತರೆ'],
-      degreeCourses: ['ಬಿ.ಎಸ್ಸಿ (B.Sc)', 'ಬಿ.ಕಾಂ (B.Com)', 'ಬಿ.ಎ. (B.A)', 'ಬಿ.ಸಿ.ಎ. (BCA)', 'ಬಿ.ಬಿ.ಎ. (BBA)', 'ಬಿ.ಫಾರ್ಮಾ (B.Pharma)', 'ಬಿ.ಎಸ್ಸಿ ನರ್ಸಿಂಗ್ (B.Sc Nursing)', 'ಇತರೆ']
+      scienceCombinations: [
+        'PCMB (ಭೌತಶಾಸ್ತ್ರ, ರಸಾಯನಶಾಸ್ತ್ರ, ಗಣಿತ, ಜೀವಶಾಸ್ತ್ರ)', 
+        'PCMC (ಭೌತಶಾಸ್ತ್ರ, ರಸಾಯನಶಾಸ್ತ್ರ, ಗಣಿತ, ಕಂಪ್ಯೂಟರ್ ಸೈನ್ಸ್)', 
+        'PCME (ಭೌತಶಾಸ್ತ್ರ, ರಸಾಯನಶಾಸ್ತ್ರ, ಗಣಿತ, ಎಲೆಕ್ಟ್ರಾನಿಕ್ಸ್)', 
+        'PCMS (ಭೌತಶಾಸ್ತ್ರ, ರಸಾಯನಶಾಸ್ತ್ರ, ಗಣಿತ, ಸಂಖ್ಯಾಶಾಸ್ತ್ರ)', 
+        'ಇತರೆ'
+      ],
+      commerceCombinations: [
+        'EGBA (ಅರ್ಥಶಾಸ್ತ್ರ, ಭೂಗೋಳಶಾಸ್ತ್ರ, ವ್ಯವಹಾರ ಅಧ್ಯಯನ, ಲೆಕ್ಕಶಾಸ್ತ್ರ)', 
+        'ECBA (ಅರ್ಥಶಾಸ್ತ್ರ, ಕಂಪ್ಯೂಟರ್ ಸೈನ್ಸ್, ವ್ಯವಹಾರ ಅಧ್ಯಯನ, ಲೆಕ್ಕಶಾಸ್ತ್ರ)', 
+        'ESBA (ಅರ್ಥಶಾಸ್ತ್ರ, ಸಂಖ್ಯಾಶಾಸ್ತ್ರ, ವ್ಯವಹಾರ ಅಧ್ಯಯನ, ಲೆಕ್ಕಶಾಸ್ತ್ರ)', 
+        'EBAC (ಅರ್ಥಶಾಸ್ತ್ರ, ವ್ಯವಹಾರ ಅಧ್ಯಯನ, ಲೆಕ್ಕಶಾಸ್ತ್ರ, ಪೌರನೀತಿ)', 
+        'EMBA (ಅರ್ಥಶಾಸ್ತ್ರ, ಗಣಿತ, ವ್ಯವಹಾರ ಅಧ್ಯಯನ, ಲೆಕ್ಕಶಾಸ್ತ್ರ)', 
+        'ECSA (ಅರ್ಥಶಾಸ್ತ್ರ, ಕಂಪ್ಯೂಟರ್ ಸೈನ್ಸ್, ಸಂಖ್ಯಾಶಾಸ್ತ್ರ, ಲೆಕ್ಕಶಾಸ್ತ್ರ)', 
+        'ಇತರೆ'
+      ],
+      artsCombinations: [
+        'HEPS (ಇತಿಹಾಸ, ಅರ್ಥಶಾಸ್ತ್ರ, ರಾಜ್ಯಶಾಸ್ತ್ರ, ಸಮಾಜಶಾಸ್ತ್ರ)', 
+        'HEPPsy (ಇತಿಹಾಸ, ಅರ್ಥಶಾಸ್ತ್ರ, ರಾಜ್ಯಶಾಸ್ತ್ರ, ಮನೋವಿಜ್ಞಾನ)', 
+        'HESP (ಇತಿಹಾಸ, ಅರ್ಥಶಾಸ್ತ್ರ, ಸಮಾಜಶಾಸ್ತ್ರ, ಮನೋವಿಜ್ಞಾನ)', 
+        'HEBA (ಇತಿಹಾಸ, ಅರ್ಥಶಾಸ್ತ್ರ, ವ್ಯವಹಾರ ಅಧ್ಯಯನ, ಲೆಕ್ಕಶಾಸ್ತ್ರ)', 
+        'HEGG (ಇತಿಹಾಸ, ಅರ್ಥಶಾಸ್ತ್ರ, ಭೂಗೋಳಶಾಸ್ತ್ರ, ಭೂವಿಜ್ಞಾನ)', 
+        'HESF (ಇತಿಹಾಸ, ಅರ್ಥಶಾಸ್ತ್ರ, ಸಮಾಜಶಾಸ್ತ್ರ, ಲಲಿತಕಲೆ)', 
+        'ಇತರೆ'
+      ],
+      engineeringCourses: [
+        'Computer Science & Engineering (CSE)', 
+        'Artificial Intelligence & Machine Learning (AI&ML)', 
+        'Information Science & Engineering (ISE)', 
+        'Electronics & Communication Engineering (ECE)', 
+        'Electrical & Electronics Engineering (EEE)', 
+        'Mechanical Engineering', 
+        'Civil Engineering', 
+        'ಇತರೆ'
+      ],
+      diplomaCourses: [
+        'Diploma in Computer Science', 
+        'Diploma in Electronics & Communication', 
+        'Diploma in Electrical & Electronics', 
+        'Diploma in Mechanical Engineering', 
+        'Diploma in Civil Engineering', 
+        'ಇತರೆ'
+      ],
+      degreeCourses: [
+        'ಬಿ.ಎಸ್ಸಿ (Bachelor of Science)', 
+        'ಬಿ.ಕಾಂ (Bachelor of Commerce)', 
+        'ಬಿ.ಎ. (Bachelor of Arts)', 
+        'ಬಿ.ಸಿ.ಎ. (BCA)', 
+        'ಬಿ.ಬಿ.ಎ. (BBA)', 
+        'ಬಿ.ಫಾರ್ಮಾ (B.Pharma)', 
+        'ಬಿ.ಎಸ್ಸಿ ನರ್ಸಿಂಗ್ (B.Sc Nursing)', 
+        'ಇತರೆ'
+      ]
     }
   };
 
@@ -355,6 +452,7 @@ export function LinguaForm() {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
+          {/* Email section */}
           <Card className="shadow-sm border-none cursor-default">
             <CardContent className="p-5">
               <FormField control={form.control} name="email" render={({ field }) => (
@@ -367,6 +465,7 @@ export function LinguaForm() {
             </CardContent>
           </Card>
 
+          {/* Personal Details section */}
           <Card className="shadow-sm border-none cursor-default">
             <CardContent className="p-5 space-y-4">
               <div className="flex items-center gap-2 pb-2 border-b"><User className="w-3.5 h-3.5 text-primary" /><h2 className="text-[12px] font-bold">{t.personalDetailsHeader}</h2></div>
@@ -407,6 +506,7 @@ export function LinguaForm() {
             </CardContent>
           </Card>
 
+          {/* Academic Details section */}
           <Card className="shadow-sm border-none cursor-default">
             <CardContent className="p-5 space-y-4">
               <div className="flex items-center gap-2 pb-2 border-b"><GraduationCap className="w-3.5 h-3.5 text-primary" /><h2 className="text-[12px] font-bold">{t.academicDetailsHeader}</h2></div>
@@ -562,6 +662,7 @@ export function LinguaForm() {
             </CardContent>
           </Card>
 
+          {/* Documents section */}
           <Card className="shadow-sm border-none cursor-default">
             <CardContent className="p-5 space-y-4">
               <div className="flex items-center gap-2 pb-2 border-b"><FileCheck className="w-3.5 h-3.5 text-primary" /><h2 className="text-[12px] font-bold">{t.docsTitle}</h2></div>
