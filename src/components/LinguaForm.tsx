@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -80,6 +81,24 @@ export function LinguaForm() {
         const total = parseFloat(totalMarks);
         
         if (!isNaN(marks) && !isNaN(total) && total > 0) {
+          // Strict Total Marks validation
+          if (selectedCourse === 'SSLC' && totalMarks !== '625') {
+            const errorMsg = lang === 'en' 
+              ? "Total marks for SSLC must be 625." 
+              : "ಎಸ್.ಎಸ್.ಎಲ್.ಸಿ.ಗೆ ಒಟ್ಟು ಅಂಕಗಳು 625 ಆಗಿರಬೇಕು.";
+            setEligibilityError(errorMsg);
+            form.setValue('percentage', '');
+            return;
+          }
+          if (selectedCourse === 'PUC' && totalMarks !== '600') {
+            const errorMsg = lang === 'en' 
+              ? "Total marks for 2nd PUC must be 600." 
+              : "ದ್ವಿತೀಯ ಪಿ.ಯು.ಸಿ.ಗೆ ಒಟ್ಟು ಅಂಕಗಳು 600 ಆಗಿರಬೇಕು.";
+            setEligibilityError(errorMsg);
+            form.setValue('percentage', '');
+            return;
+          }
+
           const calculatedPercentage = (marks / total) * 100;
           const roundedPercentage = calculatedPercentage.toFixed(2);
           form.setValue('percentage', roundedPercentage);
