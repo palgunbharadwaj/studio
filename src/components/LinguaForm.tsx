@@ -74,7 +74,7 @@ export function LinguaForm() {
   useEffect(() => {
     setEligibilityError(null);
 
-    if (['SSLC', 'PUC'].includes(selectedCourse || '')) {
+    if (['SSLC', 'PUC', 'Other'].includes(selectedCourse || '')) {
       if (marksObtained && totalMarks) {
         const marks = parseFloat(marksObtained);
         const total = parseFloat(totalMarks);
@@ -108,6 +108,11 @@ export function LinguaForm() {
               : "ಸರಿಯಾದ ಸಿಜಿಪಿಎ ನಮೂದಿಸಿ";
             setEligibilityError(errorMsg);
           }
+        } else {
+          const errorMsg = lang === 'en'
+              ? "Enter Valid CGPA"
+              : "ಸರಿಯಾದ ಸಿಜಿಪಿಎ ನಮೂದಿಸಿ";
+            setEligibilityError(errorMsg);
         }
       }
     }
@@ -285,7 +290,7 @@ export function LinguaForm() {
         'AIML (ಕೃತಕ ಬುದ್ಧಿಮತ್ತೆ ಮತ್ತು ಯಂತ್ರ ಕಲಿಕೆ)',
         'ISE (ಮಾಹಿತಿ ವಿಜ್ಞಾನ ಮತ್ತು ಇಂಜಿನಿಯರಿಂಗ್)',
         'ECE (ಎಲೆಕ್ಟ್ರಾನಿಕ್ಸ್ ಮತ್ತು ಸಂವಹನ ಇಂಜಿನಿಯರಿಂಗ್)',
-        'EEE (ವಿದ್ಯುತ್ ಮತ್ತು ಎಲೆಕ್ಟ್ರಾನಿಕ್ಸ್ ಇಂಜಿನಿಯರಿಂಗ್)',
+        'EEE (ವಿದ್ಯುತ್ ಮತ್ತು ಎಲೆಕ್ಲಯಾನಿಕ್ಸ್ ಇಂಜಿನಿಯರಿಂಗ್)',
         'Mechanical (ಮೆಕಾನಿಕಲ್ ಇಂಜಿನಿಯರಿಂಗ್)',
         'Civil (ಸಿವಿಲ್ ಇಂಜಿನಿಯರಿಂಗ್)',
         'IP (ಕೈಗಾರಿಕಾ ಉತ್ಪಾದನಾ ಇಂಜಿನಿಯರಿಂಗ್)',
@@ -611,14 +616,19 @@ export function LinguaForm() {
                     </Alert>
                   )}
 
-                  <FormField control={form.control} name="yearOfPassing" render={({ field }) => (
-                    <FormItem className="space-y-1.5">
-                      <FormLabel className="text-[11px] font-semibold">{t.yearPassingLabel} *</FormLabel>
-                      <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-2">
-                        {t.years.map(y => <div key={y} className="flex items-center space-x-2"><RadioGroupItem value={y} id={y} className="h-3.5 w-3.5" /><Label htmlFor={y} className="text-[11px]">{y}</Label></div>)}
-                      </RadioGroup>
-                    </FormItem>
-                  )} />
+                  <FormField control={form.control} name="yearOfPassing" render={({ field }) => {
+                    const yearsToShow = (['Diploma', 'Degree', 'Engineering'].includes(selectedCourse || '')) 
+                      ? [t.years[0]] 
+                      : t.years;
+                    return (
+                      <FormItem className="space-y-1.5">
+                        <FormLabel className="text-[11px] font-semibold">{t.yearPassingLabel} *</FormLabel>
+                        <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-2">
+                          {yearsToShow.map(y => <div key={y} className="flex items-center space-x-2"><RadioGroupItem value={y} id={y} className="h-3.5 w-3.5" /><Label htmlFor={y} className="text-[11px]">{y}</Label></div>)}
+                        </RadioGroup>
+                      </FormItem>
+                    );
+                  }} />
                 </div>
               )}
             </CardContent>
