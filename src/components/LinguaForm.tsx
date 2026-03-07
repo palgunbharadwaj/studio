@@ -75,6 +75,16 @@ export function LinguaForm() {
   useEffect(() => {
     setEligibilityError(null);
 
+    // Common negative check
+    if ((marksObtained && parseFloat(marksObtained) < 0) || (totalMarks && parseFloat(totalMarks) < 0)) {
+      const errorMsg = lang === 'en' 
+        ? "Enter valid marks (must be positive)." 
+        : "ಸರಿಯಾದ ಅಂಕಗಳನ್ನು ನಮೂದಿಸಿ (ಶೂನ್ಯಕ್ಕಿಂತ ಹೆಚ್ಚಿರಬೇಕು).";
+      setEligibilityError(errorMsg);
+      form.setValue('percentage', '');
+      return;
+    }
+
     if (['SSLC', 'PUC', 'Other'].includes(selectedCourse || '')) {
       if (marksObtained && totalMarks) {
         const marks = parseFloat(marksObtained);
@@ -94,6 +104,13 @@ export function LinguaForm() {
             const errorMsg = lang === 'en' 
               ? "Total marks for 2nd PUC must be 600." 
               : "ದ್ವಿತೀಯ ಪಿ.ಯು.ಸಿ.ಗೆ ಒಟ್ಟು ಅಂಕಗಳು 600 ಆಗಿರಬೇಕು.";
+            setEligibilityError(errorMsg);
+            form.setValue('percentage', '');
+            return;
+          }
+
+          if (marks > total) {
+            const errorMsg = lang === 'en' ? "Marks obtained cannot exceed total marks." : "ಗಳಿಸಿದ ಅಂಕಗಳು ಒಟ್ಟು ಅಂಕಗಳಿಗಿಂತ ಹೆಚ್ಚಿರಬಾರದು.";
             setEligibilityError(errorMsg);
             form.setValue('percentage', '');
             return;
@@ -121,8 +138,8 @@ export function LinguaForm() {
       if (cgpaValue) {
         const cgpa = parseFloat(cgpaValue);
         if (!isNaN(cgpa)) {
-          if (cgpa < 9.0 || cgpa > 10.0) {
-            const errorMsg = lang === 'en' ? "Enter Valid CGPA" : "ಸರಿಯಾದ ಸಿಜಿಪಿಎ ನಮೂದಿಸಿ";
+          if (cgpa < 9.0 || cgpa > 10.0 || cgpa < 0) {
+            const errorMsg = lang === 'en' ? "Enter Valid CGPA (9.0 - 10.0)" : "ಸರಿಯಾದ ಸಿಜಿಪಿಎ ನಮೂದಿಸಿ (9.0 - 10.0)";
             setEligibilityError(errorMsg);
           }
         } else if (cgpaValue.trim() !== '') {
@@ -457,10 +474,10 @@ export function LinguaForm() {
                   {(['SSLC', 'PUC', 'Other'].includes(selectedCourse)) && (
                     <>
                       <FormField control={form.control} name="marksObtained" render={({ field }) => (
-                        <FormItem className="space-y-1.5"><FormLabel className="text-[11px] font-semibold">{t.marksObtainedLabel} *</FormLabel><FormControl><Input type="number" className="h-8 text-[11px] bg-muted/20 cursor-text" {...field} /></FormControl></FormItem>
+                        <FormItem className="space-y-1.5"><FormLabel className="text-[11px] font-semibold">{t.marksObtainedLabel} *</FormLabel><FormControl><Input type="number" min="0" className="h-8 text-[11px] bg-muted/20 cursor-text" {...field} /></FormControl></FormItem>
                       )} />
                       <FormField control={form.control} name="totalMarks" render={({ field }) => (
-                        <FormItem className="space-y-1.5"><FormLabel className="text-[11px] font-semibold">{t.totalMarksLabel} *</FormLabel><FormControl><Input type="number" className="h-8 text-[11px] bg-muted/20 cursor-text" {...field} /></FormControl></FormItem>
+                        <FormItem className="space-y-1.5"><FormLabel className="text-[11px] font-semibold">{t.totalMarksLabel} *</FormLabel><FormControl><Input type="number" min="0" className="h-8 text-[11px] bg-muted/20 cursor-text" {...field} /></FormControl></FormItem>
                       )} />
                       <FormField control={form.control} name="percentage" render={({ field }) => (
                         <FormItem className="space-y-1.5">
@@ -473,7 +490,7 @@ export function LinguaForm() {
 
                   {(['Diploma', 'Degree', 'Engineering'].includes(selectedCourse)) && (
                     <FormField control={form.control} name="cgpa" render={({ field }) => (
-                      <FormItem className="space-y-1.5"><FormLabel className="text-[11px] font-semibold">{t.cgpaLabel} *</FormLabel><FormControl><Input className="h-8 text-[11px] bg-muted/20 cursor-text" {...field} /></FormControl></FormItem>
+                      <FormItem className="space-y-1.5"><FormLabel className="text-[11px] font-semibold">{t.cgpaLabel} *</FormLabel><FormControl><Input type="number" step="0.01" min="0" max="10" className="h-8 text-[11px] bg-muted/20 cursor-text" {...field} /></FormControl></FormItem>
                     )} />
                   )}
 
