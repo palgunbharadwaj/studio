@@ -199,7 +199,7 @@ export function LinguaForm() {
       percentageLabel: "Percentage (%)",
       marksObtainedLabel: "Marks Obtained",
       totalMarksLabel: "Total Marks",
-      yearPassingLabel: "ಉತ್ತೀರ್ಣರಾದ ವರ್ಷ",
+      yearPassingLabel: "Year of Passing",
       cgpaLabel: "CGPA",
       otherCourseLabel: "Please specify other course",
       docsTitle: "Documents",
@@ -212,12 +212,12 @@ export function LinguaForm() {
       requiredNote: "* Indicates required question",
       confMessage: "Confirmation message generated:",
       boards: ['State', 'CBSE', 'ICSE'],
-      scienceCombinations: ['PCMB', 'PCMC', 'PCME', 'PCMS', 'Other'],
-      commerceCombinations: ['EGBA', 'ECBA', 'ESBA', 'EBAC', 'EMBA', 'ECSA', 'Other'],
-      artsCombinations: ['HEPS', 'HEPPsy', 'HESP', 'HEBA', 'HEGG', 'HESF', 'Other'],
-      engineeringCourses: ['CSE', 'AIML', 'ISE', 'ECE', 'EEE', 'Mechanical', 'Civil', 'Other'],
+      scienceCombinations: ['PCMB (Phy, Chem, Math, Bio)', 'PCMC (Phy, Chem, Math, Comp)', 'PCME (Phy, Chem, Math, Elec)', 'PCMS (Phy, Chem, Math, Stat)', 'Other'],
+      commerceCombinations: ['EGBA (Econ, Geog, Bus, Acc)', 'ECBA (Econ, Comp, Bus, Acc)', 'ESBA (Econ, Stat, Bus, Acc)', 'EBAC (Econ, Bus, Acc, Civics)', 'EMBA (Econ, Math, Bus, Acc)', 'ECSA (Econ, Comp, Stat, Acc)', 'Other'],
+      artsCombinations: ['HEPS (Hist, Econ, PolSci, Soc)', 'HEPPsy (Hist, Econ, PolSci, Psych)', 'HESP (Hist, Econ, Soc, Psych)', 'HEBA (Hist, Econ, Bus, Acc)', 'HEGG (Hist, Econ, Geog, Guj)', 'HESF (Hist, Econ, Soc, FineArts)', 'Other'],
+      engineeringCourses: ['CSE (Computer Science)', 'AIML (Artificial Intelligence)', 'ISE (Information Science)', 'ECE (Electronics)', 'EEE (Electrical)', 'Mechanical', 'Civil', 'Other'],
       diplomaCourses: ['CSE Diploma', 'ECE Diploma', 'EEE Diploma', 'Mech Diploma', 'Civil Diploma', 'Other'],
-      degreeCourses: ['B.Sc', 'B.Com', 'B.A', 'BCA', 'BBA', 'B.Pharma', 'Nursing', 'Other']
+      degreeCourses: ['B.Sc (Bachelor of Science)', 'B.Com (Bachelor of Commerce)', 'B.A (Bachelor of Arts)', 'BCA (Computer Applications)', 'BBA (Business Administration)', 'B.Pharma', 'Nursing', 'Other']
     },
     kn: {
       title: "ಪ್ರತಿಭಾ ಪುರಸ್ಕಾರ 2024-2025:",
@@ -256,7 +256,7 @@ export function LinguaForm() {
       artsCombinations: ['HEPS', 'HEPPsy', 'HESP', 'HEBA', 'HEGG', 'HESF', 'ಇತರೆ'],
       engineeringCourses: ['CSE', 'AIML', 'ISE', 'ECE', 'EEE', 'Mechanical', 'Civil', 'ಇತರೆ'],
       diplomaCourses: ['CSE Diploma', 'ECE Diploma', 'EEE Diploma', 'Mech Diploma', 'Civil Diploma', 'ಇತರೆ'],
-      degreeCourses: ['ಬಿ.ಎಸ್ಸಿ', 'ಬಿ.ಕಾಂ', 'ಬಿ.ಎ.', 'ಬಿ.ಸಿ.ಎ.', 'ಬಿ.ಬಿ.ಎ.', 'ಬಿ.ಫಾರ್ಮಾ', 'ನರ್ಸಿಂಗ್', 'ಇತರೆ']
+      degreeCourses: ['ಬಿ.ಎಸ್ಸಿ (B.Sc)', 'ಬಿ.ಕಾಂ (B.Com)', 'ಬಿ.ಎ. (B.A)', 'ಬಿ.ಸಿ.ಎ. (BCA)', 'ಬಿ.ಬಿ.ಎ. (BBA)', 'ಬಿ.ಫಾರ್ಮಾ', 'ನರ್ಸಿಂಗ್', 'ಇತರೆ']
     }
   };
 
@@ -420,7 +420,7 @@ export function LinguaForm() {
                         <RadioGroupItem value={c} id={c} className="h-3.5 w-3.5 cursor-pointer" />
                         <Label htmlFor={c} className="text-[11px] cursor-pointer">
                           {c === 'PUC' ? (lang === 'en' ? '2nd PUC' : 'ದ್ವಿತೀಯ ಪಿ.ಯು.ಸಿ') : 
-                           c === 'SSLC' ? (lang === 'en' ? 'SSLC/10th' : 'ಎಸ್.ಎಸ್.ಎಲ್.ಸಿ. / 10 ನೇ ತರಗತಿ') : 
+                           c === 'SSLC' ? (lang === 'en' ? 'SSLC / 10th' : 'ಎಸ್.ಎಸ್.ಎಲ್.ಸಿ. / 10 ನೇ ತರಗತಿ') : 
                            c === 'Diploma' ? (lang === 'en' ? 'Diploma' : 'ಡಿಪ್ಲೊಮಾ') :
                            c === 'Degree' ? (lang === 'en' ? 'Degree' : 'ಪದವಿ') :
                            c === 'Engineering' ? (lang === 'en' ? 'Engineering' : 'ಇಂಜಿನಿಯರಿಂಗ್') :
