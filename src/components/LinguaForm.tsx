@@ -67,6 +67,7 @@ export function LinguaForm() {
   });
 
   const selectedCourse = useWatch({ control: form.control, name: 'course' });
+  const selectedStream = useWatch({ control: form.control, name: 'pucStream' });
   const marksObtained = useWatch({ control: form.control, name: 'marksObtained' });
   const totalMarks = useWatch({ control: form.control, name: 'totalMarks' });
 
@@ -218,7 +219,7 @@ export function LinguaForm() {
       studentNameLabel: "ವಿದ್ಯಾರ್ಥಿಯ ಹೆಸರು",
       relationshipLabel: "S/O ಅಥವಾ D/O",
       fatherNameLabel: "ತಂದೆಯ ಹೆಸರು",
-      motherNameLabel: "ಮನೆಯ ಹೆಸರು",
+      motherNameLabel: "ತಾಯಿಯ ಹೆಸರು",
       courseLabel: "ಕೋರ್ಸ್",
       boardLabel: "ಮಂಡಳಿ",
       streamLabel: "ವಿಭಾಗ",
@@ -570,14 +571,12 @@ export function LinguaForm() {
 
               {(['SSLC', 'PUC', 'Diploma', 'Degree', 'Engineering'].includes(selectedCourse || '')) && (
                 <div className="space-y-3">
-                  <div className="grid grid-cols-2 gap-3">
-                    <FormField control={form.control} name="marksObtained" render={({ field }) => (
-                      <FormItem className="space-y-1.5"><FormLabel className="text-[11px] font-semibold">{t.marksObtainedLabel} *</FormLabel><FormControl><Input type="number" className="h-8 text-[11px] bg-muted/20" {...field} /></FormControl></FormItem>
-                    )} />
-                    <FormField control={form.control} name="totalMarks" render={({ field }) => (
-                      <FormItem className="space-y-1.5"><FormLabel className="text-[11px] font-semibold">{t.totalMarksLabel} *</FormLabel><FormControl><Input type="number" className="h-8 text-[11px] bg-muted/20" {...field} /></FormControl></FormItem>
-                    )} />
-                  </div>
+                  <FormField control={form.control} name="marksObtained" render={({ field }) => (
+                    <FormItem className="space-y-1.5"><FormLabel className="text-[11px] font-semibold">{t.marksObtainedLabel} *</FormLabel><FormControl><Input type="number" className="h-8 text-[11px] bg-muted/20" {...field} /></FormControl></FormItem>
+                  )} />
+                  <FormField control={form.control} name="totalMarks" render={({ field }) => (
+                    <FormItem className="space-y-1.5"><FormLabel className="text-[11px] font-semibold">{t.totalMarksLabel} *</FormLabel><FormControl><Input type="number" className="h-8 text-[11px] bg-muted/20" {...field} /></FormControl></FormItem>
+                  )} />
                   
                   <FormField control={form.control} name="percentage" render={({ field }) => (
                     <FormItem className="space-y-1.5">
