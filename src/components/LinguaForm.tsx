@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import Image from 'next/image';
 import { 
   Form, 
   FormControl, 
@@ -20,7 +19,6 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { submitLinguaForm, SubmissionResult } from '@/app/actions/submit-form';
 import { Loader2, CheckCircle2, Send, Info, User, GraduationCap, FileCheck, AlertCircle } from 'lucide-react';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
 const formSchema = z.object({
@@ -71,6 +69,16 @@ export function LinguaForm() {
   const marksObtained = useWatch({ control: form.control, name: 'marksObtained' });
   const totalMarks = useWatch({ control: form.control, name: 'totalMarks' });
 
+  // Handle default total marks based on course selection
+  useEffect(() => {
+    if (selectedCourse === 'SSLC') {
+      form.setValue('totalMarks', '625');
+    } else if (selectedCourse === 'PUC') {
+      form.setValue('totalMarks', '600');
+    }
+  }, [selectedCourse, form]);
+
+  // Handle percentage calculation and validation
   useEffect(() => {
     if (marksObtained && totalMarks) {
       const marks = parseFloat(marksObtained);
@@ -106,7 +114,7 @@ export function LinguaForm() {
   const translations = {
     en: {
       title: "Prathibha Puraskahara 2024-2025:",
-      description: "Recognition at the temple level for students who secured more than 85% in PUC and Ranks or more than 90% in SSLC/Degree/Job-oriented education in the March and April examinations of the academic years 2024 and 2025.",
+      description: "2024 ಮತ್ತು 2025ರ ಸಾಲಿನ ಮಾರ್ಚಿ ಮತ್ತು ಏಪ್ರಿಲ್ ನಲ್ಲಿ ನಡೆದ ಪಿ.ಯು.ಸಿ ಪರೀಕ್ಷೆಯಲ್ಲಿ ಶೇ.85 ಕ್ಕಿಂತ ಹಾಗೂ ಎಸ್.ಎಸ್.ಎಲ್.ಸಿ/ಪದವಿ/ಉದ್ಯೋಗಾಧಾರಿತ ಶಿಕ್ಷಣದಲ್ಲಿ ರ‍್ಯಾಂಕ್‌ ಅಥವಾ ಶೇ.90 ಕ್ಕಿಂತ ಹೆಚ್ಚು ಅಂಕ ಪಡೆದ ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ದೇವಾಲಯದ ಮಟ್ಟದಲ್ಲಿ ಪುರಸ್ಕಾರ.",
       langLabel: "Choose Language / ಭಾಷೆ ಆಯ್ಕೆಮಾಡಿ",
       personalDetailsHeader: "Personal Details",
       academicDetailsHeader: "Academic Details",
@@ -317,7 +325,6 @@ export function LinguaForm() {
   };
 
   const t = translations[lang];
-  const banner = PlaceHolderImages.find(img => img.id === 'form-banner');
 
   const fileToBase64 = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
