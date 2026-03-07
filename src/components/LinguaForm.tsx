@@ -48,6 +48,7 @@ export function LinguaForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [result, setResult] = useState<SubmissionResult | null>(null);
   const [eligibilityError, setEligibilityError] = useState<string | null>(null);
+  const [totalMarksError, setTotalMarksError] = useState<string | null>(null);
   
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [marksFile, setMarksFile] = useState<File | null>(null);
@@ -74,9 +75,11 @@ export function LinguaForm() {
 
   useEffect(() => {
     setEligibilityError(null);
+    setTotalMarksError(null);
 
-    // Common negative check
-    if ((marksObtained && parseFloat(marksObtained) < 0) || (totalMarks && parseFloat(totalMarks) < 0)) {
+    // Negative check validation
+    const checkNegative = (val: string | undefined) => val && parseFloat(val) < 0;
+    if (checkNegative(marksObtained) || checkNegative(totalMarks) || checkNegative(cgpaValue)) {
       const errorMsg = lang === 'en' 
         ? "Enter valid marks (must be positive)." 
         : "ಸರಿಯಾದ ಅಂಕಗಳನ್ನು ನಮೂದಿಸಿ (ಶೂನ್ಯಕ್ಕಿಂತ ಹೆಚ್ಚಿರಬೇಕು).";
@@ -91,12 +94,12 @@ export function LinguaForm() {
         const total = parseFloat(totalMarks);
         
         if (!isNaN(marks) && !isNaN(total) && total > 0) {
-          // Strict Total Marks validation
+          // Total Marks strict validation
           if (selectedCourse === 'SSLC' && totalMarks !== '625') {
             const errorMsg = lang === 'en' 
               ? "Total marks for SSLC must be 625." 
               : "ಎಸ್.ಎಸ್.ಎಲ್.ಸಿ.ಗೆ ಒಟ್ಟು ಅಂಕಗಳು 625 ಆಗಿರಬೇಕು.";
-            setEligibilityError(errorMsg);
+            setTotalMarksError(errorMsg);
             form.setValue('percentage', '');
             return;
           }
@@ -104,14 +107,14 @@ export function LinguaForm() {
             const errorMsg = lang === 'en' 
               ? "Total marks for 2nd PUC must be 600." 
               : "ದ್ವಿತೀಯ ಪಿ.ಯು.ಸಿ.ಗೆ ಒಟ್ಟು ಅಂಕಗಳು 600 ಆಗಿರಬೇಕು.";
-            setEligibilityError(errorMsg);
+            setTotalMarksError(errorMsg);
             form.setValue('percentage', '');
             return;
           }
 
           if (marks > total) {
             const errorMsg = lang === 'en' ? "Marks obtained cannot exceed total marks." : "ಗಳಿಸಿದ ಅಂಕಗಳು ಒಟ್ಟು ಅಂಕಗಳಿಗಿಂತ ಹೆಚ್ಚಿರಬಾರದು.";
-            setEligibilityError(errorMsg);
+            setTotalMarksError(errorMsg);
             form.setValue('percentage', '');
             return;
           }
@@ -120,7 +123,7 @@ export function LinguaForm() {
           const roundedPercentage = calculatedPercentage.toFixed(2);
           form.setValue('percentage', roundedPercentage);
 
-          let minRequired = selectedCourse === 'PUC' ? 85 : 90;
+          let minRequired = (selectedCourse === 'PUC' || (selectedCourse === 'Other' && (selectedStream?.includes('PUC') || selectedStream?.includes('ಪಿ.ಯು.ಸಿ')))) ? 85 : 90;
 
           if (calculatedPercentage < minRequired) {
             const errorMsg = lang === 'en' 
@@ -138,7 +141,7 @@ export function LinguaForm() {
       if (cgpaValue) {
         const cgpa = parseFloat(cgpaValue);
         if (!isNaN(cgpa)) {
-          if (cgpa < 9.0 || cgpa > 10.0 || cgpa < 0) {
+          if (cgpa < 9.0 || cgpa > 10.0) {
             const errorMsg = lang === 'en' ? "Enter Valid CGPA (9.0 - 10.0)" : "ಸರಿಯಾದ ಸಿಜಿಪಿಎ ನಮೂದಿಸಿ (9.0 - 10.0)";
             setEligibilityError(errorMsg);
           }
@@ -148,7 +151,7 @@ export function LinguaForm() {
         }
       }
     }
-  }, [marksObtained, totalMarks, cgpaValue, selectedCourse, lang, form]);
+  }, [marksObtained, totalMarks, cgpaValue, selectedCourse, lang, form, selectedStream]);
 
   const translations = {
     en: {
@@ -180,9 +183,8 @@ export function LinguaForm() {
       processing: "Processing...",
       successTitle: "Submission Received!",
       successDesc: "Your registration has been submitted successfully.",
-      backButton: "Submit Another",
       requiredNote: "* Indicates required question",
-      confMessage: "Confirmation email content has been generated.",
+      confMessage: "Confirmation message generated:",
       boards: ['State', 'CBSE', 'ICSE'],
       streams: ['Science', 'Commerce', 'Arts'],
       years: ['2024-2025', '2023-2024'],
@@ -222,9 +224,8 @@ export function LinguaForm() {
       processing: "ಪ್ರಕ್ರಿಯೆಯಲ್ಲಿದೆ...",
       successTitle: "ಸಲ್ಲಿಸುವಿಕೆ ಸ್ವೀಕರಿಸಲಾಗಿದೆ!",
       successDesc: "ನಿಮ್ಮ ನೋಂದಣಿಯನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಸಲ್ಲಿಸಲಾಗಿದೆ.",
-      backButton: "ಮತ್ತೊಂದು ಸಲ್ಲಿಸಿ",
       requiredNote: "* ಕಡ್ಡಾಯ ಪ್ರಶ್ನೆಯನ್ನು ಸೂಚಿಸುತ್ತದೆ",
-      confMessage: "ದೃಢೀಕರಣ ಇಮೇಲ್ ವಿಷಯವನ್ನು ರಚಿಸಲಾಗಿದೆ.",
+      confMessage: "ದೃಢೀಕರಣ ಸಂದೇಶ ರಚಿಸಲಾಗಿದೆ:",
       boards: ['ರಾಜ್ಯ (State)', 'ಸಿಬಿಎಸ್ ಇ (CBSE)', 'ಐಸಿಎಸ್ ಇ (ICSE)'],
       streams: ['ವಿಜ್ಞಾನ (Science)', 'ವಾಣಿಜ್ಯ (Commerce)', 'ಕಲೆ (Arts)'],
       years: ['2024-2025', '2023-2024'],
@@ -249,7 +250,7 @@ export function LinguaForm() {
   };
 
   async function onSubmit(values: FormValues) {
-    if (eligibilityError) return;
+    if (eligibilityError || totalMarksError) return;
     
     setIsSubmitting(true);
     try {
@@ -296,10 +297,6 @@ export function LinguaForm() {
               </div>
             </div>
           )}
-
-          <Button variant="outline" size="sm" className="rounded-full px-5 text-[10px] h-7 cursor-pointer" onClick={() => { setResult(null); setPhotoFile(null); setMarksFile(null); form.reset(); }}>
-            {t.backButton}
-          </Button>
         </CardContent>
       </Card>
     );
@@ -465,7 +462,10 @@ export function LinguaForm() {
 
               {selectedCourse === 'Other' && (
                 <FormField control={form.control} name="otherCourse" render={({ field }) => (
-                  <FormItem className="space-y-1.5"><FormLabel className="text-[11px] font-semibold">{t.otherCourseLabel} *</FormLabel><FormControl><Input className="h-8 text-[11px] bg-muted/20 cursor-text" {...field} /></FormControl></FormItem>
+                  <FormItem className="space-y-1.5">
+                    <FormLabel className="text-[11px] font-semibold">{t.otherCourseLabel} *</FormLabel>
+                    <FormControl><Input className="h-8 text-[11px] bg-muted/20 cursor-text" {...field} /></FormControl>
+                  </FormItem>
                 )} />
               )}
 
@@ -474,15 +474,29 @@ export function LinguaForm() {
                   {(['SSLC', 'PUC', 'Other'].includes(selectedCourse)) && (
                     <>
                       <FormField control={form.control} name="marksObtained" render={({ field }) => (
-                        <FormItem className="space-y-1.5"><FormLabel className="text-[11px] font-semibold">{t.marksObtainedLabel} *</FormLabel><FormControl><Input type="number" min="0" className="h-8 text-[11px] bg-muted/20 cursor-text" {...field} /></FormControl></FormItem>
+                        <FormItem className="space-y-1.5"><FormLabel className="text-[11px] font-semibold">{t.marksObtainedLabel} *</FormLabel><FormControl><Input type="number" className="h-8 text-[11px] bg-muted/20 cursor-text" {...field} /></FormControl></FormItem>
                       )} />
                       <FormField control={form.control} name="totalMarks" render={({ field }) => (
-                        <FormItem className="space-y-1.5"><FormLabel className="text-[11px] font-semibold">{t.totalMarksLabel} *</FormLabel><FormControl><Input type="number" min="0" className="h-8 text-[11px] bg-muted/20 cursor-text" {...field} /></FormControl></FormItem>
+                        <FormItem className="space-y-1.5">
+                          <FormLabel className="text-[11px] font-semibold">{t.totalMarksLabel} *</FormLabel>
+                          <FormControl><Input type="number" className="h-8 text-[11px] bg-muted/20 cursor-text" {...field} /></FormControl>
+                          {totalMarksError && (
+                            <p className="text-[9px] text-destructive font-medium pt-1">{totalMarksError}</p>
+                          )}
+                        </FormItem>
                       )} />
                       <FormField control={form.control} name="percentage" render={({ field }) => (
                         <FormItem className="space-y-1.5">
                           <FormLabel className="text-[11px] font-semibold">{t.percentageLabel}</FormLabel>
                           <FormControl><Input readOnly className="h-8 text-[11px] bg-secondary/30 font-bold" {...field} /></FormControl>
+                          {eligibilityError && (
+                            <Alert variant="destructive" className="py-2 px-3 mt-2 flex items-center gap-2 border-destructive/20 bg-destructive/5">
+                              <AlertCircle className="h-3.5 w-3.5 shrink-0" />
+                              <AlertDescription className="text-[10px] leading-tight font-medium">
+                                {eligibilityError}
+                              </AlertDescription>
+                            </Alert>
+                          )}
                         </FormItem>
                       )} />
                     </>
@@ -490,17 +504,19 @@ export function LinguaForm() {
 
                   {(['Diploma', 'Degree', 'Engineering'].includes(selectedCourse)) && (
                     <FormField control={form.control} name="cgpa" render={({ field }) => (
-                      <FormItem className="space-y-1.5"><FormLabel className="text-[11px] font-semibold">{t.cgpaLabel} *</FormLabel><FormControl><Input type="number" step="0.01" min="0" max="10" className="h-8 text-[11px] bg-muted/20 cursor-text" {...field} /></FormControl></FormItem>
+                      <FormItem className="space-y-1.5">
+                        <FormLabel className="text-[11px] font-semibold">{t.cgpaLabel} *</FormLabel>
+                        <FormControl><Input type="number" step="0.01" className="h-8 text-[11px] bg-muted/20 cursor-text" {...field} /></FormControl>
+                        {eligibilityError && (
+                          <Alert variant="destructive" className="py-2 px-3 mt-2 flex items-center gap-2 border-destructive/20 bg-destructive/5">
+                            <AlertCircle className="h-3.5 w-3.5 shrink-0" />
+                            <AlertDescription className="text-[10px] leading-tight font-medium">
+                              {eligibilityError}
+                            </AlertDescription>
+                          </Alert>
+                        )}
+                      </FormItem>
                     )} />
-                  )}
-
-                  {eligibilityError && (
-                    <Alert variant="destructive" className="py-2 px-3 flex items-center gap-2 border-destructive/20 bg-destructive/5">
-                      <AlertCircle className="h-3.5 w-3.5 shrink-0" />
-                      <AlertDescription className="text-[10px] leading-tight font-medium">
-                        {eligibilityError}
-                      </AlertDescription>
-                    </Alert>
                   )}
 
                   <FormField control={form.control} name="yearOfPassing" render={({ field }) => {
@@ -524,19 +540,19 @@ export function LinguaForm() {
               <div className="flex items-center gap-2 pb-2 border-b"><FileCheck className="w-3.5 h-3.5 text-primary" /><h2 className="text-[12px] font-bold">{t.docsTitle}</h2></div>
               <div className="space-y-3">
                 <div className="space-y-1.5">
-                  <Label className="text-[11px] font-semibold">{t.photoLabel} <span className="text-destructive">*</span></Label>
-                  <Input type="file" accept="image/jpeg,image/jpg" className="h-8 text-[11px] cursor-pointer" onChange={(e) => setPhotoFile(e.target.files?.[0] || null)} />
+                  <Label className="text-[11px] font-semibold cursor-pointer">{t.photoLabel} <span className="text-destructive">*</span></Label>
+                  <Input type="file" accept="image/jpeg,image/jpg" className="h-8 text-[11px] cursor-pointer file:cursor-pointer" onChange={(e) => setPhotoFile(e.target.files?.[0] || null)} />
                 </div>
                 <div className="space-y-1.5">
-                  <Label className="text-[11px] font-semibold">{t.marksCardLabel} <span className="text-destructive">*</span></Label>
-                  <Input type="file" accept=".pdf,.doc,.docx" className="h-8 text-[11px] cursor-pointer" onChange={(e) => setMarksFile(e.target.files?.[0] || null)} />
+                  <Label className="text-[11px] font-semibold cursor-pointer">{t.marksCardLabel} <span className="text-destructive">*</span></Label>
+                  <Input type="file" accept=".pdf,.doc,.docx" className="h-8 text-[11px] cursor-pointer file:cursor-pointer" onChange={(e) => setMarksFile(e.target.files?.[0] || null)} />
                 </div>
               </div>
             </CardContent>
           </Card>
 
           <div className="flex pt-1">
-            <Button type="submit" className="w-full h-8 text-[11px] font-bold rounded-md shadow cursor-pointer" disabled={isSubmitting || !!eligibilityError}>
+            <Button type="submit" className="w-full h-8 text-[11px] font-bold rounded-md shadow cursor-pointer" disabled={isSubmitting || !!eligibilityError || !!totalMarksError}>
               {isSubmitting ? <><Loader2 className="mr-2 h-3 w-3 animate-spin" /> {t.processing}</> : <><Send className="mr-2 h-3 w-3" /> {t.submitButton}</>}
             </Button>
           </div>
