@@ -69,15 +69,6 @@ export function LinguaForm() {
   const marksObtained = useWatch({ control: form.control, name: 'marksObtained' });
   const totalMarks = useWatch({ control: form.control, name: 'totalMarks' });
 
-  // Handle default total marks based on course selection
-  useEffect(() => {
-    if (selectedCourse === 'SSLC') {
-      form.setValue('totalMarks', '625');
-    } else if (selectedCourse === 'PUC') {
-      form.setValue('totalMarks', '600');
-    }
-  }, [selectedCourse, form]);
-
   // Handle percentage calculation and validation
   useEffect(() => {
     if (marksObtained && totalMarks) {
@@ -218,7 +209,7 @@ export function LinguaForm() {
       ]
     },
     kn: {
-      title: "ಪತಿಭಾ ಪುರಸಾರ 2024-2025:",
+      title: "Prathibha Puraskahara 2024-2025:",
       description: "2024 ಮತ್ತು 2025ರ ಸಾಲಿನ ಮಾರ್ಚಿ ಮತ್ತು ಏಪ್ರಿಲ್ ನಲ್ಲಿ ನಡೆದ ಪಿ.ಯು.ಸಿ ಪರೀಕ್ಷೆಯಲ್ಲಿ ಶೇ.85 ಕ್ಕಿಂತ ಹಾಗೂ ಎಸ್.ಎಸ್.ಎಲ್.ಸಿ/ಪದವಿ/ಉದ್ಯೋಗಾಧಾರಿತ ಶಿಕ್ಷಣದಲ್ಲಿ ರ‍್ಯಾಂಕ್‌ ಅಥವಾ ಶೇ.90 ಕ್ಕಿಂತ ಹೆಚ್ಚು ಅಂಕ ಪಡೆದ ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ದೇವಾಲಯದ ಮಟ್ಟದಲ್ಲಿ ಪುರಸ್ಕಾರ.",
       langLabel: "Choose Language / ಭಾಷೆ ಆಯ್ಕೆಮಾಡಿ",
       personalDetailsHeader: "ವೈಯಕ್ತಿಕ ವಿವರಗಳು",
@@ -236,7 +227,7 @@ export function LinguaForm() {
       percentageLabel: "ಶೇಕಡಾ (%)",
       marksObtainedLabel: "ಗಳಿಸಿದ ಅಂಕಗಳು",
       totalMarksLabel: "ಒಟ್ಟು ಅಂಕಗಳು",
-      yearPassingLabel: "ಪಾಸಾದ ವರ್ಷ",
+      yearPassingLabel: "ಉತ್ತೀರ್ಣರಾದ ವರ್ಷ",
       cgpaLabel: "ಸಿಜಿಪಿಎ (CGPA)",
       otherCourseLabel: "ಇತರೆ ಕೋರ್ಸ್ ವಿವರ",
       docsTitle: "ದಾಖಲೆಗಳು",
