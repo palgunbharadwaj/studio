@@ -22,14 +22,23 @@ const alertVariants = cva(
 const Alert = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement> & VariantProps<typeof alertVariants>
->(({ className, variant, ...props }, ref) => (
-  <div
-    ref={ref}
-    role="alert"
-    className={cn(alertVariants({ variant }), className)}
-    {...props}
-  />
-))
+>(({ className, variant, ...props }, ref) => {
+  // Check if we're using flex layout to override absolute positioning of icons
+  const isFlex = className?.includes('flex');
+  
+  return (
+    <div
+      ref={ref}
+      role="alert"
+      className={cn(
+        alertVariants({ variant }), 
+        isFlex && "[&>svg]:relative [&>svg]:left-0 [&>svg]:top-0 [&>svg~*]:pl-0",
+        className
+      )}
+      {...props}
+    />
+  )
+})
 Alert.displayName = "Alert"
 
 const AlertTitle = React.forwardRef<

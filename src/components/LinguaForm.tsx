@@ -69,7 +69,6 @@ export function LinguaForm() {
   const marksObtained = useWatch({ control: form.control, name: 'marksObtained' });
   const totalMarks = useWatch({ control: form.control, name: 'totalMarks' });
 
-  // Handle percentage calculation and validation
   useEffect(() => {
     if (marksObtained && totalMarks) {
       const marks = parseFloat(marksObtained);
@@ -578,9 +577,9 @@ export function LinguaForm() {
                   )} />
 
                   {eligibilityError && (
-                    <Alert variant="destructive" className="py-2 px-3">
-                      <AlertCircle className="h-3.5 w-3.5" />
-                      <AlertDescription className="text-[10px] ml-1">
+                    <Alert variant="destructive" className="py-2 px-3 flex items-center gap-2">
+                      <AlertCircle className="h-4 w-4 shrink-0" />
+                      <AlertDescription className="text-[10px] leading-tight">
                         {eligibilityError}
                       </AlertDescription>
                     </Alert>
