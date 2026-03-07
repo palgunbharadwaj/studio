@@ -135,10 +135,10 @@ export function LinguaForm() {
             <CheckCircle2 className="w-8 h-8" />
           </div>
           <div className="space-y-1">
-            <h2 className="text-lg font-bold text-[#202124]">{t.successTitle}</h2>
-            <p className="text-xs text-muted-foreground">{t.successDesc}</p>
+            <h2 className="text-sm font-bold text-[#202124]">{t.successTitle}</h2>
+            <p className="text-[11px] text-muted-foreground">{t.successDesc}</p>
           </div>
-          <Button variant="outline" size="sm" className="rounded-full px-5 text-xs h-8" onClick={() => { setResult(null); setFile(null); form.reset(); }}>
+          <Button variant="outline" size="sm" className="rounded-full px-5 text-[10px] h-7" onClick={() => { setResult(null); setFile(null); form.reset(); }}>
             {t.backButton}
           </Button>
         </CardContent>
@@ -168,14 +168,14 @@ export function LinguaForm() {
         <CardContent className="p-5 space-y-2">
           <div className="flex items-start gap-3">
             <div className="mt-0.5 flex-shrink-0">
-              <Info className="w-5 h-5 text-primary" />
+              <Info className="w-4 h-4 text-primary" />
             </div>
             <div className="space-y-1">
-              <h1 className="text-lg font-bold tracking-tight text-[#202124]">{t.title}</h1>
-              <p className="text-xs text-[#5f6368] leading-relaxed">{t.description}</p>
+              <h1 className="text-sm font-bold tracking-tight text-[#202124]">{t.title}</h1>
+              <p className="text-[11px] text-[#5f6368] leading-relaxed">{t.description}</p>
             </div>
           </div>
-          <div className="text-[10px] text-[#70757a] border-t pt-2 mt-1 font-medium italic">
+          <div className="text-[9px] text-[#70757a] border-t pt-2 mt-1 font-medium italic">
             Official registration portal for Prathibha Puraskahara SJSVT.
           </div>
         </CardContent>
@@ -185,27 +185,27 @@ export function LinguaForm() {
       <Card className="shadow-sm border-none">
         <CardContent className="p-5">
           <div className="space-y-3">
-            <Label className="text-xs font-semibold text-[#202124]">
+            <Label className="text-[11px] font-semibold text-[#202124]">
               {t.langQuestion} <span className="text-destructive">*</span>
             </Label>
             <RadioGroup 
               value={lang} 
               onValueChange={(v) => setLang(v as 'en' | 'kn')}
-              className="flex flex-col gap-2"
+              className="flex flex-col gap-1.5"
             >
               <div 
-                className={`flex items-center space-x-3 p-2.5 rounded-md border transition-all cursor-pointer ${lang === 'en' ? 'border-primary bg-primary/5' : 'border-border hover:bg-muted/30'}`} 
+                className="flex items-center space-x-3 py-1 cursor-pointer transition-opacity hover:opacity-80" 
                 onClick={() => setLang('en')}
               >
-                <RadioGroupItem value="en" id="en" className="h-4 w-4" />
-                <Label htmlFor="en" className="cursor-pointer font-medium text-xs w-full">English</Label>
+                <RadioGroupItem value="en" id="en" className="h-3.5 w-3.5" />
+                <Label htmlFor="en" className="cursor-pointer font-medium text-[11px] w-full">English</Label>
               </div>
               <div 
-                className={`flex items-center space-x-3 p-2.5 rounded-md border transition-all cursor-pointer ${lang === 'kn' ? 'border-primary bg-primary/5' : 'border-border hover:bg-muted/30'}`} 
+                className="flex items-center space-x-3 py-1 cursor-pointer transition-opacity hover:opacity-80" 
                 onClick={() => setLang('kn')}
               >
-                <RadioGroupItem value="kn" id="kn" className="h-4 w-4" />
-                <Label htmlFor="kn" className="cursor-pointer font-medium text-xs w-full">ಕನ್ನಡ</Label>
+                <RadioGroupItem value="kn" id="kn" className="h-3.5 w-3.5" />
+                <Label htmlFor="kn" className="cursor-pointer font-medium text-[11px] w-full">ಕನ್ನಡ</Label>
               </div>
             </RadioGroup>
           </div>
@@ -222,18 +222,18 @@ export function LinguaForm() {
                 name="name"
                 render={({ field }) => (
                   <FormItem className="space-y-1.5">
-                    <FormLabel className="text-xs font-semibold text-[#202124]">
+                    <FormLabel className="text-[11px] font-semibold text-[#202124]">
                       {t.nameLabel} <span className="text-destructive">*</span>
                     </FormLabel>
                     <FormControl>
                       <Input 
                         placeholder={t.namePlaceholder} 
-                        className="h-9 text-xs bg-muted/20 border-border focus-visible:bg-transparent transition-all rounded-sm"
+                        className="h-8 text-[11px] bg-muted/20 border-border focus-visible:bg-transparent transition-all rounded-sm"
                         suppressHydrationWarning
                         {...field} 
                       />
                     </FormControl>
-                    <FormMessage className="text-[10px]" />
+                    <FormMessage className="text-[9px]" />
                   </FormItem>
                 )}
               />
@@ -248,19 +248,19 @@ export function LinguaForm() {
                 name="email"
                 render={({ field }) => (
                   <FormItem className="space-y-1.5">
-                    <FormLabel className="text-xs font-semibold text-[#202124]">
+                    <FormLabel className="text-[11px] font-semibold text-[#202124]">
                       {t.emailLabel} <span className="text-destructive">*</span>
                     </FormLabel>
                     <FormControl>
                       <Input 
                         placeholder={t.emailPlaceholder} 
                         type="email"
-                        className="h-9 text-xs bg-muted/20 border-border focus-visible:bg-transparent transition-all rounded-sm"
+                        className="h-8 text-[11px] bg-muted/20 border-border focus-visible:bg-transparent transition-all rounded-sm"
                         suppressHydrationWarning
                         {...field} 
                       />
                     </FormControl>
-                    <FormMessage className="text-[10px]" />
+                    <FormMessage className="text-[9px]" />
                   </FormItem>
                 )}
               />
@@ -275,18 +275,18 @@ export function LinguaForm() {
                 name="details"
                 render={({ field }) => (
                   <FormItem className="space-y-1.5">
-                    <FormLabel className="text-xs font-semibold text-[#202124]">
+                    <FormLabel className="text-[11px] font-semibold text-[#202124]">
                       {t.detailsLabel} <span className="text-destructive">*</span>
                     </FormLabel>
                     <FormControl>
                       <Textarea 
                         placeholder={t.detailsPlaceholder} 
-                        className="min-h-[80px] text-xs bg-muted/20 border-border focus-visible:bg-transparent transition-all resize-none rounded-sm"
+                        className="min-h-[60px] text-[11px] bg-muted/20 border-border focus-visible:bg-transparent transition-all resize-none rounded-sm"
                         suppressHydrationWarning
                         {...field} 
                       />
                     </FormControl>
-                    <FormMessage className="text-[10px]" />
+                    <FormMessage className="text-[9px]" />
                   </FormItem>
                 )}
               />
@@ -296,7 +296,7 @@ export function LinguaForm() {
           {/* File Upload Card */}
           <Card className="shadow-sm border-none">
             <CardContent className="p-5 space-y-2">
-              <Label className="text-xs font-semibold text-[#202124]">
+              <Label className="text-[11px] font-semibold text-[#202124]">
                 {t.fileLabel}
               </Label>
               <div className="relative group">
@@ -306,23 +306,23 @@ export function LinguaForm() {
                   onChange={handleFileChange}
                   className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                 />
-                <div className={`flex flex-col items-center justify-center border border-dashed rounded-md p-4 transition-all ${file ? 'border-primary bg-primary/5' : 'border-muted-foreground/20 bg-muted/10 group-hover:bg-muted/20'}`}>
-                  <FileText className={`w-6 h-6 mb-1.5 ${file ? 'text-primary' : 'text-muted-foreground'}`} />
-                  <span className={`text-[11px] font-semibold ${file ? 'text-primary' : 'text-muted-foreground'}`}>
+                <div className={`flex flex-col items-center justify-center border border-dashed rounded-md p-3 transition-all ${file ? 'border-primary bg-primary/5' : 'border-muted-foreground/20 bg-muted/10 group-hover:bg-muted/20'}`}>
+                  <FileText className={`w-5 h-5 mb-1 ${file ? 'text-primary' : 'text-muted-foreground'}`} />
+                  <span className={`text-[10px] font-semibold ${file ? 'text-primary' : 'text-muted-foreground'}`}>
                     {file ? file.name : t.filePlaceholder}
                   </span>
-                  {!file && <span className="text-[9px] text-muted-foreground mt-0.5 font-medium">Max size: 2MB (PDF only)</span>}
+                  {!file && <span className="text-[8px] text-muted-foreground mt-0.5 font-medium">Max size: 2MB (PDF only)</span>}
                 </div>
               </div>
-              {fileError && <p className="text-[10px] font-semibold text-destructive">{fileError}</p>}
+              {fileError && <p className="text-[9px] font-semibold text-destructive">{fileError}</p>}
             </CardContent>
           </Card>
 
           {/* Submit Button Card */}
-          <div className="flex pt-2">
+          <div className="flex pt-1">
             <Button 
               type="submit" 
-              className="w-full h-9 text-xs font-bold rounded-md shadow hover:shadow-md transition-all" 
+              className="w-full h-8 text-[11px] font-bold rounded-md shadow hover:shadow-md transition-all" 
               disabled={isSubmitting}
               suppressHydrationWarning
             >
