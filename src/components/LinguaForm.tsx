@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -18,7 +19,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { submitLinguaForm, SubmissionResult } from '@/app/actions/submit-form';
-import { Loader2, CheckCircle2, Send, User, GraduationCap, FileCheck, AlertCircle } from 'lucide-react';
+import { Loader2, CheckCircle2, Send, User, GraduationCap, FileCheck, AlertCircle, Mail } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
 const formSchema = z.object({
@@ -150,6 +151,7 @@ export function LinguaForm() {
       successDesc: "Your registration has been submitted successfully.",
       backButton: "Submit Another",
       requiredNote: "* Indicates required question",
+      confMessage: "Confirmation email content has been generated.",
       boards: ['State', 'CBSE', 'ICSE'],
       streams: ['Science', 'Commerce', 'Arts'],
       years: ['2024-2025', '2023-2024'],
@@ -255,6 +257,7 @@ export function LinguaForm() {
       successDesc: "ನಿಮ್ಮ ನೋಂದಣಿಯನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಸಲ್ಲಿಸಲಾಗಿದೆ.",
       backButton: "ಮತ್ತೊಂದು ಸಲ್ಲಿಸಿ",
       requiredNote: "* ಕಡ್ಡಾಯ ಪ್ರಶ್ನೆಯನ್ನು ಸೂಚಿಸುತ್ತದೆ",
+      confMessage: "ದೃಢೀಕರಣ ಇಮೇಲ್ ವಿಷಯವನ್ನು ರಚಿಸಲಾಗಿದೆ.",
       boards: ['ರಾಜ್ಯ (State)', 'ಸಿಬಿಎಸ್ ಇ (CBSE)', 'ಐಸಿಎಸ್ ಇ (ICSE)'],
       streams: ['ವಿಜ್ಞಾನ (Science)', 'ವಾಣಿಜ್ಯ (Commerce)', 'ಕಲೆ (Arts)'],
       years: ['2024-2025', '2023-2024'],
@@ -369,7 +372,7 @@ export function LinguaForm() {
   if (result?.success) {
     return (
       <Card className="shadow-sm border-none max-w-xl mx-auto cursor-default">
-        <CardContent className="pt-8 pb-8 text-center space-y-3">
+        <CardContent className="pt-8 pb-8 text-center space-y-4">
           <div className="mx-auto bg-green-50 text-green-600 p-2 rounded-full w-fit">
             <CheckCircle2 className="w-8 h-8" />
           </div>
@@ -377,6 +380,20 @@ export function LinguaForm() {
             <h2 className="text-sm font-bold text-[#202124]">{t.successTitle}</h2>
             <p className="text-[11px] text-muted-foreground">{t.successDesc}</p>
           </div>
+
+          {result.emailData && (
+            <div className="mt-4 p-4 bg-muted/30 rounded-lg text-left border space-y-2">
+              <div className="flex items-center gap-2 text-[10px] font-bold text-primary">
+                <Mail className="w-3 h-3" />
+                <span>{t.confMessage}</span>
+              </div>
+              <div className="space-y-1">
+                <p className="text-[10px] font-bold text-[#202124]">{result.emailData.subject}</p>
+                <p className="text-[9px] text-[#5f6368] whitespace-pre-wrap leading-relaxed">{result.emailData.body}</p>
+              </div>
+            </div>
+          )}
+
           <Button variant="outline" size="sm" className="rounded-full px-5 text-[10px] h-7 cursor-pointer" onClick={() => { setResult(null); setPhotoFile(null); setMarksFile(null); form.reset(); }}>
             {t.backButton}
           </Button>
