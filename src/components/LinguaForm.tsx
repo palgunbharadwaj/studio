@@ -61,6 +61,7 @@ export function LinguaForm() {
       percentage: '',
       marksObtained: '',
       totalMarks: '',
+      cgpa: '',
     },
   });
 
@@ -68,38 +69,49 @@ export function LinguaForm() {
   const selectedStream = useWatch({ control: form.control, name: 'pucStream' });
   const marksObtained = useWatch({ control: form.control, name: 'marksObtained' });
   const totalMarks = useWatch({ control: form.control, name: 'totalMarks' });
+  const cgpaValue = useWatch({ control: form.control, name: 'cgpa' });
 
   useEffect(() => {
-    if (marksObtained && totalMarks) {
-      const marks = parseFloat(marksObtained);
-      const total = parseFloat(totalMarks);
-      
-      if (!isNaN(marks) && !isNaN(total) && total > 0) {
-        const calculatedPercentage = (marks / total) * 100;
-        const roundedPercentage = calculatedPercentage.toFixed(2);
-        form.setValue('percentage', roundedPercentage);
+    setEligibilityError(null);
 
-        let minRequired = 90;
-        if (selectedCourse === 'PUC') {
-          minRequired = 85;
-        }
+    if (['SSLC', 'PUC'].includes(selectedCourse || '')) {
+      if (marksObtained && totalMarks) {
+        const marks = parseFloat(marksObtained);
+        const total = parseFloat(totalMarks);
+        
+        if (!isNaN(marks) && !isNaN(total) && total > 0) {
+          const calculatedPercentage = (marks / total) * 100;
+          const roundedPercentage = calculatedPercentage.toFixed(2);
+          form.setValue('percentage', roundedPercentage);
 
-        if (calculatedPercentage < minRequired) {
-          const errorMsg = lang === 'en' 
-            ? `Minimum ${minRequired}% marks required for eligibility.` 
-            : `ಅರ್ಹತೆಗಾಗಿ ಕನಿಷ್ಠ ${minRequired}% ಅಂಕಗಳು ಅಗತ್ಯವಿದೆ.`;
-          setEligibilityError(errorMsg);
+          let minRequired = selectedCourse === 'PUC' ? 85 : 90;
+
+          if (calculatedPercentage < minRequired) {
+            const errorMsg = lang === 'en' 
+              ? `Minimum ${minRequired}% marks required for eligibility.` 
+              : `ಅರ್ಹತೆಗಾಗಿ ಕನಿಷ್ಠ ${minRequired}% ಅಂಕಗಳು ಅಗತ್ಯವಿದೆ.`;
+            setEligibilityError(errorMsg);
+          }
         } else {
-          setEligibilityError(null);
+          form.setValue('percentage', '');
         }
       } else {
         form.setValue('percentage', '');
-        setEligibilityError(null);
       }
-    } else {
-      setEligibilityError(null);
+    } else if (['Diploma', 'Degree', 'Engineering'].includes(selectedCourse || '')) {
+      if (cgpaValue) {
+        const cgpa = parseFloat(cgpaValue);
+        if (!isNaN(cgpa)) {
+          if (cgpa < 9.0 || cgpa > 10.0) {
+            const errorMsg = lang === 'en'
+              ? "CGPA must be between 9.0 and 10.0 for eligibility."
+              : "ಅರ್ಹತೆಗಾಗಿ ಸಿಜಿಪಿಎ (CGPA) 9.0 ಮತ್ತು 10.0 ರ ನಡುವೆ ಇರಬೇಕು.";
+            setEligibilityError(errorMsg);
+          }
+        }
+      }
     }
-  }, [marksObtained, totalMarks, selectedCourse, lang, form]);
+  }, [marksObtained, totalMarks, cgpaValue, selectedCourse, lang, form]);
 
   const translations = {
     en: {
@@ -388,11 +400,11 @@ export function LinguaForm() {
           <div className="space-y-3">
             <Label className="text-[11px] font-semibold text-[#202124]">{t.langLabel} <span className="text-destructive">*</span></Label>
             <RadioGroup value={lang} onValueChange={(v) => setLang(v as 'en' | 'kn')} className="flex flex-col gap-2">
-              <div className="flex items-center space-x-3 py-1" onClick={() => setLang('en')}>
+              <div className="flex items-center space-x-3 py-1 cursor-pointer" onClick={() => setLang('en')}>
                 <RadioGroupItem value="en" id="en" className="h-3.5 w-3.5" />
                 <Label htmlFor="en" className="cursor-pointer font-medium text-[11px]">English</Label>
               </div>
-              <div className="flex items-center space-x-3 py-1" onClick={() => setLang('kn')}>
+              <div className="flex items-center space-x-3 py-1 cursor-pointer" onClick={() => setLang('kn')}>
                 <RadioGroupItem value="kn" id="kn" className="h-3.5 w-3.5" />
                 <Label htmlFor="kn" className="cursor-pointer font-medium text-[11px]">ಕನ್ನಡ</Label>
               </div>
@@ -565,21 +577,30 @@ export function LinguaForm() {
                 )} />
               )}
 
-              {(['SSLC', 'PUC', 'Diploma', 'Degree', 'Engineering'].includes(selectedCourse || '')) && (
-                <div className="space-y-3">
-                  <FormField control={form.control} name="marksObtained" render={({ field }) => (
-                    <FormItem className="space-y-1.5"><FormLabel className="text-[11px] font-semibold">{t.marksObtainedLabel} *</FormLabel><FormControl><Input type="number" className="h-8 text-[11px] bg-muted/20" {...field} /></FormControl></FormItem>
-                  )} />
-                  <FormField control={form.control} name="totalMarks" render={({ field }) => (
-                    <FormItem className="space-y-1.5"><FormLabel className="text-[11px] font-semibold">{t.totalMarksLabel} *</FormLabel><FormControl><Input type="number" className="h-8 text-[11px] bg-muted/20" {...field} /></FormControl></FormItem>
-                  )} />
-                  
-                  <FormField control={form.control} name="percentage" render={({ field }) => (
-                    <FormItem className="space-y-1.5">
-                      <FormLabel className="text-[11px] font-semibold">{t.percentageLabel}</FormLabel>
-                      <FormControl><Input readOnly className="h-8 text-[11px] bg-secondary/30 font-bold" {...field} /></FormControl>
-                    </FormItem>
-                  )} />
+              {selectedCourse && (
+                <div className="space-y-3 pt-2">
+                  {(['SSLC', 'PUC', 'Other'].includes(selectedCourse)) && (
+                    <>
+                      <FormField control={form.control} name="marksObtained" render={({ field }) => (
+                        <FormItem className="space-y-1.5"><FormLabel className="text-[11px] font-semibold">{t.marksObtainedLabel} *</FormLabel><FormControl><Input type="number" className="h-8 text-[11px] bg-muted/20" {...field} /></FormControl></FormItem>
+                      )} />
+                      <FormField control={form.control} name="totalMarks" render={({ field }) => (
+                        <FormItem className="space-y-1.5"><FormLabel className="text-[11px] font-semibold">{t.totalMarksLabel} *</FormLabel><FormControl><Input type="number" className="h-8 text-[11px] bg-muted/20" {...field} /></FormControl></FormItem>
+                      )} />
+                      <FormField control={form.control} name="percentage" render={({ field }) => (
+                        <FormItem className="space-y-1.5">
+                          <FormLabel className="text-[11px] font-semibold">{t.percentageLabel}</FormLabel>
+                          <FormControl><Input readOnly className="h-8 text-[11px] bg-secondary/30 font-bold" {...field} /></FormControl>
+                        </FormItem>
+                      )} />
+                    </>
+                  )}
+
+                  {(['Diploma', 'Degree', 'Engineering'].includes(selectedCourse)) && (
+                    <FormField control={form.control} name="cgpa" render={({ field }) => (
+                      <FormItem className="space-y-1.5"><FormLabel className="text-[11px] font-semibold">{t.cgpaLabel} *</FormLabel><FormControl><Input className="h-8 text-[11px] bg-muted/20" {...field} /></FormControl></FormItem>
+                    )} />
+                  )}
 
                   {eligibilityError && (
                     <Alert variant="destructive" className="py-2 px-3 flex items-center gap-2 border-destructive/20 bg-destructive/5">
@@ -590,11 +611,6 @@ export function LinguaForm() {
                     </Alert>
                   )}
 
-                  {(['Diploma', 'Degree', 'Engineering'].includes(selectedCourse || '')) && (
-                    <FormField control={form.control} name="cgpa" render={({ field }) => (
-                      <FormItem className="space-y-1.5"><FormLabel className="text-[11px] font-semibold">{t.cgpaLabel} *</FormLabel><FormControl><Input className="h-8 text-[11px] bg-muted/20" {...field} /></FormControl></FormItem>
-                    )} />
-                  )}
                   <FormField control={form.control} name="yearOfPassing" render={({ field }) => (
                     <FormItem className="space-y-1.5">
                       <FormLabel className="text-[11px] font-semibold">{t.yearPassingLabel} *</FormLabel>
