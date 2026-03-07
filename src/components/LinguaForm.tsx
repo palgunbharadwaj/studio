@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -150,7 +149,7 @@ export function LinguaForm() {
           const roundedPercentage = calculatedPercentage.toFixed(2);
           form.setValue('percentage', roundedPercentage);
 
-          let minRequired = (selectedCourse === 'PUC' || (selectedCourse === 'Other' && (selectedStream?.includes('PUC') || selectedStream?.includes('ಪಿ.ಯು.ಸಿ')))) ? 85 : 90;
+          let minRequired = (selectedCourse === 'PUC') ? 85 : 90;
 
           if (calculatedPercentage < minRequired) {
             const errorMsg = lang === 'en' 
@@ -178,7 +177,7 @@ export function LinguaForm() {
         }
       }
     }
-  }, [marksObtained, totalMarks, cgpaValue, selectedCourse, lang, form, selectedStream]);
+  }, [marksObtained, totalMarks, cgpaValue, selectedCourse, lang, form]);
 
   const translations = {
     en: {
@@ -209,12 +208,10 @@ export function LinguaForm() {
       submitButton: "Submit",
       processing: "Processing...",
       successTitle: "Submission Received!",
-      successDesc: "Your registration has been submitted successfully.",
+      successDesc: "Your registration has been submitted successfully and a confirmation email has been sent.",
       requiredNote: "* Indicates required question",
       confMessage: "Confirmation message generated:",
       boards: ['State', 'CBSE', 'ICSE'],
-      streams: ['Science', 'Commerce', 'Arts'],
-      years: ['2024-2025', '2023-2024'],
       scienceCombinations: ['PCMB', 'PCMC', 'PCME', 'PCMS', 'Other'],
       commerceCombinations: ['EGBA', 'ECBA', 'ESBA', 'EBAC', 'EMBA', 'ECSA', 'Other'],
       artsCombinations: ['HEPS', 'HEPPsy', 'HESP', 'HEBA', 'HEGG', 'HESF', 'Other'],
@@ -250,12 +247,10 @@ export function LinguaForm() {
       submitButton: "ಸಲ್ಲಿಸಿ",
       processing: "ಪ್ರಕ್ರಿಯೆಯಲ್ಲಿದೆ...",
       successTitle: "ಸಲ್ಲಿಸುವಿಕೆ ಸ್ವೀಕರಿಸಲಾಗಿದೆ!",
-      successDesc: "ನಿಮ್ಮ ನೋಂದಣಿಯನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಸಲ್ಲಿಸಲಾಗಿದೆ.",
+      successDesc: "ನಿಮ್ಮ ನೋಂದಣಿಯನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಸಲ್ಲಿಸಲಾಗಿದೆ ಮತ್ತು ದೃಢೀಕರಣ ಇಮೇಲ್ ಕಳುಹಿಸಲಾಗಿದೆ.",
       requiredNote: "* ಕಡ್ಡಾಯ ಪ್ರಶ್ನೆಯನ್ನು ಸೂಚಿಸುತ್ತದೆ",
       confMessage: "ದೃಢೀಕರಣ ಸಂದೇಶ ರಚಿಸಲಾಗಿದೆ:",
       boards: ['ರಾಜ್ಯ (State)', 'ಸಿಬಿಎಸ್ ಇ (CBSE)', 'ಐಸಿಎಸ್ ಇ (ICSE)'],
-      streams: ['ವಿಜ್ಞಾನ (Science)', 'ವಾಣಿಜ್ಯ (Commerce)', 'ಕಲೆ (Arts)'],
-      years: ['2024-2025', '2023-2024'],
       scienceCombinations: ['PCMB', 'PCMC', 'PCME', 'PCMS', 'ಇತರೆ'],
       commerceCombinations: ['EGBA', 'ECBA', 'ESBA', 'EBAC', 'EMBA', 'ECSA', 'ಇತರೆ'],
       artsCombinations: ['HEPS', 'HEPPsy', 'HESP', 'HEBA', 'HEGG', 'HESF', 'ಇತರೆ'],
@@ -455,15 +450,18 @@ export function LinguaForm() {
                     <FormItem className="space-y-1.5">
                       <FormLabel className="text-[11px] font-semibold">{t.streamLabel} *</FormLabel>
                       <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-2">
-                        {t.streams.map(s => <div key={s} className="flex items-center space-x-2"><RadioGroupItem value={s} id={s} className="h-3.5 w-3.5 cursor-pointer" /><Label htmlFor={s} className="text-[11px] cursor-pointer">{s}</Label></div>)}
+                        {['Science', 'Commerce', 'Arts'].map(s => (
+                          <div key={s} className="flex items-center space-x-2">
+                            <RadioGroupItem value={s} id={s} className="h-3.5 w-3.5 cursor-pointer" />
+                            <Label htmlFor={s} className="text-[11px] cursor-pointer">{lang === 'en' ? s : (s === 'Science' ? 'ವಿಜ್ಞಾನ' : s === 'Commerce' ? 'ವಾಣಿಜ್ಯ' : 'ಕಲೆ')}</Label>
+                          </div>
+                        ))}
                       </RadioGroup>
                     </FormItem>
                   )} />
                   {selectedStream && (
                     <FormField control={form.control} name="combination" render={({ field }) => {
-                      const isScience = selectedStream === 'Science' || selectedStream === 'ವಿಜ್ಞಾನ (Science)';
-                      const isCommerce = selectedStream === 'Commerce' || selectedStream === 'ವಾಣಿಜ್ಯ (Commerce)';
-                      const options = isScience ? t.scienceCombinations : isCommerce ? t.commerceCombinations : t.artsCombinations;
+                      const options = selectedStream === 'Science' ? t.scienceCombinations : selectedStream === 'Commerce' ? t.commerceCombinations : t.artsCombinations;
                       return (
                         <FormItem className="space-y-1.5">
                           <FormLabel className="text-[11px] font-semibold">{t.combinationLabel} *</FormLabel>
@@ -550,12 +548,12 @@ export function LinguaForm() {
                   )}
 
                   <FormField control={form.control} name="yearOfPassing" render={({ field }) => {
-                    const yearsToShow = (['Diploma', 'Degree', 'Engineering'].includes(selectedCourse || '')) ? [t.years[0]] : t.years;
+                    const years = (['Diploma', 'Degree', 'Engineering'].includes(selectedCourse || '')) ? ['2024-2025'] : ['2024-2025', '2023-2024'];
                     return (
                       <FormItem className="space-y-1.5">
                         <FormLabel className="text-[11px] font-semibold">{t.yearPassingLabel} *</FormLabel>
                         <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-2">
-                          {yearsToShow.map(y => <div key={y} className="flex items-center space-x-2"><RadioGroupItem value={y} id={y} className="h-3.5 w-3.5 cursor-pointer" /><Label htmlFor={y} className="text-[11px] cursor-pointer">{y}</Label></div>)}
+                          {years.map(y => <div key={y} className="flex items-center space-x-2"><RadioGroupItem value={y} id={y} className="h-3.5 w-3.5 cursor-pointer" /><Label htmlFor={y} className="text-[11px] cursor-pointer">{y}</Label></div>)}
                         </RadioGroup>
                       </FormItem>
                     );

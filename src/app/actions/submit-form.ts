@@ -5,6 +5,7 @@ import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { errorEmitter } from '@/firebase/error-emitter';
 import { FirestorePermissionError } from '@/firebase/errors';
 import { generatePersonalizedConfirmationEmail, PersonalizedConfirmationEmailOutput } from '@/ai/flows/personalized-confirmation-email';
+import { sendConfirmationEmail } from './send-email';
 
 export type SubmissionResult = {
   success: boolean;
@@ -47,6 +48,9 @@ export async function submitLinguaForm(data: any): Promise<SubmissionResult> {
       submissionDetails,
       preferredLanguage: data.language as 'en' | 'kn',
     });
+
+    // Send the email via Server Action
+    await sendConfirmationEmail(data.email, emailData.subject, emailData.body);
 
     return {
       success: true,
