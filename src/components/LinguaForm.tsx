@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -19,8 +19,9 @@ import { Card, CardContent } from '@/components/ui/card';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { submitLinguaForm, SubmissionResult } from '@/app/actions/submit-form';
-import { Loader2, CheckCircle2, Send, Info, User, GraduationCap, FileCheck } from 'lucide-react';
+import { Loader2, CheckCircle2, Send, Info, User, GraduationCap, FileCheck, AlertCircle } from 'lucide-react';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
 const formSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address." }),
@@ -47,6 +48,7 @@ export function LinguaForm() {
   const [lang, setLang] = useState<'kn' | 'en'>('kn');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [result, setResult] = useState<SubmissionResult | null>(null);
+  const [eligibilityError, setEligibilityError] = useState<string | null>(null);
   
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [marksFile, setMarksFile] = useState<File | null>(null);
@@ -58,11 +60,50 @@ export function LinguaForm() {
       studentName: '',
       fatherName: '',
       motherName: '',
+      percentage: '',
+      marksObtained: '',
+      totalMarks: '',
     },
   });
 
   const selectedCourse = useWatch({ control: form.control, name: 'course' });
   const selectedStream = useWatch({ control: form.control, name: 'pucStream' });
+  const marksObtained = useWatch({ control: form.control, name: 'marksObtained' });
+  const totalMarks = useWatch({ control: form.control, name: 'totalMarks' });
+
+  // Calculation and Validation Logic
+  useEffect(() => {
+    if (marksObtained && totalMarks) {
+      const marks = parseFloat(marksObtained);
+      const total = parseFloat(totalMarks);
+      
+      if (!isNaN(marks) && !isNaN(total) && total > 0) {
+        const calculatedPercentage = (marks / total) * 100;
+        const roundedPercentage = calculatedPercentage.toFixed(2);
+        form.setValue('percentage', roundedPercentage);
+
+        // Validation based on requirements
+        let minRequired = 90;
+        if (selectedCourse === 'PUC') {
+          minRequired = 85;
+        }
+
+        if (calculatedPercentage < minRequired) {
+          const errorMsg = lang === 'en' 
+            ? `Minimum ${minRequired}% marks required for eligibility.` 
+            : `ಅರ್ಹತೆಗಾಗಿ ಕನಿಷ್ಠ ${minRequired}% ಅಂಕಗಳು ಅಗತ್ಯವಿದೆ.`;
+          setEligibilityError(errorMsg);
+        } else {
+          setEligibilityError(null);
+        }
+      } else {
+        form.setValue('percentage', '');
+        setEligibilityError(null);
+      }
+    } else {
+      setEligibilityError(null);
+    }
+  }, [marksObtained, totalMarks, selectedCourse, lang, form]);
 
   const translations = {
     en: {
@@ -80,7 +121,7 @@ export function LinguaForm() {
       boardLabel: "Board",
       streamLabel: "Stream",
       combinationLabel: "Combination",
-      branchLabel: "Branch / Branch Selection",
+      branchLabel: "Branch",
       percentageLabel: "Percentage (%)",
       marksObtainedLabel: "Marks Obtained",
       totalMarksLabel: "Total Marks",
@@ -180,7 +221,7 @@ export function LinguaForm() {
       studentNameLabel: "ವಿದ್ಯಾರ್ಥಿಯ ಹೆಸರು",
       relationshipLabel: "S/O ಅಥವಾ D/O",
       fatherNameLabel: "ತಂದೆಯ ಹೆಸರು",
-      motherNameLabel: "ತಾಯಿಯ ಹೆಸರು",
+      motherNameLabel: "ಮನೆಯ ಹೆಸರು",
       courseLabel: "ಕೋರ್ಸ್",
       boardLabel: "ಮಂಡಳಿ",
       streamLabel: "ವಿಭಾಗ",
@@ -290,6 +331,8 @@ export function LinguaForm() {
   };
 
   async function onSubmit(values: FormValues) {
+    if (eligibilityError) return;
+    
     setIsSubmitting(true);
     try {
       let photoBase64 = '';
@@ -530,19 +573,31 @@ export function LinguaForm() {
 
               {(['SSLC', 'PUC', 'Diploma', 'Degree', 'Engineering'].includes(selectedCourse || '')) && (
                 <div className="space-y-3">
-                  {(['SSLC', 'PUC'].includes(selectedCourse || '')) && (
-                    <>
-                      <FormField control={form.control} name="percentage" render={({ field }) => (
-                        <FormItem className="space-y-1.5"><FormLabel className="text-[11px] font-semibold">{t.percentageLabel} *</FormLabel><FormControl><Input className="h-8 text-[11px] bg-muted/20" {...field} /></FormControl></FormItem>
-                      )} />
-                      <FormField control={form.control} name="marksObtained" render={({ field }) => (
-                        <FormItem className="space-y-1.5"><FormLabel className="text-[11px] font-semibold">{t.marksObtainedLabel} *</FormLabel><FormControl><Input className="h-8 text-[11px] bg-muted/20" {...field} /></FormControl></FormItem>
-                      )} />
-                      <FormField control={form.control} name="totalMarks" render={({ field }) => (
-                        <FormItem className="space-y-1.5"><FormLabel className="text-[11px] font-semibold">{t.totalMarksLabel} *</FormLabel><FormControl><Input className="h-8 text-[11px] bg-muted/20" {...field} /></FormControl></FormItem>
-                      )} />
-                    </>
+                  <div className="grid grid-cols-2 gap-3">
+                    <FormField control={form.control} name="marksObtained" render={({ field }) => (
+                      <FormItem className="space-y-1.5"><FormLabel className="text-[11px] font-semibold">{t.marksObtainedLabel} *</FormLabel><FormControl><Input type="number" className="h-8 text-[11px] bg-muted/20" {...field} /></FormControl></FormItem>
+                    )} />
+                    <FormField control={form.control} name="totalMarks" render={({ field }) => (
+                      <FormItem className="space-y-1.5"><FormLabel className="text-[11px] font-semibold">{t.totalMarksLabel} *</FormLabel><FormControl><Input type="number" className="h-8 text-[11px] bg-muted/20" {...field} /></FormControl></FormItem>
+                    )} />
+                  </div>
+                  
+                  <FormField control={form.control} name="percentage" render={({ field }) => (
+                    <FormItem className="space-y-1.5">
+                      <FormLabel className="text-[11px] font-semibold">{t.percentageLabel}</FormLabel>
+                      <FormControl><Input readOnly className="h-8 text-[11px] bg-secondary/30 font-bold" {...field} /></FormControl>
+                    </FormItem>
+                  )} />
+
+                  {eligibilityError && (
+                    <Alert variant="destructive" className="py-2 px-3">
+                      <AlertCircle className="h-3.5 w-3.5" />
+                      <AlertDescription className="text-[10px] ml-1">
+                        {eligibilityError}
+                      </AlertDescription>
+                    </Alert>
                   )}
+
                   {(['Diploma', 'Degree', 'Engineering'].includes(selectedCourse || '')) && (
                     <FormField control={form.control} name="cgpa" render={({ field }) => (
                       <FormItem className="space-y-1.5"><FormLabel className="text-[11px] font-semibold">{t.cgpaLabel} *</FormLabel><FormControl><Input className="h-8 text-[11px] bg-muted/20" {...field} /></FormControl></FormItem>
@@ -578,7 +633,7 @@ export function LinguaForm() {
           </Card>
 
           <div className="flex pt-1">
-            <Button type="submit" className="w-full h-8 text-[11px] font-bold rounded-md shadow" disabled={isSubmitting}>
+            <Button type="submit" className="w-full h-8 text-[11px] font-bold rounded-md shadow" disabled={isSubmitting || !!eligibilityError}>
               {isSubmitting ? <><Loader2 className="mr-2 h-3 w-3 animate-spin" /> {t.processing}</> : <><Send className="mr-2 h-3 w-3" /> {t.submitButton}</>}
             </Button>
           </div>
