@@ -120,7 +120,6 @@ export function LinguaForm() {
         const total = parseFloat(totalMarks);
         
         if (!isNaN(marks) && !isNaN(total) && total > 0) {
-          // Total Marks strict validation
           if (selectedCourse === 'SSLC' && totalMarks !== '625') {
             const errorMsg = lang === 'en' 
               ? "Total marks for SSLC must be 625." 
@@ -215,9 +214,9 @@ export function LinguaForm() {
       scienceCombinations: ['PCMB (Phy, Chem, Math, Bio)', 'PCMC (Phy, Chem, Math, Comp)', 'PCME (Phy, Chem, Math, Elec)', 'PCMS (Phy, Chem, Math, Stat)', 'Other'],
       commerceCombinations: ['EGBA (Econ, Geog, Bus, Acc)', 'ECBA (Econ, Comp, Bus, Acc)', 'ESBA (Econ, Stat, Bus, Acc)', 'EBAC (Econ, Bus, Acc, Civics)', 'EMBA (Econ, Math, Bus, Acc)', 'ECSA (Econ, Comp, Stat, Acc)', 'Other'],
       artsCombinations: ['HEPS (Hist, Econ, PolSci, Soc)', 'HEPPsy (Hist, Econ, PolSci, Psych)', 'HESP (Hist, Econ, Soc, Psych)', 'HEBA (Hist, Econ, Bus, Acc)', 'HEGG (Hist, Econ, Geog, Guj)', 'HESF (Hist, Econ, Soc, FineArts)', 'Other'],
-      engineeringCourses: ['CSE (Computer Science)', 'AIML (Artificial Intelligence)', 'ISE (Information Science)', 'ECE (Electronics)', 'EEE (Electrical)', 'Mechanical', 'Civil', 'Other'],
-      diplomaCourses: ['CSE Diploma', 'ECE Diploma', 'EEE Diploma', 'Mech Diploma', 'Civil Diploma', 'Other'],
-      degreeCourses: ['B.Sc (Bachelor of Science)', 'B.Com (Bachelor of Commerce)', 'B.A (Bachelor of Arts)', 'BCA (Computer Applications)', 'BBA (Business Administration)', 'B.Pharma', 'Nursing', 'Other']
+      engineeringCourses: ['Computer Science & Engineering (CSE)', 'Artificial Intelligence & Machine Learning (AI&ML)', 'Information Science & Engineering (ISE)', 'Electronics & Communication Engineering (ECE)', 'Electrical & Electronics Engineering (EEE)', 'Mechanical Engineering', 'Civil Engineering', 'Other'],
+      diplomaCourses: ['Diploma in Computer Science', 'Diploma in Electronics & Communication', 'Diploma in Electrical & Electronics', 'Diploma in Mechanical Engineering', 'Diploma in Civil Engineering', 'Other'],
+      degreeCourses: ['B.Sc (Bachelor of Science)', 'B.Com (Bachelor of Commerce)', 'B.A (Bachelor of Arts)', 'BCA (Bachelor of Computer Applications)', 'BBA (Bachelor of Business Administration)', 'B.Pharma (Bachelor of Pharmacy)', 'B.Sc Nursing', 'Other']
     },
     kn: {
       title: "ಪ್ರತಿಭಾ ಪುರಸ್ಕಾರ 2024-2025:",
@@ -254,9 +253,9 @@ export function LinguaForm() {
       scienceCombinations: ['PCMB', 'PCMC', 'PCME', 'PCMS', 'ಇತರೆ'],
       commerceCombinations: ['EGBA', 'ECBA', 'ESBA', 'EBAC', 'EMBA', 'ECSA', 'ಇತರೆ'],
       artsCombinations: ['HEPS', 'HEPPsy', 'HESP', 'HEBA', 'HEGG', 'HESF', 'ಇತರೆ'],
-      engineeringCourses: ['CSE', 'AIML', 'ISE', 'ECE', 'EEE', 'Mechanical', 'Civil', 'ಇತರೆ'],
-      diplomaCourses: ['CSE Diploma', 'ECE Diploma', 'EEE Diploma', 'Mech Diploma', 'Civil Diploma', 'ಇತರೆ'],
-      degreeCourses: ['ಬಿ.ಎಸ್ಸಿ (B.Sc)', 'ಬಿ.ಕಾಂ (B.Com)', 'ಬಿ.ಎ. (B.A)', 'ಬಿ.ಸಿ.ಎ. (BCA)', 'ಬಿ.ಬಿ.ಎ. (BBA)', 'ಬಿ.ಫಾರ್ಮಾ', 'ನರ್ಸಿಂಗ್', 'ಇತರೆ']
+      engineeringCourses: ['Computer Science & Engineering (CSE)', 'Artificial Intelligence & Machine Learning (AI&ML)', 'Information Science & Engineering (ISE)', 'Electronics & Communication Engineering (ECE)', 'Electrical & Electronics Engineering (EEE)', 'Mechanical Engineering', 'Civil Engineering', 'ಇತರೆ'],
+      diplomaCourses: ['Diploma in Computer Science', 'Diploma in Electronics & Communication', 'Diploma in Electrical & Electronics', 'Diploma in Mechanical Engineering', 'Diploma in Civil Engineering', 'ಇತರೆ'],
+      degreeCourses: ['ಬಿ.ಎಸ್ಸಿ (B.Sc)', 'ಬಿ.ಕಾಂ (B.Com)', 'ಬಿ.ಎ. (B.A)', 'ಬಿ.ಸಿ.ಎ. (BCA)', 'ಬಿ.ಬಿ.ಎ. (BBA)', 'ಬಿ.ಫಾರ್ಮಾ (B.Pharma)', 'ಬಿ.ಎಸ್ಸಿ ನರ್ಸಿಂಗ್ (B.Sc Nursing)', 'ಇತರೆ']
     }
   };
 
