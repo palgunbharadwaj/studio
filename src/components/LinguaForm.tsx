@@ -21,7 +21,7 @@ import { Label } from '@/components/ui/label';
 import { submitLinguaForm, SubmissionResult } from '@/app/actions/submit-form';
 import { Loader2, CheckCircle2, Send, Info, User, GraduationCap, FileCheck, AlertCircle } from 'lucide-react';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 const formSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address." }),
@@ -67,11 +67,9 @@ export function LinguaForm() {
   });
 
   const selectedCourse = useWatch({ control: form.control, name: 'course' });
-  const selectedStream = useWatch({ control: form.control, name: 'pucStream' });
   const marksObtained = useWatch({ control: form.control, name: 'marksObtained' });
   const totalMarks = useWatch({ control: form.control, name: 'totalMarks' });
 
-  // Calculation and Validation Logic
   useEffect(() => {
     if (marksObtained && totalMarks) {
       const marks = parseFloat(marksObtained);
@@ -82,7 +80,6 @@ export function LinguaForm() {
         const roundedPercentage = calculatedPercentage.toFixed(2);
         form.setValue('percentage', roundedPercentage);
 
-        // Validation based on requirements
         let minRequired = 90;
         if (selectedCourse === 'PUC') {
           minRequired = 85;
