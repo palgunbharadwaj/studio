@@ -104,8 +104,8 @@ export function LinguaForm() {
         if (!isNaN(cgpa)) {
           if (cgpa < 9.0 || cgpa > 10.0) {
             const errorMsg = lang === 'en'
-              ? "CGPA must be between 9.0 and 10.0 for eligibility."
-              : "ಅರ್ಹತೆಗಾಗಿ ಸಿಜಿಪಿಎ (CGPA) 9.0 ಮತ್ತು 10.0 ರ ನಡುವೆ ಇರಬೇಕು.";
+              ? "Enter Valid CGPA"
+              : "ಸರಿಯಾದ ಸಿಜಿಪಿಎ ನಮೂದಿಸಿ";
             setEligibilityError(errorMsg);
           }
         }
