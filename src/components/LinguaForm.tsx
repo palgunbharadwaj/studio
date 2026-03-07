@@ -18,7 +18,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { submitLinguaForm, SubmissionResult } from '@/app/actions/submit-form';
-import { Loader2, CheckCircle2, Send, Info, User, GraduationCap, FileCheck, AlertCircle } from 'lucide-react';
+import { Loader2, CheckCircle2, Send, User, GraduationCap, FileCheck, AlertCircle } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
 const formSchema = z.object({
@@ -389,12 +389,9 @@ export function LinguaForm() {
     <div className="space-y-3 w-full max-w-xl mx-auto pb-8">
       <Card className="shadow-sm overflow-hidden border-none">
         <CardContent className="p-5 space-y-2">
-          <div className="flex items-start gap-3">
-            <div className="mt-0.5 flex-shrink-0"><Info className="w-4 h-4 text-primary" /></div>
-            <div className="space-y-1">
-              <h1 className="text-sm font-bold tracking-tight text-[#202124]">{t.title}</h1>
-              <p className="text-[11px] text-[#5f6368] leading-relaxed">{t.description}</p>
-            </div>
+          <div className="space-y-1">
+            <h1 className="text-sm font-bold tracking-tight text-[#202124]">{t.title}</h1>
+            <p className="text-[11px] text-[#5f6368] leading-relaxed">{t.description}</p>
           </div>
           <div className="text-[9px] text-destructive pt-2 border-t mt-1 font-medium italic">{t.requiredNote}</div>
         </CardContent>
