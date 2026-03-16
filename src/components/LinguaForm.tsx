@@ -146,13 +146,15 @@ export function LinguaForm() {
           const roundedPercentage = calculatedPercentage.toFixed(2);
           form.setValue('percentage', roundedPercentage);
 
-          let minRequired = (selectedCourse === 'PUC') ? 85 : 90;
-
-          if (calculatedPercentage < minRequired) {
-            const errorMsg = lang === 'en' 
-              ? `Minimum ${minRequired}% marks required for eligibility.` 
-              : `ಅರ್ಹತೆಗಾಗಿ ಕನಿಷ್ಠ ${minRequired}% ಅಂಕಗಳು ಅಗತ್ಯವಿದೆ.`;
-            setEligibilityError(errorMsg);
+          // Skip eligibility check for 'Other' per request "only condition is positive marks"
+          if (selectedCourse !== 'Other') {
+            let minRequired = (selectedCourse === 'PUC') ? 85 : 90;
+            if (calculatedPercentage < minRequired) {
+              const errorMsg = lang === 'en' 
+                ? `Minimum ${minRequired}% marks required for eligibility.` 
+                : `ಅರ್ಹತೆಗಾಗಿ ಕನಿಷ್ಠ ${minRequired}% ಅಂಕಗಳು ಅಗತ್ಯವಿದೆ.`;
+              setEligibilityError(errorMsg);
+            }
           }
         } else {
           form.setValue('percentage', '');
