@@ -192,7 +192,7 @@ export function LinguaForm() {
       boardLabel: "Board",
       streamLabel: "Stream",
       combinationLabel: "Combination",
-      branchLabel: "Branch",
+      branchLabel: "Course",
       percentageLabel: "Percentage (%)",
       marksObtainedLabel: "Marks Obtained",
       totalMarksLabel: "Total Marks",
@@ -214,13 +214,15 @@ export function LinguaForm() {
         'PCMC (Physics, Chemistry, Mathematics, Computer Science)', 
         'PCME (Physics, Chemistry, Mathematics, Electronics)', 
         'PCMS (Physics, Chemistry, Mathematics, Statistics)', 
+        'PCMH (Physics, Chemistry, Mathematics, Home Science)',
+        'PCAG (Physics, Chemistry, Agriculture, Mathematics/Biology)',
         'Other'
       ],
       commerceCombinations: [
         'EGBA (Economics, Geography, Business Studies, Accountancy)', 
-        'ECBA (Economics, Computer Science, Business Studies, Accountancy)', 
-        'ESBA (Economics, Statistics, Business Studies, Accountancy)', 
-        'EBAC (Economics, Business Studies, Accountancy, Civics)', 
+        'ECBA (Economics, Commerce, Business Studies, Accountancy)', 
+        'ESBA (Economics, Sociology, Business Studies, Accountancy)', 
+        'EBAC (Economics, Business Studies, Accountancy, Computer Science)', 
         'EMBA (Economics, Mathematics, Business Studies, Accountancy)', 
         'ECSA (Economics, Computer Science, Statistics, Accountancy)', 
         'Other'
@@ -229,37 +231,53 @@ export function LinguaForm() {
         'HEPS (History, Economics, Political Science, Sociology)', 
         'HEPPsy (History, Economics, Political Science, Psychology)', 
         'HESP (History, Economics, Sociology, Psychology)', 
-        'HEBA (History, Economics, Business Studies, Accountancy)', 
+        'HEBA (History, Economics, Business, Accountancy)', 
         'HEGG (History, Economics, Geography, Geology)', 
         'HESF (History, Economics, Sociology, Fine Arts)', 
         'Other'
       ],
       engineeringCourses: [
-        'Computer Science & Engineering (CSE)', 
-        'Artificial Intelligence & Machine Learning (AI&ML)', 
-        'Information Science & Engineering (ISE)', 
-        'Electronics & Communication Engineering (ECE)', 
-        'Electrical & Electronics Engineering (EEE)', 
-        'Mechanical Engineering', 
-        'Civil Engineering', 
+        'CSE (Computer Science and Engineering)', 
+        'AIML (Artificial Intelligence and Machine Learning)', 
+        'ISE (Information Science and Engineering)', 
+        'ECE (Electronics and Communication Engineering)', 
+        'EEE (Electrical and Electronics Engineering)', 
+        'Mechanical (Mechanical Engineering)', 
+        'Civil (Civil Engineering)', 
+        'IP (Industrial Production Engineering)',
+        'EIE (Electronics and Instrumentation Engineering)',
+        'ECE (Electronics & Computer Engineering)',
+        'Mechatronics Engineering',
+        'Automobile Engineering',
+        'Aerospace Engineering',
+        'Chemical Engineering',
+        'Biotechnology Engineering',
+        'Data Science and Engineering',
+        'AIDS (Artificial Intelligence and Data Science Engineering)',
+        'Robotics and Automation Engineering',
+        'ECS (Electronics & Computer Science Engineering)',
+        'CSBS (Computer Science and Business Systems)',
         'Other'
       ],
       diplomaCourses: [
-        'Diploma in Computer Science', 
-        'Diploma in Electronics & Communication', 
-        'Diploma in Electrical & Electronics', 
+        'Diploma in Computer Science & Engineering (CSE)', 
+        'Diploma in Electronics & Communication Engineering (ECE)', 
+        'Diploma in Electrical & Electronics Engineering (EEE)', 
         'Diploma in Mechanical Engineering', 
         'Diploma in Civil Engineering', 
+        'Diploma in Automobile Engineering', 
         'Other'
       ],
       degreeCourses: [
+        'D.Pharma (Diploma in Pharmacy)', 
+        'B.Pharma (Bachelor of Pharmacy)', 
         'B.Sc (Bachelor of Science)', 
         'B.Com (Bachelor of Commerce)', 
         'B.A (Bachelor of Arts)', 
         'BCA (Bachelor of Computer Applications)', 
         'BBA (Bachelor of Business Administration)', 
-        'B.Pharma (Bachelor of Pharmacy)', 
-        'B.Sc Nursing', 
+        'BSW (Bachelor of Social Work)',
+        'B.Sc Nursing (Bachelor of Science in Nursing)',
         'Other'
       ]
     },
@@ -561,7 +579,7 @@ export function LinguaForm() {
                         {['Science', 'Commerce', 'Arts'].map(s => (
                           <div key={s} className="flex items-center space-x-2">
                             <RadioGroupItem value={s} id={s} className="h-3.5 w-3.5 cursor-pointer" />
-                            <Label htmlFor={s} className="text-[11px] cursor-pointer">{lang === 'en' ? s : (s === 'Science' ? 'ವಿಜ್ಞಾನ' : s === 'Commerce' ? 'ವಾಣಿಜ್ಯ' : 'ಕಲೆ')}</Label>
+                            <Label htmlFor={s} className="text-[11px] cursor-pointer">{lang === 'en' ? (s === 'Science' ? 'Science' : s === 'Commerce' ? 'Commerce' : 'Arts') : (s === 'Science' ? 'ವಿಜ್ಞಾನ' : s === 'Commerce' ? 'ವಾಣಿಜ್ಯ' : 'ಕಲೆ')}</Label>
                           </div>
                         ))}
                       </RadioGroup>
@@ -586,7 +604,7 @@ export function LinguaForm() {
               {(['Diploma', 'Degree', 'Engineering'].includes(selectedCourse || '')) && (
                 <FormField control={form.control} name="branch" render={({ field }) => (
                   <FormItem className="space-y-1.5">
-                    <FormLabel className="text-[11px] font-semibold">{selectedCourse === 'Degree' ? t.courseLabel : t.branchLabel} *</FormLabel>
+                    <FormLabel className="text-[11px] font-semibold">{t.branchLabel} *</FormLabel>
                     <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-2">
                       {(selectedCourse === 'Engineering' ? t.engineeringCourses : selectedCourse === 'Diploma' ? t.diplomaCourses : t.degreeCourses).map(c => (
                         <div key={c} className="flex items-center space-x-2"><RadioGroupItem value={c} id={c} className="h-3.5 w-3.5 cursor-pointer" /><Label htmlFor={c} className="text-[11px] cursor-pointer">{c}</Label></div>
