@@ -165,11 +165,11 @@ export function LinguaForm() {
         const cgpa = parseFloat(cgpaValue);
         if (!isNaN(cgpa)) {
           if (cgpa < 9.0 || cgpa > 10.0) {
-            const errorMsg = lang === 'en' ? "Enter Valid CGPA" : "ಸರಿಯಾದ ಸಿಜಿಪಿಎ ನಮೂದಿಸಿ";
+            const errorMsg = lang === 'en' ? "Enter CGPA above 9" : "9 ಕ್ಕಿಂತ ಹೆಚ್ಚಿನ ಸಿಜಿಪಿಎ ನಮೂದಿಸಿ";
             setEligibilityError(errorMsg);
           }
         } else if (cgpaValue.trim() !== '') {
-          const errorMsg = lang === 'en' ? "Enter Valid CGPA" : "ಸರಿಯಾದ ಸಿಜಿಪಿಎ ನಮೂದಿಸಿ";
+          const errorMsg = lang === 'en' ? "Enter CGPA above 9" : "9 ಕ್ಕಿಂತ ಹೆಚ್ಚಿನ ಸಿಜಿಪಿಎ ನಮೂದಿಸಿ";
           setEligibilityError(errorMsg);
         }
       }
