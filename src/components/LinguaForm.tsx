@@ -76,7 +76,6 @@ export function LinguaForm() {
   const totalMarks = useWatch({ control: form.control, name: 'totalMarks' });
   const cgpaValue = useWatch({ control: form.control, name: 'cgpa' });
 
-  // Script validation: Only respective script for each mode
   useEffect(() => {
     const errors: {[key: string]: string | null} = {};
     const englishRegex = /^[A-Za-z\s\.]+$/;
@@ -99,12 +98,10 @@ export function LinguaForm() {
     setAlphabetError(errors);
   }, [studentName, fatherName, motherName, lang]);
 
-  // Validation logic: Marks, Eligibility, Totals
   useEffect(() => {
     setEligibilityError(null);
     setTotalMarksError(null);
 
-    // Negative check validation
     const checkNegative = (val: string | undefined) => val && parseFloat(val) < 0;
     if (checkNegative(marksObtained) || checkNegative(totalMarks) || checkNegative(cgpaValue)) {
       const errorMsg = lang === 'en' 
@@ -121,7 +118,6 @@ export function LinguaForm() {
         const total = parseFloat(totalMarks);
         
         if (!isNaN(marks) && !isNaN(total) && total > 0) {
-          // Strict total marks validation
           if (selectedCourse === 'SSLC' && totalMarks !== '625') {
             const errorMsg = lang === 'en' 
               ? "Total marks for SSLC must be 625." 
@@ -150,7 +146,6 @@ export function LinguaForm() {
           const roundedPercentage = calculatedPercentage.toFixed(2);
           form.setValue('percentage', roundedPercentage);
 
-          // Eligibility thresholds: 85% for PUC, 90% for others
           let minRequired = (selectedCourse === 'PUC') ? 85 : 90;
 
           if (calculatedPercentage < minRequired) {
@@ -170,7 +165,7 @@ export function LinguaForm() {
         const cgpa = parseFloat(cgpaValue);
         if (!isNaN(cgpa)) {
           if (cgpa < 9.0 || cgpa > 10.0) {
-            const errorMsg = lang === 'en' ? "Enter Valid CGPA (9.0 - 10.0)" : "ಸರಿಯಾದ ಸಿಜಿಪಿಎ ನಮೂದಿಸಿ (9.0 - 10.0)";
+            const errorMsg = lang === 'en' ? "Enter Valid CGPA" : "ಸರಿಯಾದ ಸಿಜಿಪಿಎ ನಮೂದಿಸಿ";
             setEligibilityError(errorMsg);
           }
         } else if (cgpaValue.trim() !== '') {
@@ -305,52 +300,69 @@ export function LinguaForm() {
         'PCMC (ಭೌತಶಾಸ್ತ್ರ, ರಸಾಯನಶಾಸ್ತ್ರ, ಗಣಿತ, ಕಂಪ್ಯೂಟರ್ ಸೈನ್ಸ್)', 
         'PCME (ಭೌತಶಾಸ್ತ್ರ, ರಸಾಯನಶಾಸ್ತ್ರ, ಗಣಿತ, ಎಲೆಕ್ಟ್ರಾನಿಕ್ಸ್)', 
         'PCMS (ಭೌತಶಾಸ್ತ್ರ, ರಸಾಯನಶಾಸ್ತ್ರ, ಗಣಿತ, ಸಂಖ್ಯಾಶಾಸ್ತ್ರ)', 
+        'PCMH (ಭೌತಶಾಸ್ತ್ರ, ರಸಾಯನಶಾಸ್ತ್ರ, ಗಣಿತ, ಗೃಹ ವಿಜ್ಞಾನ)',
+        'PCAG (ಭೌತಶಾಸ್ತ್ರ, ರಸಾಯನಶಾಸ್ತ್ರ, ಕೃಷಿ ವಿಜ್ಞಾನ, ಗಣಿತ ಅಥವಾ ಜೀವಶಾಸ್ತ್ರ)',
         'ಇತರೆ'
       ],
       commerceCombinations: [
-        'EGBA (ಅರ್ಥಶಾಸ್ತ್ರ, ಭೂಗೋಳಶಾಸ್ತ್ರ, ವ್ಯವಹಾರ ಅಧ್ಯಯನ, ಲೆಕ್ಕಶಾಸ್ತ್ರ)', 
-        'ECBA (ಅರ್ಥಶಾಸ್ತ್ರ, ಕಂಪ್ಯೂಟರ್ ಸೈನ್ಸ್, ವ್ಯವಹಾರ ಅಧ್ಯಯನ, ಲೆಕ್ಕಶಾಸ್ತ್ರ)', 
-        'ESBA (ಅರ್ಥಶಾಸ್ತ್ರ, ಸಂಖ್ಯಾಶಾಸ್ತ್ರ, ವ್ಯವಹಾರ ಅಧ್ಯಯನ, ಲೆಕ್ಕಶಾಸ್ತ್ರ)', 
-        'EBAC (ಅರ್ಥಶಾಸ್ತ್ರ, ವ್ಯವಹಾರ ಅಧ್ಯಯನ, ಲೆಕ್ಕಶಾಸ್ತ್ರ, ಪೌರನೀತಿ)', 
-        'EMBA (ಅರ್ಥಶಾಸ್ತ್ರ, ಗಣಿತ, ವ್ಯವಹಾರ ಅಧ್ಯಯನ, ಲೆಕ್ಕಶಾಸ್ತ್ರ)', 
+        'ECBA (ಅರ್ಥಶಾಸ್ತ್ರ, ವಾಣಿಜ್ಯ, ವ್ಯವಹಾರ ಅಧ್ಯಯನಗಳು, ಲೆಕ್ಕಶಾಸ್ತ್ರ)', 
+        'EBAC (ಅರ್ಥಶಾಸ್ತ್ರ, ವ್ಯವಹಾರ ಅಧ್ಯಯನಗಳು, ಲೆಕ್ಕಶಾಸ್ತ್ರ, ಕಂಪ್ಯೂಟರ್ ಸೈನ್ಸ್)', 
+        'ESBA (ಅರ್ಥಶಾಸ್ತ್ರ, ಸಮಾಜಶಾಸ್ತ್ರ, ವ್ಯವಹಾರ ಅಧ್ಯಯನಗಳು, ಲೆಕ್ಕಶಾಸ್ತ್ರ)', 
+        'EGBA (ಅರ್ಥಶಾಸ್ತ್ರ, ಭೂಗೋಳಶಾಸ್ತ್ರ, ವ್ಯವಹಾರ ಅಧ್ಯಯನಗಳು, ಲೆಕ್ಕಶಾಸ್ತ್ರ)', 
+        'EMBA (ಅರ್ಥಶಾಸ್ತ್ರ, ಗಣಿತ, ವ್ಯವಹಾರ ಅಧ್ಯಯನಗಳು, ಲೆಕ್ಕಶಾಸ್ತ್ರ)', 
         'ECSA (ಅರ್ಥಶಾಸ್ತ್ರ, ಕಂಪ್ಯೂಟರ್ ಸೈನ್ಸ್, ಸಂಖ್ಯಾಶಾಸ್ತ್ರ, ಲೆಕ್ಕಶಾಸ್ತ್ರ)', 
         'ಇತರೆ'
       ],
       artsCombinations: [
-        'HEPS (ಇತಿಹಾಸ, ಅರ್ಥಶಾಸ್ತ್ರ, ರಾಜ್ಯಶಾಸ್ತ್ರ, ಸಮಾಜಶಾಸ್ತ್ರ)', 
-        'HEPPsy (ಇತಿಹಾಸ, ಅರ್ಥಶಾಸ್ತ್ರ, ರಾಜ್ಯಶಾಸ್ತ್ರ, ಮನೋವಿಜ್ಞಾನ)', 
+        'HEPS (ಇತಿಹಾಸ, ಅರ್ಥಶಾಸ್ತ್ರ, ರಾಜಕೀಯ ವಿಜ್ಞಾನ, ಸಮಾಜಶಾಸ್ತ್ರ)', 
+        'HEPPsy (ಇತಿಹಾಸ, ಅರ್ಥಶಾಸ್ತ್ರ, ರಾಜಕೀಯ ವಿಜ್ಞಾನ, ಮನೋವಿಜ್ಞಾನ)', 
         'HESP (ಇತಿಹಾಸ, ಅರ್ಥಶಾಸ್ತ್ರ, ಸಮಾಜಶಾಸ್ತ್ರ, ಮನೋವಿಜ್ಞಾನ)', 
-        'HEBA (ಇತಿಹಾಸ, ಅರ್ಥಶಾಸ್ತ್ರ, ವ್ಯವಹಾರ ಅಧ್ಯಯನ, ಲೆಕ್ಕಶಾಸ್ತ್ರ)', 
-        'HEGG (ಇತಿಹಾಸ, ಅರ್ಥಶಾಸ್ತ್ರ, ಭೂಗೋಳಶಾಸ್ತ್ರ, ಭೂವಿಜ್ಞಾನ)', 
-        'HESF (ಇತಿಹಾಸ, ಅರ್ಥಶಾಸ್ತ್ರ, ಸಮಾಜಶಾಸ್ತ್ರ, ಲಲಿತಕಲೆ)', 
+        'HEBA (ಇತಿಹಾಸ, ಅರ್ಥಶಾಸ್ತ್ರ, ವ್ಯವಹಾರ ಅಧ್ಯಯನಗಳು, ಲೆಕ್ಕಶಾಸ್ತ್ರ)', 
+        'HEGG (ಇತಿಹಾಸ, ಅರ್ಥಶಾಸ್ತ್ರ, ಭೂಗೋಳಶಾಸ್ತ್ರ, ಭೂಗರ್ಭಶಾಸ್ತ್ರ)', 
+        'HESF (ಇತಿಹಾಸ, ಅರ್ಥಶಾಸ್ತ್ರ, ಸಮಾಜಶಾಸ್ತ್ರ, ಲಲಿತಕಲೆಗಳು)', 
         'ಇತರೆ'
       ],
       engineeringCourses: [
-        'Computer Science & Engineering (CSE)', 
-        'Artificial Intelligence & Machine Learning (AI&ML)', 
-        'Information Science & Engineering (ISE)', 
-        'Electronics & Communication Engineering (ECE)', 
-        'Electrical & Electronics Engineering (EEE)', 
-        'Mechanical Engineering', 
-        'Civil Engineering', 
+        'CSE (ಕಂಪ್ಯೂಟರ್ ಸೈನ್ಸ್ ಮತ್ತು ಇಂಜಿನಿಯರಿಂಗ್)', 
+        'AIML (ಕೃತಕ ಬುದ್ಧಿಮತ್ತೆ ಮತ್ತು ಯಂತ್ರ ಕಲಿಕೆ)', 
+        'ISE (ಮಾಹಿತಿ ವಿಜ್ಞಾನ ಮತ್ತು ಇಂಜಿನಿಯರಿಂಗ್)', 
+        'ECE (ಎಲೆಕ್ಟ್ರಾನಿಕ್ಸ್ ಮತ್ತು ಸಂವಹನ ಇಂಜಿನಿಯರಿಂಗ್)', 
+        'EEE (ವಿದ್ಯುತ್ ಮತ್ತು ಎಲೆಕ್ಟ್ರಾನಿಕ್ಸ್ ಇಂಜಿನಿಯರಿಂಗ್)', 
+        'Mechanical (ಮೆಕಾನಿಕಲ್ ಇಂಜಿನಿಯರಿಂಗ್)', 
+        'Civil (ಸಿವಿಲ್ ಇಂಜಿನಿಯರಿಂಗ್)', 
+        'IP (ಕೈಗಾರಿಕಾ ಉತ್ಪಾದನಾ ಇಂಜಿನಿಯರಿಂಗ್)',
+        'EIE (ಎಲೆಕ್ಟ್ರಾನಿಕ್ಸ್ ಮತ್ತು ಇನ್ಸ್ಟ್ರುಮೆಂಟೇಶನ್ ಇಂಜಿನಿಯರಿಂಗ್)',
+        'ECS (ಎಲೆಕ್ಟ್ರಾನಿಕ್ಸ್ ಮತ್ತು ಕಂಪ್ಯೂಟರ್ ಸೈನ್ಸ್ ಇಂಜಿನಿಯರಿಂಗ್)',
+        'CSBS (ಕಂಪ್ಯೂಟರ್ ಸೈನ್ಸ್ ಮತ್ತು ವ್ಯವಹಾರ ವ್ಯವಸ್ಥೆಗಳು)',
+        'Mechatronics (ಮೆಕಾಟ್ರೋನಿಕ್ಸ್ ಇಂಜಿನಿಯರಿಂಗ್)',
+        'Automobile (ಆಟೋಮೊಬೈಲ್ ಇಂಜಿನಿಯರಿಂಗ್)',
+        'Aerospace (ಏರೋಸ್ಪೇಸ್ ಇಂಜಿನಿಯರಿಂಗ್)',
+        'Chemical (ರಾಸಾಯನಿಕ ಇಂಜಿನಿಯರಿಂಗ್)',
+        'Biotechnology (ಜೈವಿಕ ತಂತ್ರಜ್ಞಾನ ಇಂಜಿನಿಯರಿಂಗ್)',
+        'Data Science (ದತ್ತಾಂಶ ವಿಜ್ಞಾನ ಮತ್ತು ಇಂಜಿನಿಯರಿಂಗ್)',
+        'AI & Data Science (ಕೃತಕ ಬುದ್ಧಿಮತ್ತೆ ಮತ್ತು ದತ್ತಾಂಶ ವಿಜ್ಞಾನ ಇಂಜಿನಿಯರಿಂಗ್)',
+        'Robotics & Automation (ರೋಬೋಟಿಕ್ಸ್ ಮತ್ತು ಯಾಂತ್ರೀಕೃತ ಇಂಜಿನಿಯರಿಂಗ್)',
         'ಇತರೆ'
       ],
       diplomaCourses: [
-        'Diploma in Computer Science', 
-        'Diploma in Electronics & Communication', 
-        'Diploma in Electrical & Electronics', 
-        'Diploma in Mechanical Engineering', 
-        'Diploma in Civil Engineering', 
+        'ಕಂಪ್ಯೂಟರ್ ಸೈನ್ಸ್ ಮತ್ತು ಇಂಜಿನಿಯರಿಂಗ್ ಡಿಪ್ಲೊಮಾ', 
+        'ಎಲೆಕ್ಟ್ರಾನಿಕ್ಸ್ ಮತ್ತು ಕಮ್ಯೂನಿಕೇಶನ್ ಇಂಜಿನಿಯರಿಂಗ್ ಡಿಪ್ಲೊಮಾ', 
+        'ಎಲೆಕ್ಟ್ರಿಕಲ್ ಮತ್ತು ಎಲೆಕ್ಟ್ರಾನಿಕ್ಸ್ ಇಂಜಿನಿಯರಿಂಗ್ ಡಿಪ್ಲೊಮಾ', 
+        'ಮೆಕಾನಿಕಲ್ ಇಂಜಿನಿಯರಿಂಗ್ ಡಿಪ್ಲೊಮಾ', 
+        'ಸಿವಿಲ್ ಇಂಜಿನಿಯರಿಂಗ್ ಡಿಪ್ಲೊಮಾ', 
+        'ಆಟೋಮೊಬೈಲ್ ಇಂಜಿನಿಯರಿಂಗ್ ಡಿಪ್ಲೊಮಾ', 
         'ಇತರೆ'
       ],
       degreeCourses: [
+        'ಡಿ.ಫಾರ್ಮ (D.Pharma)', 
+        'ಬಿ.ಫಾರ್ಮ (B.Pharma)', 
         'ಬಿ.ಎಸ್ಸಿ (Bachelor of Science)', 
         'ಬಿ.ಕಾಂ (Bachelor of Commerce)', 
         'ಬಿ.ಎ. (Bachelor of Arts)', 
         'ಬಿ.ಸಿ.ಎ. (BCA)', 
         'ಬಿ.ಬಿ.ಎ. (BBA)', 
-        'ಬಿ.ಫಾರ್ಮಾ (B.Pharma)', 
-        'ಬಿ.ಎಸ್ಸಿ ನರ್ಸಿಂಗ್ (B.Sc Nursing)', 
+        'ಬಿಎಸ್ ಡಬ್ಲ್ಯೂ (BSW)',
+        'ಬಿ.ಎಸ್ಸಿ ನರ್ಸಿಂಗ್ (B.Sc Nursing)',
         'ಇತರೆ'
       ]
     }
@@ -452,7 +464,6 @@ export function LinguaForm() {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
-          {/* Email section */}
           <Card className="shadow-sm border-none cursor-default">
             <CardContent className="p-5">
               <FormField control={form.control} name="email" render={({ field }) => (
@@ -465,7 +476,6 @@ export function LinguaForm() {
             </CardContent>
           </Card>
 
-          {/* Personal Details section */}
           <Card className="shadow-sm border-none cursor-default">
             <CardContent className="p-5 space-y-4">
               <div className="flex items-center gap-2 pb-2 border-b"><User className="w-3.5 h-3.5 text-primary" /><h2 className="text-[12px] font-bold">{t.personalDetailsHeader}</h2></div>
@@ -506,7 +516,6 @@ export function LinguaForm() {
             </CardContent>
           </Card>
 
-          {/* Academic Details section */}
           <Card className="shadow-sm border-none cursor-default">
             <CardContent className="p-5 space-y-4">
               <div className="flex items-center gap-2 pb-2 border-b"><GraduationCap className="w-3.5 h-3.5 text-primary" /><h2 className="text-[12px] font-bold">{t.academicDetailsHeader}</h2></div>
@@ -662,7 +671,6 @@ export function LinguaForm() {
             </CardContent>
           </Card>
 
-          {/* Documents section */}
           <Card className="shadow-sm border-none cursor-default">
             <CardContent className="p-5 space-y-4">
               <div className="flex items-center gap-2 pb-2 border-b"><FileCheck className="w-3.5 h-3.5 text-primary" /><h2 className="text-[12px] font-bold">{t.docsTitle}</h2></div>
