@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -189,8 +190,8 @@ export function LinguaForm() {
 
   const translations = {
     en: {
-      title: "Awards at the temple level for students who secured more than 85% in the PUC examination held in March and April of 2025 and 2026, and more than 90% (or Rank) in SSLC/Degree/Vocational education.",
-      description: "Awards at the temple level for students who secured more than 85% in the PUC examination held in March and April of 2025 and 2026, and more than 90% (or Rank) in SSLC/Degree/Vocational education.",
+      title: "ಪತಿಭಾ ಪುರ ರ 2025-2026: \n 2025 ಮತ್ತು 2026ರ ಸಾಲಿನ ಮಾರ್ಚಿ ಮತ್ತು ಏಪ್ರಿಲ್ ನಲ್ಲಿ ನಡೆದ ಪಿ.ಯು.ಸಿ ಪರೀಕ್ಷೆಯಲ್ಲಿ ಶೇ.85 ಕ್ಕಿಂತ ಹಾಗೂ ಎಸ್.ಎಸ್.ಎಲ್.ಸಿ/ಪದವಿ/ಉದ್ಯೋಗಾಧಾರಿತ ಶಿಕ್ಷಣದಲ್ಲಿ ರ‍್ಯಾಂಕ್‌ ಅಥವಾ ಶೇ.90 ಕ್ಕಿಂತ ಹೆಚ್ಚು ಅಂಕ ಪಡೆದ ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ದೇವಾಲಯದ ಮಟ್ಟದಲ್ಲಿ ಪುರಸ್ಕಾರ",
+      description: "",
       langLabel: "Choose Language / ಭಾಷೆ ಆಯ್ಕೆಮಾಡಿ",
       personalDetailsHeader: "Personal Details",
       academicDetailsHeader: "Academic Details",
@@ -293,8 +294,8 @@ export function LinguaForm() {
       ]
     },
     kn: {
-      title: "2025 ಮತ್ತು 2026ರ ಸಾಲಿನ ಮಾರ್ಚಿ ಮತ್ತು ಏಪ್ರಿಲ್ ನಲ್ಲಿ ನಡೆದ ಪಿ.ಯು.ಸಿ ಪರೀಕ್ಷೆಯಲ್ಲಿ ಶೇ.85 ಕ್ಕಿಂತ ಹಾಗೂ ಎಸ್.ಎಸ್.ಎಲ್.ಸಿ/ಪದವಿ/ಉದ್ಯೋಗಾಧಾರಿತ ಶಿಕ್ಷಣದಲ್ಲಿ ರ‍್ಯಾಂಕ್‌ ಅಥವಾ ಶೇ.90 ಕ್ಕಿಂತ ಹೆಚ್ಚು ಅಂಕ ಪಡೆದ ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ದೇವಾಲಯದ ಮಟ್ಟದಲ್ಲಿ ಪುರಸ್ಕಾರ.",
-      description: "2025 ಮತ್ತು 2026ರ ಸಾಲಿನ ಮಾರ್ಚಿ ಮತ್ತು ಏಪ್ರಿಲ್ ನಲ್ಲಿ ನಡೆದ ಪಿ.ಯು.ಸಿ ಪರೀಕ್ಷೆಯಲ್ಲಿ ಶೇ.85 ಕ್ಕಿಂತ ಹಾಗೂ ಎಸ್.ಎಸ್.ಎಲ್.ಸಿ/ಪದವಿ/ಉದ್ಯೋಗಾಧಾರಿತ ಶಿಕ್ಷಣದಲ್ಲಿ ರ‍್ಯಾಂಕ್‌ ಅಥವಾ ಶೇ.90 ಕ್ಕಿಂತ ಹೆಚ್ಚು ಅಂಕ ಪಡೆದ ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ದೇವಾಲಯದ ಮಟ್ಟದಲ್ಲಿ ಪುರಸ್ಕಾರ.",
+      title: "ಪತಿಭಾ ಪುರ ರ 2025-2026: \n 2025 ಮತ್ತು 2026ರ ಸಾಲಿನ ಮಾರ್ಚಿ ಮತ್ತು ಏಪ್ರಿಲ್ ನಲ್ಲಿ ನಡೆದ ಪಿ.ಯು.ಸಿ ಪರೀಕ್ಷೆಯಲ್ಲಿ ಶೇ.85 ಕ್ಕಿಂತ ಹಾಗೂ ಎಸ್.ಎಸ್.ಎಲ್.ಸಿ/ಪದವಿ/ಉದ್ಯೋಗಾಧಾರಿತ ಶಿಕ್ಷಣದಲ್ಲಿ ರ‍್ಯಾಂಕ್‌ ಅಥವಾ ಶೇ.90 ಕ್ಕಿಂತ ಹೆಚ್ಚು ಅಂಕ ಪಡೆದ ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ದೇವಾಲಯದ ಮಟ್ಟದಲ್ಲಿ ಪುರಸ್ಕಾರ",
+      description: "",
       langLabel: "Choose Language / ಭಾಷೆ ಆಯ್ಕೆಮಾಡಿ",
       personalDetailsHeader: "ವೈಯಕ್ತಿಕ ವಿವರಗಳು",
       academicDetailsHeader: "ಶೈಕ್ಷಣಿಕ ವಿವರಗಳು",
@@ -467,8 +468,8 @@ export function LinguaForm() {
       <Card className="shadow-sm border-none cursor-default">
         <CardContent className="p-4 space-y-1.5">
           <div className="space-y-1 pr-4">
-            <h1 className="font-bold tracking-tight text-[#202124] text-[14px]">{t.title}</h1>
-            <p className="text-[#5f6368] leading-relaxed text-[12px]">{t.description}</p>
+            <h1 className="font-bold tracking-tight text-[#202124] text-[14px] whitespace-pre-wrap">{t.title}</h1>
+            {t.description && <p className="text-[#5f6368] leading-relaxed text-[12px]">{t.description}</p>}
           </div>
           <div className="pt-1 border-t mt-1 font-medium italic text-destructive text-[12px]">{t.requiredNote}</div>
         </CardContent>
@@ -604,7 +605,7 @@ export function LinguaForm() {
                         <FormItem className="space-y-1">
                           <FormLabel className="text-[14px] font-semibold">{t.combinationLabel} *</FormLabel>
                           <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
-                            {options.map(c => <div key={c} className="flex items-center space-x-1.5"><RadioGroupItem value={c} id={c} className="flex items-center h-4 w-4 cursor-pointer" /><Label htmlFor={c} className="text-[12px] cursor-pointer">{c}</Label></div>)}
+                            {options.map(c => <div key={c} className="flex items-center space-x-1.5"><RadioGroupItem value={c} id={c} className="h-4 w-4 cursor-pointer" /><Label htmlFor={c} className="text-[12px] cursor-pointer">{c}</Label></div>)}
                           </RadioGroup>
                         </FormItem>
                       );
