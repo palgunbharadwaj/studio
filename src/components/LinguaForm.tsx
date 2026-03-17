@@ -1,8 +1,7 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useForm, useWatch } from 'react-hook-form';
+import { useForm as useHookForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { 
@@ -24,10 +23,10 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 
 const formSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address." }),
-  studentName: z.string().min(2, { message: "Name is required." }),
+  studentName: z.string().min(1, { message: "Name is required." }),
   relationship: z.enum(['SO', 'DO'], { required_error: "Relationship is required." }),
-  fatherName: z.string().min(2, { message: "Father's name is required." }),
-  motherName: z.string().min(2, { message: "Mother's name is required." }),
+  fatherName: z.string().min(1, { message: "Father's name is required." }),
+  motherName: z.string().min(1, { message: "Mother's name is required." }),
   course: z.enum(['SSLC', 'PUC', 'Diploma', 'Degree', 'Engineering', 'Other'], { required_error: "Course is required." }),
   board: z.string().optional(),
   pucStream: z.string().optional(),
@@ -35,7 +34,7 @@ const formSchema = z.object({
   percentage: z.string().optional(),
   marksObtained: z.string().optional(),
   totalMarks: z.string().optional(),
-  yearOfPassing: z.string().optional(),
+  yearOfPassing: z.string().min(1, { message: "Year of passing is required." }),
   cgpa: z.string().optional(),
   otherCourse: z.string().optional(),
   branch: z.string().optional(),
@@ -54,7 +53,7 @@ export function LinguaForm() {
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [marksFile, setMarksFile] = useState<File | null>(null);
 
-  const form = useForm<FormValues>({
+  const form = useHookForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: '',
@@ -65,6 +64,7 @@ export function LinguaForm() {
       marksObtained: '',
       totalMarks: '',
       cgpa: '',
+      yearOfPassing: '',
     },
   });
 
@@ -190,8 +190,8 @@ export function LinguaForm() {
 
   const translations = {
     en: {
-      title: "ಪತಿಭಾ ಪುರ ರ 2025-2026:\n2025 ಮತ್ತು 2026ರ ಸಾಲಿನ ಮಾರ್ಚಿ ಮತ್ತು ಏಪ್ರಿಲ್ ನಲ್ಲಿ ನಡೆದ ಪಿ.ಯು.ಸಿ ಪರೀಕ್ಷೆಯಲ್ಲಿ ಶೇ.85 ಕ್ಕಿಂತ ಹಾಗೂ ಎಸ್.ಎಸ್.ಎಲ್.ಸಿ/ಪದವಿ/ಉದ್ಯೋಗಾಧಾರಿತ ಶಿಕ್ಷಣದಲ್ಲಿ ರ‍್ಯಾಂಕ್‌ ಅಥವಾ ಶೇ.90 ಕ್ಕಿಂತ ಹೆಚ್ಚು ಅಂಕ ಪಡೆದ ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ದೇವಾಲಯದ ಮಟ್ಟದಲ್ಲಿ ಪುರಸ್ಕಾರ",
-      description: "",
+      titleBold: "ಪತಿಭಾ ಪುರ ರ 2025-2026:",
+      titleNormal: "2025 ಮತ್ತು 2026ರ ಸಾಲಿನ ಮಾರ್ಚಿ ಮತ್ತು ಏಪ್ರಿಲ್ ನಲ್ಲಿ ನಡೆದ ಪಿ.ಯು.ಸಿ ಪರೀಕ್ಷೆಯಲ್ಲಿ ಶೇ.85 ಕ್ಕಿಂತ ಹಾಗೂ ಎಸ್.ಎಸ್.ಎಲ್.ಸಿ/ಪದವಿ/ಉದ್ಯೋಗಾಧಾರಿತ ಶಿಕ್ಷಣದಲ್ಲಿ ರ‍್ಯಾಂಕ್‌ ಅಥವಾ ಶೇ.90 ಕ್ಕಿಂತ ಹೆಚ್ಚು ಅಂಕ ಪಡೆದ ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ದೇವಾಲಯದ ಮಟ್ಟದಲ್ಲಿ ಪುರಸ್ಕಾರ",
       langLabel: "Choose Language / ಭಾಷೆ ಆಯ್ಕೆಮಾಡಿ",
       personalDetailsHeader: "Personal Details",
       academicDetailsHeader: "Academic Details",
@@ -294,8 +294,8 @@ export function LinguaForm() {
       ]
     },
     kn: {
-      title: "ಪತಿಭಾ ಪುರ ರ 2025-2026:\n2025 ಮತ್ತು 2026ರ ಸಾಲಿನ ಮಾರ್ಚಿ ಮತ್ತು ಏಪ್ರಿಲ್ ನಲ್ಲಿ ನಡೆದ ಪಿ.ಯು.ಸಿ ಪರೀಕ್ಷೆಯಲ್ಲಿ ಶೇ.85 ಕ್ಕಿಂತ ಹಾಗೂ ಎಸ್.ಎಸ್.ಎಲ್.ಸಿ/ಪದವಿ/ಉದ್ಯೋಗಾಧಾರಿತ ಶಿಕ್ಷಣದಲ್ಲಿ ರ‍್ಯಾಂಕ್‌ ಅಥವಾ ಶೇ.90 ಕ್ಕಿಂತ ಹೆಚ್ಚು ಅಂಕ ಪಡೆದ ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ದೇವಾಲಯದ ಮಟ್ಟದಲ್ಲಿ ಪುರಸ್ಕಾರ",
-      description: "",
+      titleBold: "ಪತಿಭಾ ಪುರ ರ 2025-2026:",
+      titleNormal: "2025 ಮತ್ತು 2026ರ ಸಾಲಿನ ಮಾರ್ಚಿ ಮತ್ತು ಏಪ್ರಿಲ್ ನಲ್ಲಿ ನಡೆದ ಪಿ.ಯು.ಸಿ ಪರೀಕ್ಷೆಯಲ್ಲಿ ಶೇ.85 ಕ್ಕಿಂತ ಹಾಗೂ ಎಸ್.ಎಸ್.ಎಲ್.ಸಿ/ಪದವಿ/ಉದ್ಯೋಗಾಧಾರಿತ ಶಿಕ್ಷಣದಲ್ಲಿ ರ‍್ಯಾಂಕ್‌ ಅಥವಾ ಶೇ.90 ಕ್ಕಿಂತ ಹೆಚ್ಚು ಅಂಕ ಪಡೆದ ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ದೇವಾಲಯದ ಮಟ್ಟದಲ್ಲಿ ಪುರಸ್ಕಾರ",
       langLabel: "Choose Language / ಭಾಷೆ ಆಯ್ಕೆಮಾಡಿ",
       personalDetailsHeader: "ವೈಯಕ್ತಿಕ ವಿವರಗಳು",
       academicDetailsHeader: "ಶೈಕ್ಷಣಿಕ ವಿವರಗಳು",
@@ -413,6 +413,16 @@ export function LinguaForm() {
   async function onSubmit(values: FormValues) {
     if (eligibilityError || totalMarksError || Object.keys(alphabetError).length > 0) return;
     
+    if (!photoFile || !marksFile) {
+      alert(lang === 'en' ? "Please upload both student photo and marks card." : "ದಯವಿಟ್ಟು ವಿದ್ಯಾರ್ಥಿ ಫೋಟೋ ಮತ್ತು ಅಂಕಪಟ್ಟಿಯನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ.");
+      return;
+    }
+
+    if (selectedCourse === 'SSLC' && !values.board) return;
+    if (selectedCourse === 'PUC' && (!values.pucStream || !values.combination)) return;
+    if (['Diploma', 'Degree', 'Engineering'].includes(selectedCourse || '') && !values.branch) return;
+    if (selectedCourse === 'Other' && !values.otherCourse) return;
+
     setIsSubmitting(true);
     try {
       let photoBase64 = '';
@@ -442,18 +452,18 @@ export function LinguaForm() {
             <CheckCircle2 className="w-10 h-10" />
           </div>
           <div className="space-y-1">
-            <h2 className="font-bold text-[#202124] text-[12px]">{t.successTitle}</h2>
+            <h2 className="font-bold text-[#202124] text-[14px]">{t.successTitle}</h2>
             <p className="text-muted-foreground text-[12px]">{t.successDesc}</p>
           </div>
 
           {result.emailData && (
             <div className="mt-3 p-3 bg-muted/30 rounded-lg text-left border space-y-1.5">
-              <div className="flex items-center gap-2 font-bold text-primary text-[12px]">
+              <div className="flex items-center gap-2 font-bold text-primary text-[14px]">
                 <Mail className="w-4 h-4" />
                 <span>{t.confMessage}</span>
               </div>
               <div className="space-y-1">
-                <p className="font-bold text-[#202124] text-[12px]">{result.emailData.subject}</p>
+                <p className="font-bold text-[#202124] text-[14px]">{result.emailData.subject}</p>
                 <p className="text-[#5f6368] whitespace-pre-wrap leading-relaxed text-[12px]">{result.emailData.body}</p>
               </div>
             </div>
@@ -463,13 +473,26 @@ export function LinguaForm() {
     );
   }
 
+  const canSubmit = () => {
+    const v = form.getValues();
+    if (!v.studentName || !v.email || !v.relationship || !v.fatherName || !v.motherName || !v.course || !v.yearOfPassing) return false;
+    if (v.course === 'SSLC' && (!v.board || !v.marksObtained || !v.totalMarks)) return false;
+    if (v.course === 'PUC' && (!v.pucStream || !v.combination || !v.marksObtained || !v.totalMarks)) return false;
+    if (['Diploma', 'Degree', 'Engineering'].includes(v.course) && (!v.branch || !v.cgpa)) return false;
+    if (v.course === 'Other' && (!v.otherCourse || !v.marksObtained || !v.totalMarks)) return false;
+    if (!photoFile || !marksFile) return false;
+    return true;
+  };
+
   return (
     <div className="space-y-2 w-full max-w-xl mx-auto pb-5 cursor-default relative">
       <Card className="shadow-sm border-none cursor-default">
         <CardContent className="p-4 space-y-1.5">
-          <div className="space-y-1 pr-4">
-            <h1 className="font-normal tracking-tight text-[#202124] text-[14px] whitespace-pre-wrap">{t.title}</h1>
-            {t.description && <p className="text-[#5f6368] leading-relaxed text-[12px]">{t.description}</p>}
+          <div className="space-y-0.5">
+            <h1 className="font-normal tracking-tight text-[#202124] text-[12px] whitespace-pre-wrap">
+              <span className="font-bold">{t.titleBold}</span>
+            </h1>
+            <p className="text-[#202124] text-[12px] whitespace-pre-wrap">{t.titleNormal}</p>
           </div>
           <div className="pt-1 border-t mt-1 font-medium italic text-destructive text-[12px]">{t.requiredNote}</div>
         </CardContent>
@@ -575,7 +598,7 @@ export function LinguaForm() {
               {selectedCourse === 'SSLC' && (
                 <FormField control={form.control} name="board" render={({ field }) => (
                   <FormItem className="space-y-1">
-                    <FormLabel className="text-[14px] font-semibold">{t.boardLabel} *</FormLabel>
+                    <FormLabel className="text-[14px] font-semibold">{t.boardLabel} <span className="text-destructive">*</span></FormLabel>
                     <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
                       {t.boards.map(b => <div key={b} className="flex items-center space-x-1.5"><RadioGroupItem value={b} id={b} className="h-4 w-4 cursor-pointer" /><Label htmlFor={b} className="text-[12px] cursor-pointer">{b}</Label></div>)}
                     </RadioGroup>
@@ -587,7 +610,7 @@ export function LinguaForm() {
                 <div className="space-y-2 pt-1">
                   <FormField control={form.control} name="pucStream" render={({ field }) => (
                     <FormItem className="space-y-1">
-                      <FormLabel className="text-[14px] font-semibold">{t.streamLabel} *</FormLabel>
+                      <FormLabel className="text-[14px] font-semibold">{t.streamLabel} <span className="text-destructive">*</span></FormLabel>
                       <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
                         {['Science', 'Commerce', 'Arts'].map(s => (
                           <div key={s} className="flex items-center space-x-1.5">
@@ -603,7 +626,7 @@ export function LinguaForm() {
                       const options = selectedStream === 'Science' ? t.scienceCombinations : selectedStream === 'Commerce' ? t.commerceCombinations : t.artsCombinations;
                       return (
                         <FormItem className="space-y-1">
-                          <FormLabel className="text-[14px] font-semibold">{t.combinationLabel} *</FormLabel>
+                          <FormLabel className="text-[14px] font-semibold">{t.combinationLabel} <span className="text-destructive">*</span></FormLabel>
                           <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
                             {options.map(c => <div key={c} className="flex items-center space-x-1.5"><RadioGroupItem value={c} id={c} className="h-4 w-4 cursor-pointer" /><Label htmlFor={c} className="text-[12px] cursor-pointer">{c}</Label></div>)}
                           </RadioGroup>
@@ -617,7 +640,7 @@ export function LinguaForm() {
               {(['Diploma', 'Degree', 'Engineering'].includes(selectedCourse || '')) && (
                 <FormField control={form.control} name="branch" render={({ field }) => (
                   <FormItem className="space-y-1">
-                    <FormLabel className="text-[14px] font-semibold">{t.branchLabel} *</FormLabel>
+                    <FormLabel className="text-[14px] font-semibold">{t.branchLabel} <span className="text-destructive">*</span></FormLabel>
                     <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
                       {(selectedCourse === 'Engineering' ? t.engineeringCourses : selectedCourse === 'Diploma' ? t.diplomaCourses : t.degreeCourses).map(c => (
                         <div key={c} className="flex items-center space-x-1.5"><RadioGroupItem value={c} id={c} className="h-4 w-4 cursor-pointer" /><Label htmlFor={c} className="text-[12px] cursor-pointer">{c}</Label></div>
@@ -630,7 +653,7 @@ export function LinguaForm() {
               {selectedCourse === 'Other' && (
                 <FormField control={form.control} name="otherCourse" render={({ field }) => (
                   <FormItem className="space-y-1">
-                    <FormLabel className="text-[14px] font-semibold">{t.otherCourseLabel} *</FormLabel>
+                    <FormLabel className="text-[14px] font-semibold">{t.otherCourseLabel} <span className="text-destructive">*</span></FormLabel>
                     <FormControl><Input className="h-9 bg-muted/20 cursor-text text-[12px]" {...field} /></FormControl>
                   </FormItem>
                 )} />
@@ -641,11 +664,11 @@ export function LinguaForm() {
                   {(['SSLC', 'PUC', 'Other'].includes(selectedCourse)) && (
                     <>
                       <FormField control={form.control} name="marksObtained" render={({ field }) => (
-                        <FormItem className="space-y-1"><FormLabel className="text-[14px] font-semibold">{t.marksObtainedLabel} *</FormLabel><FormControl><Input type="number" className="h-9 bg-muted/20 cursor-text text-[12px]" {...field} /></FormControl></FormItem>
+                        <FormItem className="space-y-1"><FormLabel className="text-[14px] font-semibold">{t.marksObtainedLabel} <span className="text-destructive">*</span></FormLabel><FormControl><Input type="number" className="h-9 bg-muted/20 cursor-text text-[12px]" {...field} /></FormControl></FormItem>
                       )} />
                       <FormField control={form.control} name="totalMarks" render={({ field }) => (
                         <FormItem className="space-y-1">
-                          <FormLabel className="text-[14px] font-semibold">{t.totalMarksLabel} *</FormLabel>
+                          <FormLabel className="text-[14px] font-semibold">{t.totalMarksLabel} <span className="text-destructive">*</span></FormLabel>
                           <FormControl><Input type="number" className="h-9 bg-muted/20 cursor-text text-[12px]" {...field} /></FormControl>
                           {totalMarksError && (
                             <p className="font-medium pt-1 text-destructive text-[12px]">{totalMarksError}</p>
@@ -672,7 +695,7 @@ export function LinguaForm() {
                   {(['Diploma', 'Degree', 'Engineering'].includes(selectedCourse)) && (
                     <FormField control={form.control} name="cgpa" render={({ field }) => (
                       <FormItem className="space-y-1">
-                        <FormLabel className="text-[14px] font-semibold">{t.cgpaLabel} *</FormLabel>
+                        <FormLabel className="text-[14px] font-semibold">{t.cgpaLabel} <span className="text-destructive">*</span></FormLabel>
                         <FormControl><Input type="number" step="0.01" className="h-9 bg-muted/20 cursor-text text-[12px]" {...field} /></FormControl>
                         {eligibilityError && (
                           <Alert variant="destructive" className="py-1 px-2 mt-1 flex items-center gap-2 border-destructive/20 bg-destructive/5">
@@ -687,18 +710,14 @@ export function LinguaForm() {
                   )}
 
                   <FormField control={form.control} name="yearOfPassing" render={({ field }) => {
-                    let years: string[] = [];
-                    if (selectedCourse === 'SSLC') {
-                      years = ['2024-2025'];
-                    } else {
-                      years = ['2025-2026'];
-                    }
+                    const year = selectedCourse === 'SSLC' ? '2024-2025' : '2025-2026';
                     return (
                       <FormItem className="space-y-1">
-                        <FormLabel className="text-[14px] font-semibold">{t.yearPassingLabel} *</FormLabel>
+                        <FormLabel className="text-[14px] font-semibold">{t.yearPassingLabel} <span className="text-destructive">*</span></FormLabel>
                         <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
-                          {years.map(y => <div key={y} className="flex items-center space-x-1.5"><RadioGroupItem value={y} id={y} className="h-4 w-4 cursor-pointer" /><Label htmlFor={y} className="text-[12px] cursor-pointer">{y}</Label></div>)}
+                          <div className="flex items-center space-x-1.5"><RadioGroupItem value={year} id={year} className="h-4 w-4 cursor-pointer" /><Label htmlFor={year} className="text-[12px] cursor-pointer">{year}</Label></div>
                         </RadioGroup>
+                        <FormMessage className="text-[12px]" />
                       </FormItem>
                     );
                   }} />
@@ -712,11 +731,11 @@ export function LinguaForm() {
               <div className="flex items-center gap-2 pb-1.5 border-b"><FileCheck className="w-4 h-4 text-primary" /><h2 className="font-bold text-[14px]">{t.docsTitle}</h2></div>
               <div className="space-y-2">
                 <div className="space-y-1">
-                  <Label className="text-[14px] font-semibold cursor-pointer">{t.photoLabel} *</Label>
+                  <Label className="text-[14px] font-semibold cursor-pointer">{t.photoLabel} <span className="text-destructive">*</span></Label>
                   <Input type="file" accept="image/jpeg,image/jpg" className="h-9 cursor-pointer file:cursor-pointer text-[12px]" onChange={(e) => setPhotoFile(e.target.files?.[0] || null)} />
                 </div>
                 <div className="space-y-1">
-                  <Label className="text-[14px] font-semibold cursor-pointer">{t.marksCardLabel} *</Label>
+                  <Label className="text-[14px] font-semibold cursor-pointer">{t.marksCardLabel} <span className="text-destructive">*</span></Label>
                   <Input type="file" accept=".pdf,.doc,.docx" className="h-9 cursor-pointer file:cursor-pointer text-[12px]" onChange={(e) => setMarksFile(e.target.files?.[0] || null)} />
                 </div>
               </div>
@@ -724,7 +743,7 @@ export function LinguaForm() {
           </Card>
 
           <div className="flex pt-1">
-            <Button type="submit" className="w-full h-9 font-bold rounded-md shadow cursor-pointer text-[14px]" disabled={isSubmitting || !!eligibilityError || !!totalMarksError || Object.keys(alphabetError).length > 0}>
+            <Button type="submit" className="w-full h-9 font-bold rounded-md shadow cursor-pointer text-[14px]" disabled={isSubmitting || !!eligibilityError || !!totalMarksError || Object.keys(alphabetError).length > 0 || !canSubmit()}>
               {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> {t.processing}</> : <><Send className="mr-2 h-4 w-4" /> {t.submitButton}</>}
             </Button>
           </div>
