@@ -20,12 +20,6 @@ import { Label } from '@/components/ui/label';
 import { submitLinguaForm, SubmissionResult } from '@/app/actions/submit-form';
 import { Loader2, CheckCircle2, Send, User, GraduationCap, FileCheck, AlertCircle, Mail, Type, ChevronDown } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address." }),
@@ -50,7 +44,6 @@ type FormValues = z.infer<typeof formSchema>;
 
 export function LinguaForm() {
   const [lang, setLang] = useState<'kn' | 'en'>('kn');
-  const [fontSizeOffset, setFontSizeOffset] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [result, setResult] = useState<SubmissionResult | null>(null);
   const [eligibilityError, setEligibilityError] = useState<string | null>(null);
@@ -199,7 +192,6 @@ export function LinguaForm() {
       title: "Prathibha Puraskahara 2025 and 2026:",
       description: "Awards for students who secured more than 85% in PUC and more than 90% (or Rank) in SSLC/Degree/Vocational courses in exams held in 2025 and 2026 at the temple level.",
       langLabel: "Choose Language / ಭಾಷೆ ಆಯ್ಕೆಮಾಡಿ",
-      fontSizeLabel: "Font Size",
       personalDetailsHeader: "Personal Details",
       academicDetailsHeader: "Academic Details",
       emailLabel: "Email",
@@ -304,7 +296,6 @@ export function LinguaForm() {
       title: "ಪ್ರತಿಭಾ ಪುರಸ್ಕಾರ 2025 ಮತ್ತು 2026:",
       description: "2025 ಮತ್ತು 2026ರ ಸಾಲಿನ ಮಾರ್ಚಿ ಮತ್ತು ಏಪ್ರಿಲ್ ನಲ್ಲಿ ನಡೆದ ಪಿ.ಯು.ಸಿ ಪರೀಕ್ಷೆಯಲ್ಲಿ ಶೇ.85 ಕ್ಕಿಂತ ಹಾಗೂ ಎಸ್.ಎಸ್.ಎಲ್.ಸಿ/ಪದವಿ/ಉದ್ಯೋಗಾಧಾರಿತ ಶಿಕ್ಷಣದಲ್ಲಿ ರ‍್ಯಾಂಕ್‌ ಅಥವಾ ಶೇ.90 ಕ್ಕಿಂತ ಹೆಚ್ಚು ಅಂಕ ಪಡೆದ ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ದೇವಾಲಯದ ಮಟ್ಟದಲ್ಲಿ ಪುರಸ್ಕಾರ.",
       langLabel: "Choose Language / ಭಾಷೆ ಆಯ್ಕೆಮಾಡಿ",
-      fontSizeLabel: "ಅಕ್ಷರ ಗಾತ್ರ",
       personalDetailsHeader: "ವೈಯಕ್ತಿಕ ವಿವರಗಳು",
       academicDetailsHeader: "ಶೈಕ್ಷಣಿಕ ವಿವರಗಳು",
       emailLabel: "ಇಮೇಲ್",
@@ -442,8 +433,6 @@ export function LinguaForm() {
     }
   }
 
-  const getFs = (base: number) => `${base + fontSizeOffset}px`;
-
   if (result?.success) {
     return (
       <Card className="shadow-sm border-none max-w-xl mx-auto cursor-default">
@@ -452,19 +441,19 @@ export function LinguaForm() {
             <CheckCircle2 className="w-10 h-10" />
           </div>
           <div className="space-y-1">
-            <h2 className="font-bold text-[#202124]" style={{ fontSize: getFs(14) }}>{t.successTitle}</h2>
-            <p className="text-muted-foreground" style={{ fontSize: getFs(11) }}>{t.successDesc}</p>
+            <h2 className="font-bold text-[#202124] text-[14px]">{t.successTitle}</h2>
+            <p className="text-muted-foreground text-[12px]">{t.successDesc}</p>
           </div>
 
           {result.emailData && (
             <div className="mt-3 p-3 bg-muted/30 rounded-lg text-left border space-y-1.5">
-              <div className="flex items-center gap-2 font-bold text-primary" style={{ fontSize: getFs(10) }}>
+              <div className="flex items-center gap-2 font-bold text-primary text-[12px]">
                 <Mail className="w-4 h-4" />
                 <span>{t.confMessage}</span>
               </div>
               <div className="space-y-1">
-                <p className="font-bold text-[#202124]" style={{ fontSize: getFs(10) }}>{result.emailData.subject}</p>
-                <p className="text-[#5f6368] whitespace-pre-wrap leading-relaxed" style={{ fontSize: getFs(9) }}>{result.emailData.body}</p>
+                <p className="font-bold text-[#202124] text-[12px]">{result.emailData.subject}</p>
+                <p className="text-[#5f6368] whitespace-pre-wrap leading-relaxed text-[12px]">{result.emailData.body}</p>
               </div>
             </div>
           )}
@@ -475,51 +464,28 @@ export function LinguaForm() {
 
   return (
     <div className="space-y-2 w-full max-w-xl mx-auto pb-5 cursor-default relative">
-      <div className="absolute top-4 right-4 z-10">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" size="sm" className="h-8 gap-2 bg-white/80 backdrop-blur">
-              <Type className="w-4 h-4" />
-              <span className="text-[10px] font-medium">{t.fontSizeLabel}</span>
-              <ChevronDown className="w-3 h-3" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-32">
-            <DropdownMenuItem onClick={() => setFontSizeOffset(prev => prev + 1)} className="text-xs">
-              Increase (+1)
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setFontSizeOffset(prev => prev - 1)} className="text-xs">
-              Decrease (-1)
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => setFontSizeOffset(0)} className="text-xs text-destructive">
-              Reset
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-
       <Card className="shadow-sm border-none cursor-default">
         <CardContent className="p-4 space-y-1.5">
-          <div className="space-y-1 pr-16">
-            <h1 className="font-bold tracking-tight text-[#202124]" style={{ fontSize: getFs(14) }}>{t.title}</h1>
-            <p className="text-[#5f6368] leading-relaxed" style={{ fontSize: getFs(10) }}>{t.description}</p>
+          <div className="space-y-1 pr-4">
+            <h1 className="font-bold tracking-tight text-[#202124] text-[14px]">{t.title}</h1>
+            <p className="text-[#5f6368] leading-relaxed text-[12px]">{t.description}</p>
           </div>
-          <div className="pt-1 border-t mt-1 font-medium italic text-destructive" style={{ fontSize: getFs(9) }}>{t.requiredNote}</div>
+          <div className="pt-1 border-t mt-1 font-medium italic text-destructive text-[12px]">{t.requiredNote}</div>
         </CardContent>
       </Card>
 
       <Card className="shadow-sm border-none cursor-default">
         <CardContent className="p-4">
           <div className="space-y-2">
-            <Label className="font-semibold text-[#202124]" style={{ fontSize: getFs(10) }}>{t.langLabel} <span className="text-destructive">*</span></Label>
+            <Label className="font-semibold text-[#202124] text-[14px]">{t.langLabel} <span className="text-destructive">*</span></Label>
             <RadioGroup value={lang} onValueChange={(v) => setLang(v as 'en' | 'kn')} className="flex flex-col gap-1.5">
               <div className="flex items-center space-x-2.5 py-0.5 cursor-pointer" onClick={() => setLang('en')}>
                 <RadioGroupItem value="en" id="en" className="h-4 w-4 cursor-pointer" />
-                <Label htmlFor="en" className="cursor-pointer font-medium" style={{ fontSize: getFs(10) }}>English</Label>
+                <Label htmlFor="en" className="cursor-pointer font-medium text-[12px]">English</Label>
               </div>
               <div className="flex items-center space-x-2.5 py-0.5 cursor-pointer" onClick={() => setLang('kn')}>
                 <RadioGroupItem value="kn" id="kn" className="h-4 w-4 cursor-pointer" />
-                <Label htmlFor="kn" className="cursor-pointer font-medium" style={{ fontSize: getFs(10) }}>ಕನ್ನಡ</Label>
+                <Label htmlFor="kn" className="cursor-pointer font-medium text-[12px]">ಕನ್ನಡ</Label>
               </div>
             </RadioGroup>
           </div>
@@ -532,9 +498,9 @@ export function LinguaForm() {
             <CardContent className="p-4">
               <FormField control={form.control} name="email" render={({ field }) => (
                 <FormItem className="space-y-1">
-                  <FormLabel className="font-semibold text-[#202124]" style={{ fontSize: getFs(10) }}>{t.emailLabel} <span className="text-destructive">*</span></FormLabel>
-                  <FormControl><Input placeholder="example@email.com" className="h-9 bg-muted/20 rounded-sm cursor-text" style={{ fontSize: getFs(10) }} {...field} /></FormControl>
-                  <FormMessage style={{ fontSize: getFs(9) }} />
+                  <FormLabel className="font-semibold text-[#202124] text-[14px]">{t.emailLabel} <span className="text-destructive">*</span></FormLabel>
+                  <FormControl><Input placeholder="example@email.com" className="h-9 bg-muted/20 rounded-sm cursor-text text-[12px]" {...field} /></FormControl>
+                  <FormMessage className="text-[12px]" />
                 </FormItem>
               )} />
             </CardContent>
@@ -542,39 +508,39 @@ export function LinguaForm() {
 
           <Card className="shadow-sm border-none cursor-default">
             <CardContent className="p-4 space-y-3">
-              <div className="flex items-center gap-2 pb-1.5 border-b"><User className="w-4 h-4 text-primary" /><h2 className="font-bold" style={{ fontSize: getFs(10) }}>{t.personalDetailsHeader}</h2></div>
+              <div className="flex items-center gap-2 pb-1.5 border-b"><User className="w-4 h-4 text-primary" /><h2 className="font-bold text-[14px]">{t.personalDetailsHeader}</h2></div>
               <FormField control={form.control} name="studentName" render={({ field }) => (
                 <FormItem className="space-y-1">
-                  <FormLabel className="font-semibold" style={{ fontSize: getFs(10) }}>{t.studentNameLabel} <span className="text-destructive">*</span></FormLabel>
-                  <FormControl><Input placeholder={lang === 'en' ? "Enter student name" : "ವಿದ್ಯಾರ್ಥಿಯ ಹೆಸರನ್ನು ನಮೂದಿಸಿ"} className="h-9 bg-muted/20 cursor-text" style={{ fontSize: getFs(10) }} {...field} /></FormControl>
-                  {alphabetError.studentName && <p className="font-medium text-destructive" style={{ fontSize: getFs(10) }}>{alphabetError.studentName}</p>}
-                  <FormMessage style={{ fontSize: getFs(9) }} />
+                  <FormLabel className="font-semibold text-[14px]">{t.studentNameLabel} <span className="text-destructive">*</span></FormLabel>
+                  <FormControl><Input placeholder={lang === 'en' ? "Enter student name" : "ವಿದ್ಯಾರ್ಥಿಯ ಹೆಸರನ್ನು ನಮೂದಿಸಿ"} className="h-9 bg-muted/20 cursor-text text-[12px]" {...field} /></FormControl>
+                  {alphabetError.studentName && <p className="font-medium text-destructive text-[12px]">{alphabetError.studentName}</p>}
+                  <FormMessage className="text-[12px]" />
                 </FormItem>
               )} />
               <FormField control={form.control} name="relationship" render={({ field }) => (
                 <FormItem className="space-y-1">
-                  <FormLabel className="font-semibold" style={{ fontSize: getFs(10) }}>{t.relationshipLabel} <span className="text-destructive">*</span></FormLabel>
+                  <FormLabel className="font-semibold text-[14px]">{t.relationshipLabel} <span className="text-destructive">*</span></FormLabel>
                   <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
-                    <div className="flex items-center space-x-1.5"><RadioGroupItem value="SO" id="so" className="h-4 w-4 cursor-pointer" /><Label htmlFor="so" className="cursor-pointer" style={{ fontSize: getFs(10) }}>{lang === 'en' ? 'S/O (Son of)' : 'S/O (ಮಗ)'}</Label></div>
-                    <div className="flex items-center space-x-1.5"><RadioGroupItem value="DO" id="do" className="h-4 w-4 cursor-pointer" /><Label htmlFor="do" className="cursor-pointer" style={{ fontSize: getFs(10) }}>{lang === 'en' ? 'D/O (Daughter of)' : 'D/O (ಮಗಳು)'}</Label></div>
+                    <div className="flex items-center space-x-1.5"><RadioGroupItem value="SO" id="so" className="h-4 w-4 cursor-pointer" /><Label htmlFor="so" className="cursor-pointer text-[12px]">{lang === 'en' ? 'S/O (Son of)' : 'S/O (ಮಗ)'}</Label></div>
+                    <div className="flex items-center space-x-1.5"><RadioGroupItem value="DO" id="do" className="h-4 w-4 cursor-pointer" /><Label htmlFor="do" className="cursor-pointer text-[12px]">{lang === 'en' ? 'D/O (Daughter of)' : 'D/O (ಮಗಳು)'}</Label></div>
                   </RadioGroup>
-                  <FormMessage style={{ fontSize: getFs(9) }} />
+                  <FormMessage className="text-[12px]" />
                 </FormItem>
               )} />
               <FormField control={form.control} name="fatherName" render={({ field }) => (
                 <FormItem className="space-y-1">
-                  <FormLabel className="font-semibold" style={{ fontSize: getFs(10) }}>{t.fatherNameLabel} <span className="text-destructive">*</span></FormLabel>
-                  <FormControl><Input className="h-9 bg-muted/20 cursor-text" style={{ fontSize: getFs(10) }} {...field} /></FormControl>
-                  {alphabetError.fatherName && <p className="font-medium text-destructive" style={{ fontSize: getFs(10) }}>{alphabetError.fatherName}</p>}
-                  <FormMessage style={{ fontSize: getFs(9) }} />
+                  <FormLabel className="font-semibold text-[14px]">{t.fatherNameLabel} <span className="text-destructive">*</span></FormLabel>
+                  <FormControl><Input className="h-9 bg-muted/20 cursor-text text-[12px]" {...field} /></FormControl>
+                  {alphabetError.fatherName && <p className="font-medium text-destructive text-[12px]">{alphabetError.fatherName}</p>}
+                  <FormMessage className="text-[12px]" />
                 </FormItem>
               )} />
               <FormField control={form.control} name="motherName" render={({ field }) => (
                 <FormItem className="space-y-1">
-                  <FormLabel className="font-semibold" style={{ fontSize: getFs(10) }}>{t.motherNameLabel} <span className="text-destructive">*</span></FormLabel>
-                  <FormControl><Input className="h-9 bg-muted/20 cursor-text" style={{ fontSize: getFs(10) }} {...field} /></FormControl>
-                  {alphabetError.motherName && <p className="font-medium text-destructive" style={{ fontSize: getFs(10) }}>{alphabetError.motherName}</p>}
-                  <FormMessage style={{ fontSize: getFs(9) }} />
+                  <FormLabel className="font-semibold text-[14px]">{t.motherNameLabel} <span className="text-destructive">*</span></FormLabel>
+                  <FormControl><Input className="h-9 bg-muted/20 cursor-text text-[12px]" {...field} /></FormControl>
+                  {alphabetError.motherName && <p className="font-medium text-destructive text-[12px]">{alphabetError.motherName}</p>}
+                  <FormMessage className="text-[12px]" />
                 </FormItem>
               )} />
             </CardContent>
@@ -582,15 +548,15 @@ export function LinguaForm() {
 
           <Card className="shadow-sm border-none cursor-default">
             <CardContent className="p-4 space-y-3">
-              <div className="flex items-center gap-2 pb-1.5 border-b"><GraduationCap className="w-4 h-4 text-primary" /><h2 className="font-bold" style={{ fontSize: getFs(10) }}>{t.academicDetailsHeader}</h2></div>
+              <div className="flex items-center gap-2 pb-1.5 border-b"><GraduationCap className="w-4 h-4 text-primary" /><h2 className="font-bold text-[14px]">{t.academicDetailsHeader}</h2></div>
               <FormField control={form.control} name="course" render={({ field }) => (
                 <FormItem className="space-y-1">
-                  <FormLabel className="font-semibold" style={{ fontSize: getFs(10) }}>{t.courseLabel} <span className="text-destructive">*</span></FormLabel>
+                  <FormLabel className="font-semibold text-[14px]">{t.courseLabel} <span className="text-destructive">*</span></FormLabel>
                   <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
                     {['SSLC', 'PUC', 'Diploma', 'Degree', 'Engineering', 'Other'].map((c) => (
                       <div key={c} className="flex items-center space-x-1.5">
                         <RadioGroupItem value={c} id={c} className="h-4 w-4 cursor-pointer" />
-                        <Label htmlFor={c} className="cursor-pointer" style={{ fontSize: getFs(10) }}>
+                        <Label htmlFor={c} className="cursor-pointer text-[12px]">
                           {c === 'PUC' ? (lang === 'en' ? '2nd PUC' : 'ದ್ವಿತೀಯ ಪಿ.ಯು.ಸಿ') : 
                            c === 'SSLC' ? (lang === 'en' ? 'SSLC / 10th' : 'ಎಸ್.ಎಸ್.ಎಲ್.ಸಿ. / 10 ನೇ ತರಗತಿ') : 
                            c === 'Diploma' ? (lang === 'en' ? 'Diploma' : 'ಡಿಪ್ಲೊಮಾ') :
@@ -601,16 +567,16 @@ export function LinguaForm() {
                       </div>
                     ))}
                   </RadioGroup>
-                  <FormMessage style={{ fontSize: getFs(9) }} />
+                  <FormMessage className="text-[12px]" />
                 </FormItem>
               )} />
 
               {selectedCourse === 'SSLC' && (
                 <FormField control={form.control} name="board" render={({ field }) => (
                   <FormItem className="space-y-1">
-                    <FormLabel className="font-semibold" style={{ fontSize: getFs(10) }}>{t.boardLabel} *</FormLabel>
+                    <FormLabel className="font-semibold text-[14px]">{t.boardLabel} *</FormLabel>
                     <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
-                      {t.boards.map(b => <div key={b} className="flex items-center space-x-1.5"><RadioGroupItem value={b} id={b} className="h-4 w-4 cursor-pointer" /><Label htmlFor={b} className="cursor-pointer" style={{ fontSize: getFs(10) }}>{b}</Label></div>)}
+                      {t.boards.map(b => <div key={b} className="flex items-center space-x-1.5"><RadioGroupItem value={b} id={b} className="h-4 w-4 cursor-pointer" /><Label htmlFor={b} className="cursor-pointer text-[12px]">{b}</Label></div>)}
                     </RadioGroup>
                   </FormItem>
                 )} />
@@ -620,12 +586,12 @@ export function LinguaForm() {
                 <div className="space-y-2 pt-1">
                   <FormField control={form.control} name="pucStream" render={({ field }) => (
                     <FormItem className="space-y-1">
-                      <FormLabel className="font-semibold" style={{ fontSize: getFs(10) }}>{t.streamLabel} *</FormLabel>
+                      <FormLabel className="font-semibold text-[14px]">{t.streamLabel} *</FormLabel>
                       <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
                         {['Science', 'Commerce', 'Arts'].map(s => (
                           <div key={s} className="flex items-center space-x-1.5">
                             <RadioGroupItem value={s} id={s} className="h-4 w-4 cursor-pointer" />
-                            <Label htmlFor={s} className="cursor-pointer" style={{ fontSize: getFs(10) }}>{lang === 'en' ? (s === 'Science' ? 'Science' : s === 'Commerce' ? 'Commerce' : 'Arts') : (s === 'Science' ? 'ವಿಜ್ಞಾನ' : s === 'Commerce' ? 'ವಾಣಿಜ್ಯ' : 'ಕಲೆ')}</Label>
+                            <Label htmlFor={s} className="cursor-pointer text-[12px]">{lang === 'en' ? (s === 'Science' ? 'Science' : s === 'Commerce' ? 'Commerce' : 'Arts') : (s === 'Science' ? 'ವಿಜ್ಞಾನ' : s === 'Commerce' ? 'ವಾಣಿಜ್ಯ' : 'ಕಲೆ')}</Label>
                           </div>
                         ))}
                       </RadioGroup>
@@ -636,9 +602,9 @@ export function LinguaForm() {
                       const options = selectedStream === 'Science' ? t.scienceCombinations : selectedStream === 'Commerce' ? t.commerceCombinations : t.artsCombinations;
                       return (
                         <FormItem className="space-y-1">
-                          <FormLabel className="font-semibold" style={{ fontSize: getFs(10) }}>{t.combinationLabel} *</FormLabel>
+                          <FormLabel className="font-semibold text-[14px]">{t.combinationLabel} *</FormLabel>
                           <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
-                            {options.map(c => <div key={c} className="flex items-center space-x-1.5"><RadioGroupItem value={c} id={c} className="h-4 w-4 cursor-pointer" /><Label htmlFor={c} className="cursor-pointer" style={{ fontSize: getFs(10) }}>{c}</Label></div>)}
+                            {options.map(c => <div key={c} className="flex items-center space-x-1.5"><RadioGroupItem value={c} id={c} className="h-4 w-4 cursor-pointer" /><Label htmlFor={c} className="cursor-pointer text-[12px]">{c}</Label></div>)}
                           </RadioGroup>
                         </FormItem>
                       );
@@ -650,10 +616,10 @@ export function LinguaForm() {
               {(['Diploma', 'Degree', 'Engineering'].includes(selectedCourse || '')) && (
                 <FormField control={form.control} name="branch" render={({ field }) => (
                   <FormItem className="space-y-1">
-                    <FormLabel className="font-semibold" style={{ fontSize: getFs(10) }}>{t.branchLabel} *</FormLabel>
+                    <FormLabel className="font-semibold text-[14px]">{t.branchLabel} *</FormLabel>
                     <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
                       {(selectedCourse === 'Engineering' ? t.engineeringCourses : selectedCourse === 'Diploma' ? t.diplomaCourses : t.degreeCourses).map(c => (
-                        <div key={c} className="flex items-center space-x-1.5"><RadioGroupItem value={c} id={c} className="h-4 w-4 cursor-pointer" /><Label htmlFor={c} className="cursor-pointer" style={{ fontSize: getFs(10) }}>{c}</Label></div>
+                        <div key={c} className="flex items-center space-x-1.5"><RadioGroupItem value={c} id={c} className="h-4 w-4 cursor-pointer" /><Label htmlFor={c} className="cursor-pointer text-[12px]">{c}</Label></div>
                       ))}
                     </RadioGroup>
                   </FormItem>
@@ -663,8 +629,8 @@ export function LinguaForm() {
               {selectedCourse === 'Other' && (
                 <FormField control={form.control} name="otherCourse" render={({ field }) => (
                   <FormItem className="space-y-1">
-                    <FormLabel className="font-semibold" style={{ fontSize: getFs(10) }}>{t.otherCourseLabel} *</FormLabel>
-                    <FormControl><Input className="h-9 bg-muted/20 cursor-text" style={{ fontSize: getFs(10) }} {...field} /></FormControl>
+                    <FormLabel className="font-semibold text-[14px]">{t.otherCourseLabel} *</FormLabel>
+                    <FormControl><Input className="h-9 bg-muted/20 cursor-text text-[12px]" {...field} /></FormControl>
                   </FormItem>
                 )} />
               )}
@@ -674,25 +640,25 @@ export function LinguaForm() {
                   {(['SSLC', 'PUC', 'Other'].includes(selectedCourse)) && (
                     <>
                       <FormField control={form.control} name="marksObtained" render={({ field }) => (
-                        <FormItem className="space-y-1"><FormLabel className="font-semibold" style={{ fontSize: getFs(10) }}>{t.marksObtainedLabel} *</FormLabel><FormControl><Input type="number" className="h-9 bg-muted/20 cursor-text" style={{ fontSize: getFs(10) }} {...field} /></FormControl></FormItem>
+                        <FormItem className="space-y-1"><FormLabel className="font-semibold text-[14px]">{t.marksObtainedLabel} *</FormLabel><FormControl><Input type="number" className="h-9 bg-muted/20 cursor-text text-[12px]" {...field} /></FormControl></FormItem>
                       )} />
                       <FormField control={form.control} name="totalMarks" render={({ field }) => (
                         <FormItem className="space-y-1">
-                          <FormLabel className="font-semibold" style={{ fontSize: getFs(10) }}>{t.totalMarksLabel} *</FormLabel>
-                          <FormControl><Input type="number" className="h-9 bg-muted/20 cursor-text" style={{ fontSize: getFs(10) }} {...field} /></FormControl>
+                          <FormLabel className="font-semibold text-[14px]">{t.totalMarksLabel} *</FormLabel>
+                          <FormControl><Input type="number" className="h-9 bg-muted/20 cursor-text text-[12px]" {...field} /></FormControl>
                           {totalMarksError && (
-                            <p className="font-medium pt-1 text-destructive" style={{ fontSize: getFs(10) }}>{totalMarksError}</p>
+                            <p className="font-medium pt-1 text-destructive text-[12px]">{totalMarksError}</p>
                           )}
                         </FormItem>
                       )} />
                       <FormField control={form.control} name="percentage" render={({ field }) => (
                         <FormItem className="space-y-1">
-                          <FormLabel className="font-semibold" style={{ fontSize: getFs(10) }}>{t.percentageLabel}</FormLabel>
-                          <FormControl><Input readOnly className="h-9 bg-secondary/30 font-bold" style={{ fontSize: getFs(10) }} {...field} /></FormControl>
+                          <FormLabel className="font-semibold text-[14px]">{t.percentageLabel}</FormLabel>
+                          <FormControl><Input readOnly className="h-9 bg-secondary/30 font-bold text-[12px]" {...field} /></FormControl>
                           {eligibilityError && (
                             <Alert variant="destructive" className="py-1.5 px-2 mt-1.5 flex items-center gap-2 border-destructive/20 bg-destructive/5">
                               <AlertCircle className="h-4 w-4 shrink-0" />
-                              <AlertDescription className="leading-tight font-medium" style={{ fontSize: getFs(11) }}>
+                              <AlertDescription className="leading-tight font-medium text-[12px]">
                                 {eligibilityError}
                               </AlertDescription>
                             </Alert>
@@ -705,12 +671,12 @@ export function LinguaForm() {
                   {(['Diploma', 'Degree', 'Engineering'].includes(selectedCourse)) && (
                     <FormField control={form.control} name="cgpa" render={({ field }) => (
                       <FormItem className="space-y-1">
-                        <FormLabel className="font-semibold" style={{ fontSize: getFs(10) }}>{t.cgpaLabel} *</FormLabel>
-                        <FormControl><Input type="number" step="0.01" className="h-9 bg-muted/20 cursor-text" style={{ fontSize: getFs(10) }} {...field} /></FormControl>
+                        <FormLabel className="font-semibold text-[14px]">{t.cgpaLabel} *</FormLabel>
+                        <FormControl><Input type="number" step="0.01" className="h-9 bg-muted/20 cursor-text text-[12px]" {...field} /></FormControl>
                         {eligibilityError && (
                           <Alert variant="destructive" className="py-1.5 px-2 mt-1.5 flex items-center gap-2 border-destructive/20 bg-destructive/5">
                             <AlertCircle className="h-4 w-4 shrink-0" />
-                            <AlertDescription className="leading-tight font-medium" style={{ fontSize: getFs(11) }}>
+                            <AlertDescription className="leading-tight font-medium text-[12px]">
                                 {eligibilityError}
                             </AlertDescription>
                           </Alert>
@@ -730,9 +696,9 @@ export function LinguaForm() {
                     }
                     return (
                       <FormItem className="space-y-1">
-                        <FormLabel className="font-semibold" style={{ fontSize: getFs(10) }}>{t.yearPassingLabel} *</FormLabel>
+                        <FormLabel className="font-semibold text-[14px]">{t.yearPassingLabel} *</FormLabel>
                         <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
-                          {years.map(y => <div key={y} className="flex items-center space-x-1.5"><RadioGroupItem value={y} id={y} className="h-4 w-4 cursor-pointer" /><Label htmlFor={y} className="cursor-pointer" style={{ fontSize: getFs(10) }}>{y}</Label></div>)}
+                          {years.map(y => <div key={y} className="flex items-center space-x-1.5"><RadioGroupItem value={y} id={y} className="h-4 w-4 cursor-pointer" /><Label htmlFor={y} className="cursor-pointer text-[12px]">{y}</Label></div>)}
                         </RadioGroup>
                       </FormItem>
                     );
@@ -744,22 +710,22 @@ export function LinguaForm() {
 
           <Card className="shadow-sm border-none cursor-default">
             <CardContent className="p-4 space-y-3">
-              <div className="flex items-center gap-2 pb-1.5 border-b"><FileCheck className="w-4 h-4 text-primary" /><h2 className="font-bold" style={{ fontSize: getFs(10) }}>{t.docsTitle}</h2></div>
+              <div className="flex items-center gap-2 pb-1.5 border-b"><FileCheck className="w-4 h-4 text-primary" /><h2 className="font-bold text-[14px]">{t.docsTitle}</h2></div>
               <div className="space-y-2">
                 <div className="space-y-1">
-                  <Label className="font-semibold cursor-pointer" style={{ fontSize: getFs(10) }}>{t.photoLabel} *</Label>
-                  <Input type="file" accept="image/jpeg,image/jpg" className="h-9 cursor-pointer file:cursor-pointer" style={{ fontSize: getFs(10) }} onChange={(e) => setPhotoFile(e.target.files?.[0] || null)} />
+                  <Label className="font-semibold cursor-pointer text-[14px]">{t.photoLabel} *</Label>
+                  <Input type="file" accept="image/jpeg,image/jpg" className="h-9 cursor-pointer file:cursor-pointer text-[12px]" onChange={(e) => setPhotoFile(e.target.files?.[0] || null)} />
                 </div>
                 <div className="space-y-1">
-                  <Label className="font-semibold cursor-pointer" style={{ fontSize: getFs(10) }}>{t.marksCardLabel} *</Label>
-                  <Input type="file" accept=".pdf,.doc,.docx" className="h-9 cursor-pointer file:cursor-pointer" style={{ fontSize: getFs(10) }} onChange={(e) => setMarksFile(e.target.files?.[0] || null)} />
+                  <Label className="font-semibold cursor-pointer text-[14px]">{t.marksCardLabel} *</Label>
+                  <Input type="file" accept=".pdf,.doc,.docx" className="h-9 cursor-pointer file:cursor-pointer text-[12px]" onChange={(e) => setMarksFile(e.target.files?.[0] || null)} />
                 </div>
               </div>
             </CardContent>
           </Card>
 
           <div className="flex pt-1">
-            <Button type="submit" className="w-full h-9 font-bold rounded-md shadow cursor-pointer" style={{ fontSize: getFs(10) }} disabled={isSubmitting || !!eligibilityError || !!totalMarksError || Object.keys(alphabetError).length > 0}>
+            <Button type="submit" className="w-full h-9 font-bold rounded-md shadow cursor-pointer text-[14px]" disabled={isSubmitting || !!eligibilityError || !!totalMarksError || Object.keys(alphabetError).length > 0}>
               {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> {t.processing}</> : <><Send className="mr-2 h-4 w-4" /> {t.submitButton}</>}
             </Button>
           </div>
