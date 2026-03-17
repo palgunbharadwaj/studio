@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -261,7 +260,8 @@ export function LinguaForm() {
         'Civil (Civil Engineering)', 
         'IP (Industrial Production Engineering)',
         'EIE (Electronics and Instrumentation Engineering)',
-        'ECE (Electronics & Computer Engineering)',
+        'ECS (Electronics & Computer Science Engineering)',
+        'CSBS (Computer Science and Business Systems)',
         'Mechatronics Engineering',
         'Automobile Engineering',
         'Aerospace Engineering',
@@ -270,8 +270,6 @@ export function LinguaForm() {
         'Data Science and Engineering',
         'AIDS (Artificial Intelligence and Data Science Engineering)',
         'Robotics and Automation Engineering',
-        'ECS (Electronics & Computer Science Engineering)',
-        'CSBS (Computer Science and Business Systems)',
         'Other'
       ],
       diplomaCourses: [
