@@ -184,8 +184,8 @@ export function LinguaForm() {
 
   const translations = {
     en: {
-      title: "ಪ್ರತಿಭಾ ಪುರಸ್ಕಾರ 2024-2025:",
-      description: "2024 ಮತ್ತು 2025ರ ಸಾಲಿನ ಮಾರ್ಚಿ ಮತ್ತು ಏಪ್ರಿಲ್ ನಲ್ಲಿ ನಡೆದ ಪಿ.ಯು.ಸಿ ಪರೀಕ್ಷೆಯಲ್ಲಿ ಶೇ.85 ಕ್ಕಿಂತ ಹಾಗೂ ಎಸ್.ಎಸ್.ಎಲ್.ಸಿ/ಪದವಿ/ಉದ್ಯೋಗಾಧಾರಿತ ಶಿಕ್ಷಣದಲ್ಲಿ ರ‍್ಯಾಂಕ್‌ ಅಥವಾ ಶೇ.90 ಕ್ಕಿಂತ ಹೆಚ್ಚು ಅಂಕ ಪಡೆದ ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ದೇವಾಲಯದ ಮಟ್ಟದಲ್ಲಿ ಪುರಸ್ಕಾರ.",
+      title: "Prathibha Puraskahara 2024-2025:",
+      description: "Awards for students who secured more than 85% in PUC and more than 90% (or Rank) in SSLC/Degree/Vocational courses in exams held in March and April 2024-2025.",
       langLabel: "Choose Language / ಭಾಷೆ ಆಯ್ಕೆಮಾಡಿ",
       personalDetailsHeader: "Personal Details",
       academicDetailsHeader: "Academic Details",
@@ -342,7 +342,7 @@ export function LinguaForm() {
         'HEPPsy (ಇತಿಹಾಸ, ಅರ್ಥಶಾಸ್ತ್ರ, ರಾಜಕೀಯ ವಿಜ್ಞಾನ, ಮನೋವಿಜ್ಞಾನ)', 
         'HESP (ಇತಿಹಾಸ, ಅರ್ಥಶಾಸ್ತ್ರ, ಸಮಾಜಶಾಸ್ತ್ರ, ಮನೋವಿಜ್ಞಾನ)', 
         'HEBA (ಇತಿಹಾಸ, ಅರ್ಥಶಾಸ್ತ್ರ, ವ್ಯವಹಾರ ಅಧ್ಯಯನಗಳು, ಲೆಕ್ಕಶಾಸ್ತ್ರ)', 
-        'HEGG (ಇತಿಹಾಸ, अर्थಶಾಸ್ತ್ರ, ಭೂಗೋಳಶಾಸ್ತ್ರ, ಭೂಗರ್ಭಶಾಸ್ತ್ರ)', 
+        'HEGG (ಇತಿಹಾಸ, ಅರ್ಥಶಾಸ್ತ್ರ, ಭೂಗೋಳಶಾಸ್ತ್ರ, ಭೂಗರ್ಭಶಾಸ್ತ್ರ)', 
         'HESF (ಇತಿಹಾಸ, ಅರ್ಥಶಾಸ್ತ್ರ, ಸಮಾಜಶಾಸ್ತ್ರ, ಲಲಿತಕಲೆಗಳು)', 
         'ಇತರೆ'
       ],
@@ -714,11 +714,11 @@ export function LinguaForm() {
               <div className="flex items-center gap-2 pb-2 border-b"><FileCheck className="w-3.5 h-3.5 text-primary" /><h2 className="text-[12px] font-bold">{t.docsTitle}</h2></div>
               <div className="space-y-3">
                 <div className="space-y-1.5">
-                  <Label className="text-[11px] font-semibold cursor-pointer">{t.photoLabel} <span className="text-destructive">*</span></Label>
+                  <Label className="text-[11px] font-semibold cursor-pointer">{t.photoLabel} *</Label>
                   <Input type="file" accept="image/jpeg,image/jpg" className="h-8 text-[11px] cursor-pointer file:cursor-pointer" onChange={(e) => setPhotoFile(e.target.files?.[0] || null)} />
                 </div>
                 <div className="space-y-1.5">
-                  <Label className="text-[11px] font-semibold cursor-pointer">{t.marksCardLabel} <span className="text-destructive">*</span></Label>
+                  <Label className="text-[11px] font-semibold cursor-pointer">{t.marksCardLabel} *</Label>
                   <Input type="file" accept=".pdf,.doc,.docx" className="h-8 text-[11px] cursor-pointer file:cursor-pointer" onChange={(e) => setMarksFile(e.target.files?.[0] || null)} />
                 </div>
               </div>
