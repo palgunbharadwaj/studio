@@ -14,7 +14,7 @@ export default function Home() {
     <main className="min-h-screen bg-[#f0f4f8] py-8 px-4 sm:px-6">
       <LinguaForm />
       
-      <footer className="mt-12 text-center text-[#70757a] text-[14px] max-w-2xl mx-auto border-t pt-6">
+      <footer className="mt-12 text-center text-[#70757a] text-[11px] max-w-2xl mx-auto border-t pt-6">
         <p>© {year} Prathibha Puraskahara SJSVT.</p>
         <div className="mt-3 flex justify-center gap-4 font-medium">
           <span className="hover:underline cursor-pointer">Report Abuse</span>
