@@ -52,6 +52,7 @@ export function LinguaForm() {
   
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [marksFile, setMarksFile] = useState<File | null>(null);
+  const [fileError, setFileError] = useState<string | null>(null);
 
   const form = useHookForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -190,8 +191,7 @@ export function LinguaForm() {
 
   const translations = {
     en: {
-      titleBold: "ಪತಿಭಾ ಪುರ ರ 2025-2026:",
-      titleNormal: "2025 ಮತ್ತು 2026ರ ಸಾಲಿನ ಮಾರ್ಚಿ ಮತ್ತು ಏಪ್ರಿಲ್ ನಲ್ಲಿ ನಡೆದ ಪಿ.ಯು.ಸಿ ಪರೀಕ್ಷೆಯಲ್ಲಿ ಶೇ.85 ಕ್ಕಿಂತ ಹಾಗೂ ಎಸ್.ಎಸ್.ಎಲ್.ಸಿ/ಪದವಿ/ಉದ್ಯೋಗಾಧಾರಿತ ಶಿಕ್ಷಣದಲ್ಲಿ ರ‍್ಯಾಂಕ್‌ ಅಥವಾ ಶೇ.90 ಕ್ಕಿಂತ ಹೆಚ್ಚು ಅಂಕ ಪಡೆದ ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ದೇವಾಲಯದ ಮಟ್ಟದಲ್ಲಿ ಪುರಸ್ಕಾರ",
+      header: "ಪತಿಭಾ ಪುರ ರ 2025-2026:\n2025 ಮತ್ತು 2026ರ ಸಾಲಿನ ಮಾರ್ಚಿ ಮತ್ತು ಏಪ್ರಿಲ್ ನಲ್ಲಿ ನಡೆದ ಪಿ.ಯು.ಸಿ ಪರೀಕ್ಷೆಯಲ್ಲಿ ಶೇ.85 ಕ್ಕಿಂತ ಹಾಗೂ ಎಸ್.ಎಸ್.ಎಲ್.ಸಿ/ಪದವಿ/ಉದ್ಯೋಗಾಧಾರಿತ ಶಿಕ್ಷಣದಲ್ಲಿ ರ‍್ಯಾಂಕ್‌ ಅಥವಾ ಶೇ.90 ಕ್ಕಿಂತ ಹೆಚ್ಚು ಅಂಕ ಪಡೆದ ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ದೇವಾಲಯದ ಮಟ್ಟದಲ್ಲಿ ಪುರಸ್ಕಾರ",
       langLabel: "Choose Language / ಭಾಷೆ ಆಯ್ಕೆಮಾಡಿ",
       personalDetailsHeader: "Personal Details",
       academicDetailsHeader: "Academic Details",
@@ -213,7 +213,7 @@ export function LinguaForm() {
       otherCourseLabel: "Please specify other course",
       docsTitle: "Documents",
       photoLabel: "Photo (JPG/JPEG, max 10MB)",
-      marksCardLabel: "Marks Card (PDF/DOC, max 10MB)",
+      marksCardLabel: "Marks Card (PDF only, max 10MB)",
       submitButton: "Submit",
       processing: "Processing...",
       successTitle: "Submission Received!",
@@ -294,8 +294,7 @@ export function LinguaForm() {
       ]
     },
     kn: {
-      titleBold: "ಪತಿಭಾ ಪುರ ರ 2025-2026:",
-      titleNormal: "2025 ಮತ್ತು 2026ರ ಸಾಲಿನ ಮಾರ್ಚಿ ಮತ್ತು ಏಪ್ರಿಲ್ ನಲ್ಲಿ ನಡೆದ ಪಿ.ಯು.ಸಿ ಪರೀಕ್ಷೆಯಲ್ಲಿ ಶೇ.85 ಕ್ಕಿಂತ ಹಾಗೂ ಎಸ್.ಎಸ್.ಎಲ್.ಸಿ/ಪದವಿ/ಉದ್ಯೋಗಾಧಾರಿತ ಶಿಕ್ಷಣದಲ್ಲಿ ರ‍್ಯಾಂಕ್‌ ಅಥವಾ ಶೇ.90 ಕ್ಕಿಂತ ಹೆಚ್ಚು ಅಂಕ ಪಡೆದ ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ದೇವಾಲಯದ ಮಟ್ಟದಲ್ಲಿ ಪುರಸ್ಕಾರ",
+      header: "ಪತಿಭಾ ಪುರ ರ 2025-2026:\n2025 ಮತ್ತು 2026ರ ಸಾಲಿನ ಮಾರ್ಚಿ ಮತ್ತು ಏಪ್ರಿಲ್ ನಲ್ಲಿ ನಡೆದ ಪಿ.ಯು.ಸಿ ಪರೀಕ್ಷೆಯಲ್ಲಿ ಶೇ.85 ಕ್ಕಿಂತ ಹಾಗೂ ಎಸ್.ಎಸ್.ಎಲ್.ಸಿ/ಪದವಿ/ಉದ್ಯೋಗಾಧಾರಿತ ಶಿಕ್ಷಣದಲ್ಲಿ ರ‍್ಯಾಂಕ್‌ ಅಥವಾ ಶೇ.90 ಕ್ಕಿಂತ ಹೆಚ್ಚು ಅಂಕ ಪಡೆದ ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ದೇವಾಲಯದ ಮಟ್ಟದಲ್ಲಿ ಪುರಸ್ಕಾರ",
       langLabel: "Choose Language / ಭಾಷೆ ಆಯ್ಕೆಮಾಡಿ",
       personalDetailsHeader: "ವೈಯಕ್ತಿಕ ವಿವರಗಳು",
       academicDetailsHeader: "ಶೈಕ್ಷಣಿಕ ವಿವರಗಳು",
@@ -317,7 +316,7 @@ export function LinguaForm() {
       otherCourseLabel: "ಇತರೆ ಕೋರ್ಸ್ ವಿವರ",
       docsTitle: "ದಾಖಲೆಗಳು",
       photoLabel: "ಫೋಟೋ (JPG/JPEG, ಗರಿಷ್ಠ 10MB)",
-      marksCardLabel: "ಅಂಕಪಟ್ಟಿ (PDF/DOC, ಗರಿಷ್ಠ 10MB)",
+      marksCardLabel: "ಅಂಕಪಟ್ಟಿ (PDF ಮಾತ್ರ, ಗರಿಷ್ಠ 10MB)",
       submitButton: "ಸಲ್ಲಿಸಿ",
       processing: "ಪ್ರಕ್ರಿಯೆಯಲ್ಲಿದೆ...",
       successTitle: "ಸಲ್ಲಿಸುವಿಕೆ ಸ್ವೀಕರಿಸಲಾಗಿದೆ!",
@@ -410,25 +409,56 @@ export function LinguaForm() {
     });
   };
 
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (!file.type.startsWith('image/')) {
+        setFileError(lang === 'en' ? "Please upload an image file for the photo." : "ದಯವಿಟ್ಟು ಫೋಟೋಗಾಗಿ ಚಿತ್ರದ ಫೈಲ್ ಅನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ.");
+        setPhotoFile(null);
+        e.target.value = '';
+      } else {
+        setFileError(null);
+        setPhotoFile(file);
+      }
+    }
+  };
+
+  const handleMarksChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.type !== 'application/pdf') {
+        setFileError(lang === 'en' ? "Please upload a PDF file for the marks card." : "ದಯವಿಟ್ಟು ಅಂಕಪಟ್ಟಿಗಾಗಿ PDF ಫೈಲ್ ಅನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ.");
+        setMarksFile(null);
+        e.target.value = '';
+      } else {
+        setFileError(null);
+        setMarksFile(file);
+      }
+    }
+  };
+
   async function onSubmit(values: FormValues) {
-    if (eligibilityError || totalMarksError || Object.keys(alphabetError).length > 0) return;
+    if (eligibilityError || totalMarksError || Object.keys(alphabetError).length > 0 || fileError) return;
     
     if (!photoFile || !marksFile) {
       alert(lang === 'en' ? "Please upload both student photo and marks card." : "ದಯವಿಟ್ಟು ವಿದ್ಯಾರ್ಥಿ ಫೋಟೋ ಮತ್ತು ಅಂಕಪಟ್ಟಿಯನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ.");
       return;
     }
 
-    if (selectedCourse === 'SSLC' && !values.board) return;
-    if (selectedCourse === 'PUC' && (!values.pucStream || !values.combination)) return;
-    if (['Diploma', 'Degree', 'Engineering'].includes(selectedCourse || '') && !values.branch) return;
-    if (selectedCourse === 'Other' && !values.otherCourse) return;
+    // Backend validation for file types
+    if (!photoFile.type.startsWith('image/')) {
+      alert(lang === 'en' ? "Student photo must be an image." : "ವಿದ್ಯಾರ್ಥಿ ಫೋಟೋ ಚಿತ್ರದ ರೂಪದಲ್ಲಿರಬೇಕು.");
+      return;
+    }
+    if (marksFile.type !== 'application/pdf') {
+      alert(lang === 'en' ? "Marks card must be a PDF." : "ಅಂಕಪಟ್ಟಿ PDF ರೂಪದಲ್ಲಿರಬೇಕು.");
+      return;
+    }
 
     setIsSubmitting(true);
     try {
-      let photoBase64 = '';
-      let marksCardBase64 = '';
-      if (photoFile) photoBase64 = await fileToBase64(photoFile);
-      if (marksFile) marksCardBase64 = await fileToBase64(marksFile);
+      let photoBase64 = await fileToBase64(photoFile);
+      let marksCardBase64 = await fileToBase64(marksFile);
 
       const response = await submitLinguaForm({
         ...values,
@@ -444,43 +474,20 @@ export function LinguaForm() {
     }
   }
 
-  if (result?.success) {
-    return (
-      <Card className="shadow-sm border-none max-w-xl mx-auto cursor-default">
-        <CardContent className="pt-5 pb-5 text-center space-y-3">
-          <div className="mx-auto bg-green-50 text-green-600 p-2 rounded-full w-fit">
-            <CheckCircle2 className="w-10 h-10" />
-          </div>
-          <div className="space-y-1">
-            <h2 className="font-bold text-[#202124] text-[14px]">{t.successTitle}</h2>
-            <p className="text-muted-foreground text-[12px]">{t.successDesc}</p>
-          </div>
-
-          {result.emailData && (
-            <div className="mt-3 p-3 bg-muted/30 rounded-lg text-left border space-y-1.5">
-              <div className="flex items-center gap-2 font-bold text-primary text-[14px]">
-                <Mail className="w-4 h-4" />
-                <span>{t.confMessage}</span>
-              </div>
-              <div className="space-y-1">
-                <p className="font-bold text-[#202124] text-[14px]">{result.emailData.subject}</p>
-                <p className="text-[#5f6368] whitespace-pre-wrap leading-relaxed text-[12px]">{result.emailData.body}</p>
-              </div>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-    );
-  }
-
   const canSubmit = () => {
     const v = form.getValues();
-    if (!v.studentName || !v.email || !v.relationship || !v.fatherName || !v.motherName || !v.course || !v.yearOfPassing) return false;
+    const basicFields = v.studentName && v.email && v.relationship && v.fatherName && v.motherName && v.course && v.yearOfPassing;
+    if (!basicFields) return false;
+    
     if (v.course === 'SSLC' && (!v.board || !v.marksObtained || !v.totalMarks)) return false;
     if (v.course === 'PUC' && (!v.pucStream || !v.combination || !v.marksObtained || !v.totalMarks)) return false;
     if (['Diploma', 'Degree', 'Engineering'].includes(v.course) && (!v.branch || !v.cgpa)) return false;
     if (v.course === 'Other' && (!v.otherCourse || !v.marksObtained || !v.totalMarks)) return false;
+    
     if (!photoFile || !marksFile) return false;
+    if (!photoFile.type.startsWith('image/')) return false;
+    if (marksFile.type !== 'application/pdf') return false;
+    
     return true;
   };
 
@@ -490,9 +497,13 @@ export function LinguaForm() {
         <CardContent className="p-4 space-y-1.5">
           <div className="space-y-0.5">
             <h1 className="font-normal tracking-tight text-[#202124] text-[12px] whitespace-pre-wrap">
-              <span className="font-bold">{t.titleBold}</span>
+              {t.header.split('\n').map((line, i) => (
+                <span key={i} className={i === 0 ? "font-bold" : ""}>
+                  {line}
+                  {i < t.header.split('\n').length - 1 && <br />}
+                </span>
+              ))}
             </h1>
-            <p className="text-[#202124] text-[12px] whitespace-pre-wrap">{t.titleNormal}</p>
           </div>
           <div className="pt-1 border-t mt-1 font-medium italic text-destructive text-[12px]">{t.requiredNote}</div>
         </CardContent>
@@ -732,18 +743,19 @@ export function LinguaForm() {
               <div className="space-y-2">
                 <div className="space-y-1">
                   <FormLabel className="text-[14px] font-semibold cursor-pointer">{t.photoLabel} <span className="text-destructive">*</span></FormLabel>
-                  <Input type="file" accept="image/jpeg,image/jpg" className="h-9 cursor-pointer file:cursor-pointer text-[12px]" onChange={(e) => setPhotoFile(e.target.files?.[0] || null)} />
+                  <Input type="file" accept="image/jpeg,image/jpg,image/png" className="h-9 cursor-pointer file:cursor-pointer text-[12px]" onChange={handlePhotoChange} />
                 </div>
                 <div className="space-y-1">
                   <FormLabel className="text-[14px] font-semibold cursor-pointer">{t.marksCardLabel} <span className="text-destructive">*</span></FormLabel>
-                  <Input type="file" accept=".pdf,.doc,.docx" className="h-9 cursor-pointer file:cursor-pointer text-[12px]" onChange={(e) => setMarksFile(e.target.files?.[0] || null)} />
+                  <Input type="file" accept=".pdf" className="h-9 cursor-pointer file:cursor-pointer text-[12px]" onChange={handleMarksChange} />
                 </div>
+                {fileError && <p className="text-destructive text-[12px] font-medium">{fileError}</p>}
               </div>
             </CardContent>
           </Card>
 
           <div className="flex pt-1">
-            <Button type="submit" className="w-full h-9 font-bold rounded-md shadow cursor-pointer text-[14px]" disabled={isSubmitting || !!eligibilityError || !!totalMarksError || Object.keys(alphabetError).length > 0 || !canSubmit()}>
+            <Button type="submit" className="w-full h-9 font-bold rounded-md shadow cursor-pointer text-[14px]" disabled={isSubmitting || !!eligibilityError || !!totalMarksError || Object.keys(alphabetError).length > 0 || !!fileError || !canSubmit()}>
               {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> {t.processing}</> : <><Send className="mr-2 h-4 w-4" /> {t.submitButton}</>}
             </Button>
           </div>
