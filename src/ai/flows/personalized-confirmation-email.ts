@@ -55,7 +55,7 @@ Submission Details:
 {{{submissionDetails}}}
 
 Requirements:
-1. Acknowledge the submission for "Prathibha Puraskahara SJSVT" for the academic year 2024-2025.
+1. Acknowledge the submission for "Prathibha Puraskahara SJSVT" for the academic year 2025-2026.
 2. The subject line should be professional and clear.
 3. The body should be polite and personalized.
 4. Ensure the entire response (subject and body) is in the specified language.

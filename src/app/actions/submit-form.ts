@@ -36,7 +36,7 @@ export async function submitLinguaForm(data: any): Promise<SubmissionResult> {
     // Construct submission summary for AI context
     const submissionDetails = `
       Course: ${data.course}
-      Academic Year: 2024-2025
+      Academic Year: 2025-2026
       ${data.branch ? `Branch/Combination: ${data.branch || data.combination}` : ''}
       Result: ${data.percentage ? data.percentage + '%' : data.cgpa + ' CGPA'}
     `.trim();
