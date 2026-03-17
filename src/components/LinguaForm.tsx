@@ -189,7 +189,7 @@ export function LinguaForm() {
 
   const translations = {
     en: {
-      title: "Prathibha Puraskahara 2025 and 2026:",
+      title: "Awards at the temple level for students who secured more than 85% in the PUC examination held in March and April of 2025 and 2026, and more than 90% (or Rank) in SSLC/Degree/Vocational education.",
       description: "Awards at the temple level for students who secured more than 85% in the PUC examination held in March and April of 2025 and 2026, and more than 90% (or Rank) in SSLC/Degree/Vocational education.",
       langLabel: "Choose Language / ಭಾಷೆ ಆಯ್ಕೆಮಾಡಿ",
       personalDetailsHeader: "Personal Details",
@@ -371,7 +371,7 @@ export function LinguaForm() {
         'Biotechnology ( ೖವಿಕ ತಂತ ನ ಇಂಜಿನಿಯರಿಂಗ್)',
         'Data Science (ದತಾಂಶ ವಿ ನ ಮ ಇಂಜಿನಿಯರಿಂಗ್)',
         'AI & Data Science (ಕೃತಕ ಬುದಿಮ ಮ ದತಾಂಶ ವಿ ನ ಇಂಜಿನಿಯರಿಂಗ್)',
-        'Robotics & Automation ( ೕ ೕಟಿಕ್ ಮ ಂತೀಕೃತ ಇಂಜಿನಿಯರಿಂಗ್)',
+        'Robotics & Automation (ೕ ೕಟಿಕ್ ಮ ಂತೀಕೃತ ಇಂಜಿನಿಯರಿಂಗ್)',
         'ಇತರ'
       ],
       diplomaCourses: [
@@ -604,7 +604,7 @@ export function LinguaForm() {
                         <FormItem className="space-y-1">
                           <FormLabel className="text-[14px] font-semibold">{t.combinationLabel} *</FormLabel>
                           <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
-                            {options.map(c => <div key={c} className="flex items-center space-x-1.5"><RadioGroupItem value={c} id={c} className="h-4 w-4 cursor-pointer" /><Label htmlFor={c} className="text-[12px] cursor-pointer">{c}</Label></div>)}
+                            {options.map(c => <div key={c} className="flex items-center space-x-1.5"><RadioGroupItem value={c} id={c} className="flex items-center h-4 w-4 cursor-pointer" /><Label htmlFor={c} className="text-[12px] cursor-pointer">{c}</Label></div>)}
                           </RadioGroup>
                         </FormItem>
                       );
