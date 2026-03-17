@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import Image from 'next/image';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { 
   Form, 
   FormControl, 
@@ -76,6 +78,8 @@ export function LinguaForm() {
   const totalMarks = useWatch({ control: form.control, name: 'totalMarks' });
   const cgpaValue = useWatch({ control: form.control, name: 'cgpa' });
 
+  const bannerImage = PlaceHolderImages.find(img => img.id === 'form-banner');
+
   useEffect(() => {
     const errors: {[key: string]: string | null} = {};
     const englishRegex = /^[A-Za-z\s\.]+$/;
@@ -146,7 +150,6 @@ export function LinguaForm() {
           const roundedPercentage = calculatedPercentage.toFixed(2);
           form.setValue('percentage', roundedPercentage);
 
-          // Skip eligibility check for 'Other' per request "only condition is positive marks"
           if (selectedCourse !== 'Other') {
             let minRequired = (selectedCourse === 'PUC') ? 85 : 90;
             if (calculatedPercentage < minRequired) {
@@ -455,6 +458,18 @@ export function LinguaForm() {
   return (
     <div className="space-y-3 w-full max-w-xl mx-auto pb-8 cursor-default">
       <Card className="shadow-sm overflow-hidden border-none cursor-default">
+        {bannerImage && (
+          <div className="relative w-full aspect-[4/1]">
+            <Image 
+              src={bannerImage.imageUrl} 
+              alt={bannerImage.description}
+              fill
+              className="object-cover"
+              priority
+              data-ai-hint={bannerImage.imageHint}
+            />
+          </div>
+        )}
         <CardContent className="p-5 space-y-2">
           <div className="space-y-1">
             <h1 className="text-sm font-bold tracking-tight text-[#202124]">{t.title}</h1>
