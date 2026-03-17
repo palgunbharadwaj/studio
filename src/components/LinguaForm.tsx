@@ -5,8 +5,6 @@ import { useState, useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import Image from 'next/image';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { 
   Form, 
   FormControl, 
@@ -79,8 +77,6 @@ export function LinguaForm() {
   const totalMarks = useWatch({ control: form.control, name: 'totalMarks' });
   const cgpaValue = useWatch({ control: form.control, name: 'cgpa' });
 
-  const bannerImage = PlaceHolderImages.find(img => img.id === 'form-banner');
-
   useEffect(() => {
     const errors: {[key: string]: string | null} = {};
     const englishRegex = /^[A-Za-z\s\.]+$/;
@@ -117,7 +113,7 @@ export function LinguaForm() {
       return;
     }
 
-    if (['SSLC', 'PUC', 'Other'].includes(selectedCourse || '')) {
+    if (['SSLC', 'PUC'].includes(selectedCourse || '')) {
       if (marksObtained && totalMarks) {
         const marks = parseFloat(marksObtained);
         const total = parseFloat(totalMarks);
@@ -151,14 +147,12 @@ export function LinguaForm() {
           const roundedPercentage = calculatedPercentage.toFixed(2);
           form.setValue('percentage', roundedPercentage);
 
-          if (selectedCourse !== 'Other') {
-            let minRequired = (selectedCourse === 'PUC') ? 85 : 90;
-            if (calculatedPercentage < minRequired) {
-              const errorMsg = lang === 'en' 
-                ? `Minimum ${minRequired}% marks required for eligibility.` 
-                : `ಅರ್ಹತೆಗಾಗಿ ಕನಿಷ್ಠ ${minRequired}% ಅಂಕಗಳು ಅಗತ್ಯವಿದೆ.`;
-              setEligibilityError(errorMsg);
-            }
+          let minRequired = (selectedCourse === 'PUC') ? 85 : 90;
+          if (calculatedPercentage < minRequired) {
+            const errorMsg = lang === 'en' 
+              ? `Minimum ${minRequired}% marks required for eligibility.` 
+              : `ಅರ್ಹತೆಗಾಗಿ ಕನಿಷ್ಠ ${minRequired}% ಅಂಕಗಳು ಅಗತ್ಯವಿದೆ.`;
+            setEligibilityError(errorMsg);
           }
         } else {
           form.setValue('percentage', '');
@@ -166,6 +160,21 @@ export function LinguaForm() {
       } else {
         form.setValue('percentage', '');
       }
+    } else if (selectedCourse === 'Other') {
+        if (marksObtained && totalMarks) {
+          const marks = parseFloat(marksObtained);
+          const total = parseFloat(totalMarks);
+          if (!isNaN(marks) && !isNaN(total) && total > 0) {
+            if (marks > total) {
+              const errorMsg = lang === 'en' ? "Marks obtained cannot exceed total marks." : "ಗಳಿಸಿದ ಅಂಕಗಳು ಒಟ್ಟು ಅಂಕಗಳಿಗಿಂತ ಹೆಚ್ಚಿರಬಾರದು.";
+              setTotalMarksError(errorMsg);
+              form.setValue('percentage', '');
+            } else {
+              const roundedPercentage = ((marks / total) * 100).toFixed(2);
+              form.setValue('percentage', roundedPercentage);
+            }
+          }
+        }
     } else if (['Diploma', 'Degree', 'Engineering'].includes(selectedCourse || '')) {
       if (cgpaValue) {
         const cgpa = parseFloat(cgpaValue);
@@ -458,27 +467,13 @@ export function LinguaForm() {
 
   return (
     <div className="space-y-3 w-full max-w-xl mx-auto pb-8 cursor-default">
-      <Card className="shadow-sm overflow-hidden border-none cursor-default">
-        <CardContent className="p-0 space-y-0">
-          {bannerImage && (
-            <div className="relative w-full aspect-[3/1]">
-              <Image 
-                src={bannerImage.imageUrl} 
-                alt={bannerImage.description}
-                fill
-                className="object-cover"
-                priority
-                data-ai-hint={bannerImage.imageHint}
-              />
-            </div>
-          )}
-          <div className="p-5 space-y-2">
-            <div className="space-y-1">
-              <h1 className="text-sm font-bold tracking-tight text-[#202124]">{t.title}</h1>
-              <p className="text-[11px] text-[#5f6368] leading-relaxed">{t.description}</p>
-            </div>
-            <div className="text-[9px] text-destructive pt-2 border-t mt-1 font-medium italic">{t.requiredNote}</div>
+      <Card className="shadow-sm border-none cursor-default">
+        <CardContent className="p-5 space-y-2">
+          <div className="space-y-1">
+            <h1 className="text-sm font-bold tracking-tight text-[#202124]">{t.title}</h1>
+            <p className="text-[11px] text-[#5f6368] leading-relaxed">{t.description}</p>
           </div>
+          <div className="text-[9px] text-destructive pt-2 border-t mt-1 font-medium italic">{t.requiredNote}</div>
         </CardContent>
       </Card>
 
