@@ -84,7 +84,7 @@ export function LinguaForm() {
   const watchedCombination = useWatch({ control: form.control, name: 'combination' });
   const watchedBranch = useWatch({ control: form.control, name: 'branch' });
 
-  // 1. Language Switch: Full Reset (Everything cleared)
+  // 1. Language Switch: FULL Reset (Everything cleared)
   useEffect(() => {
     form.reset({
       email: '',
@@ -112,7 +112,7 @@ export function LinguaForm() {
     setFileError(null);
   }, [lang, form]);
 
-  // 2. Academic Switch (Course): Partial Reset (Only Academic fields + Documents cleared)
+  // 2. Academic Switch (Course): Reset Academic sub-fields + Documents (Preserve Personal Details)
   useEffect(() => {
     if (selectedCourse) {
       form.setValue('board', undefined);
@@ -127,19 +127,16 @@ export function LinguaForm() {
       form.setValue('yearOfPassing', '');
       form.setValue('scoreType', undefined);
       
-      // Reset Documents section on course change
       setPhotoFile(null);
       setMarksFile(null);
     }
   }, [selectedCourse, form]);
 
-  // 3. Academic Switch (Stream): Reset Combination + Documents
+  // 3. Academic Switch (Stream): Reset Combination + Other + Documents
   useEffect(() => {
     if (selectedStream) {
       form.setValue('combination', undefined);
       form.setValue('otherCourse', '');
-      
-      // Reset Documents section on stream change
       setPhotoFile(null);
       setMarksFile(null);
     }
@@ -152,17 +149,14 @@ export function LinguaForm() {
       form.setValue('totalMarks', '');
       form.setValue('cgpa', '');
       form.setValue('percentage', '');
-      
-      // Reset Documents section on score type change
       setPhotoFile(null);
       setMarksFile(null);
     }
   }, [scoreType, form]);
 
-  // 5. Combination/Branch/Other Specification Switch: Reset Documents
+  // 5. Combination/Branch Switch: Reset Documents
   useEffect(() => {
     if (watchedCombination || watchedBranch) {
-      // Reset Documents section
       setPhotoFile(null);
       setMarksFile(null);
     }
@@ -873,7 +867,7 @@ export function LinguaForm() {
             </CardContent>
           </Card>
 
-          <Card className="shadow-sm border-none" key={`docs-container-${lang}-${selectedCourse}-${selectedStream}-${scoreType}`}>
+          <Card className="shadow-sm border-none">
             <CardContent className="p-4 space-y-3">
               <div className="flex items-center gap-2 pb-1.5 border-b"><FileCheck className="w-4 h-4 text-primary" /><h2 className="font-bold text-[16px]">{t.docsTitle}</h2></div>
               <div className="space-y-2">
