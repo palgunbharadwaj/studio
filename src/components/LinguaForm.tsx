@@ -71,6 +71,7 @@ export function LinguaForm() {
     },
   });
 
+  // Reset entire form when language changes
   useEffect(() => {
     form.reset({
       email: '',
@@ -108,6 +109,7 @@ export function LinguaForm() {
   const watchedCombination = useWatch({ control: form.control, name: 'combination' });
   const watchedBranch = useWatch({ control: form.control, name: 'branch' });
 
+  // Reset fields when course changes
   useEffect(() => {
     if (selectedCourse) {
       form.setValue('board', undefined);
@@ -560,219 +562,248 @@ export function LinguaForm() {
         </CardContent>
       </Card>
 
-      {lang && (
-        <Form {...form} key={lang}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
-            <Card className="shadow-sm border-none">
-              <CardContent className="p-4">
-                <FormField control={form.control} name="email" render={({ field }) => (
-                  <FormItem className="space-y-1">
-                    <FormLabel className="font-bold text-[16px]">{t.emailLabel} <span className="text-destructive">*</span></FormLabel>
-                    <FormControl><Input placeholder="example@email.com" className="h-10 bg-muted/20 text-[14px]" {...field} /></FormControl>
-                    <FormMessage className="text-[14px]" />
-                  </FormItem>
-                )} />
-              </CardContent>
-            </Card>
+      <Form {...form} key={lang || 'default'}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+          <Card className="shadow-sm border-none">
+            <CardContent className="p-4">
+              <FormField control={form.control} name="email" render={({ field }) => (
+                <FormItem className="space-y-1">
+                  <FormLabel className="font-bold text-[16px]">{t.emailLabel} <span className="text-destructive">*</span></FormLabel>
+                  <FormControl><Input placeholder="example@email.com" className="h-10 bg-muted/20 text-[14px]" {...field} /></FormControl>
+                  <FormMessage className="text-[14px]" />
+                </FormItem>
+              )} />
+            </CardContent>
+          </Card>
 
-            <Card className="shadow-sm border-none">
-              <CardContent className="p-4 space-y-3">
-                <div className="flex items-center gap-2 pb-1.5 border-b"><User className="w-4 h-4 text-primary" /><h2 className="font-bold text-[16px]">{t.personalDetailsHeader}</h2></div>
-                <FormField control={form.control} name="studentName" render={({ field }) => (
+          <Card className="shadow-sm border-none">
+            <CardContent className="p-4 space-y-3">
+              <div className="flex items-center gap-2 pb-1.5 border-b"><User className="w-4 h-4 text-primary" /><h2 className="font-bold text-[16px]">{t.personalDetailsHeader}</h2></div>
+              <FormField control={form.control} name="studentName" render={({ field }) => (
+                <FormItem className="space-y-1">
+                  <FormLabel className="font-bold text-[16px]">{t.studentNameLabel} <span className="text-destructive">*</span></FormLabel>
+                  <FormControl><Input className="h-10 bg-muted/20 text-[14px]" {...field} /></FormControl>
+                </FormItem>
+              )} />
+              <FormField control={form.control} name="relationship" render={({ field }) => (
+                <FormItem className="space-y-1">
+                  <FormLabel className="font-bold text-[16px]">{t.relationshipLabel} <span className="text-destructive">*</span></FormLabel>
+                  <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
+                    <div className="flex items-center space-x-1.5"><RadioGroupItem value="SO" id="rel-so" className="h-4 w-4 cursor-pointer" /><Label htmlFor="rel-so" className="text-[14px] font-normal cursor-pointer">{lang === 'en' ? 'S/O (Son of)' : 'S/O (ಮಗ)'}</Label></div>
+                    <div className="flex items-center space-x-1.5"><RadioGroupItem value="DO" id="rel-do" className="h-4 w-4 cursor-pointer" /><Label htmlFor="rel-do" className="text-[14px] font-normal cursor-pointer">{lang === 'en' ? 'D/O (Daughter of)' : 'D/O (ಮಗಳು)'}</Label></div>
+                  </RadioGroup>
+                </FormItem>
+              )} />
+              <FormField control={form.control} name="fatherName" render={({ field }) => (
+                <FormItem className="space-y-1">
+                  <FormLabel className="font-bold text-[16px]">{t.fatherNameLabel} <span className="text-destructive">*</span></FormLabel>
+                  <FormControl><Input className="h-10 bg-muted/20 text-[14px]" {...field} /></FormControl>
+                </FormItem>
+              )} />
+              <FormField control={form.control} name="motherName" render={({ field }) => (
+                <FormItem className="space-y-1">
+                  <FormLabel className="font-bold text-[16px]">{t.motherNameLabel} <span className="text-destructive">*</span></FormLabel>
+                  <FormControl><Input className="h-10 bg-muted/20 text-[14px]" {...field} /></FormControl>
+                </FormItem>
+              )} />
+            </CardContent>
+          </Card>
+
+          <Card className="shadow-sm border-none">
+            <CardContent className="p-4 space-y-3">
+              <div className="flex items-center gap-2 pb-1.5 border-b"><GraduationCap className="w-4 h-4 text-primary" /><h2 className="font-bold text-[16px]">{t.academicDetailsHeader}</h2></div>
+              <FormField control={form.control} name="course" render={({ field }) => (
+                <FormItem className="space-y-1">
+                  <FormLabel className="font-bold text-[16px]">{t.courseLabel} <span className="text-destructive">*</span></FormLabel>
+                  <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
+                    {['SSLC', 'PUC', 'Diploma', 'Degree', 'Engineering', 'Other'].map((c) => (
+                      <div key={c} className="flex items-center space-x-1.5">
+                        <RadioGroupItem value={c} id={`main-course-${c}-${lang || 'default'}`} className="h-4 w-4 cursor-pointer" />
+                        <Label htmlFor={`main-course-${c}-${lang || 'default'}`} className="text-[14px] font-normal cursor-pointer">
+                          {c === 'PUC' ? (lang === 'en' ? '2nd PUC' : 'ದ್ವಿತೀಯ ಪಿ.ಯು.ಸಿ') : 
+                           c === 'SSLC' ? (lang === 'en' ? 'SSLC / 10th' : 'ಎಸ್.ಎಸ್.ಎಲ್.ಸಿ. / 10 ನೇ ತರಗತಿ') : 
+                           c === 'Diploma' ? (lang === 'en' ? 'Diploma' : 'ಡಿಪ್ಲೊಮಾ') :
+                           c === 'Degree' ? (lang === 'en' ? 'Degree' : 'ಪದವಿ') :
+                           c === 'Engineering' ? (lang === 'en' ? 'Engineering' : 'ಇಂಜಿನಿಯರಿಂಗ್') : 
+                           (lang === 'en' ? 'Other' : 'ಇತರೆ')}
+                        </Label>
+                      </div>
+                    ))}
+                  </RadioGroup>
+                </FormItem>
+              )} />
+
+              {selectedCourse === 'SSLC' && (
+                <FormField control={form.control} name="board" render={({ field }) => (
                   <FormItem className="space-y-1">
-                    <FormLabel className="font-bold text-[16px]">{t.studentNameLabel} <span className="text-destructive">*</span></FormLabel>
-                    <FormControl><Input className="h-10 bg-muted/20 text-[14px]" {...field} /></FormControl>
-                  </FormItem>
-                )} />
-                <FormField control={form.control} name="relationship" render={({ field }) => (
-                  <FormItem className="space-y-1">
-                    <FormLabel className="font-bold text-[16px]">{t.relationshipLabel} <span className="text-destructive">*</span></FormLabel>
+                    <FormLabel className="text-[16px] font-bold">{t.boardLabel} <span className="text-destructive">*</span></FormLabel>
                     <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
-                      <div className="flex items-center space-x-1.5"><RadioGroupItem value="SO" id="rel-so" className="h-4 w-4 cursor-pointer" /><Label htmlFor="rel-so" className="text-[14px] font-normal cursor-pointer">{lang === 'en' ? 'S/O (Son of)' : 'S/O (ಮಗ)'}</Label></div>
-                      <div className="flex items-center space-x-1.5"><RadioGroupItem value="DO" id="rel-do" className="h-4 w-4 cursor-pointer" /><Label htmlFor="rel-do" className="text-[14px] font-normal cursor-pointer">{lang === 'en' ? 'D/O (Daughter of)' : 'D/O (ಮಗಳು)'}</Label></div>
+                      {t.boards.map(b => <div key={b} className="flex items-center space-x-1.5"><RadioGroupItem value={b} id={`board-${b}-${lang || 'default'}`} className="h-4 w-4 cursor-pointer" /><Label htmlFor={`board-${b}-${lang || 'default'}`} className="text-[14px] font-normal cursor-pointer">{b}</Label></div>)}
                     </RadioGroup>
                   </FormItem>
                 )} />
-                <FormField control={form.control} name="fatherName" render={({ field }) => (
-                  <FormItem className="space-y-1">
-                    <FormLabel className="font-bold text-[16px]">{t.fatherNameLabel} <span className="text-destructive">*</span></FormLabel>
-                    <FormControl><Input className="h-10 bg-muted/20 text-[14px]" {...field} /></FormControl>
-                  </FormItem>
-                )} />
-                <FormField control={form.control} name="motherName" render={({ field }) => (
-                  <FormItem className="space-y-1">
-                    <FormLabel className="font-bold text-[16px]">{t.motherNameLabel} <span className="text-destructive">*</span></FormLabel>
-                    <FormControl><Input className="h-10 bg-muted/20 text-[14px]" {...field} /></FormControl>
-                  </FormItem>
-                )} />
-              </CardContent>
-            </Card>
+              )}
 
-            <Card className="shadow-sm border-none">
-              <CardContent className="p-4 space-y-3">
-                <div className="flex items-center gap-2 pb-1.5 border-b"><GraduationCap className="w-4 h-4 text-primary" /><h2 className="font-bold text-[16px]">{t.academicDetailsHeader}</h2></div>
-                <FormField control={form.control} name="course" render={({ field }) => (
-                  <FormItem className="space-y-1">
-                    <FormLabel className="font-bold text-[16px]">{t.courseLabel} <span className="text-destructive">*</span></FormLabel>
-                    <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
-                      {['SSLC', 'PUC', 'Diploma', 'Degree', 'Engineering', 'Other'].map((c) => (
-                        <div key={c} className="flex items-center space-x-1.5">
-                          <RadioGroupItem value={c} id={`main-course-${c}-${lang}`} className="h-4 w-4 cursor-pointer" />
-                          <Label htmlFor={`main-course-${c}-${lang}`} className="text-[14px] font-normal cursor-pointer">
-                            {c === 'PUC' ? (lang === 'en' ? '2nd PUC' : 'ದ್ವಿತೀಯ ಪಿ.ಯು.ಸಿ') : 
-                             c === 'SSLC' ? (lang === 'en' ? 'SSLC / 10th' : 'ಎಸ್.ಎಸ್.ಎಲ್.ಸಿ. / 10 ನೇ ತರಗತಿ') : 
-                             c === 'Diploma' ? (lang === 'en' ? 'Diploma' : 'ಡಿಪ್ಲೊಮಾ') :
-                             c === 'Degree' ? (lang === 'en' ? 'Degree' : 'ಪದವಿ') :
-                             c === 'Engineering' ? (lang === 'en' ? 'Engineering' : 'ಇಂಜಿನಿಯರಿಂಗ್') : 
-                             (lang === 'en' ? 'Other' : 'ಇತರೆ')}
-                          </Label>
-                        </div>
-                      ))}
-                    </RadioGroup>
-                  </FormItem>
-                )} />
-
-                {selectedCourse === 'SSLC' && (
-                  <FormField control={form.control} name="board" render={({ field }) => (
+              {selectedCourse === 'PUC' && (
+                <div className="space-y-3 pt-1">
+                  <FormField control={form.control} name="pucStream" render={({ field }) => (
                     <FormItem className="space-y-1">
-                      <FormLabel className="text-[16px] font-bold">{t.boardLabel} <span className="text-destructive">*</span></FormLabel>
+                      <FormLabel className="text-[16px] font-bold">{t.streamLabel} <span className="text-destructive">*</span></FormLabel>
                       <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
-                        {t.boards.map(b => <div key={b} className="flex items-center space-x-1.5"><RadioGroupItem value={b} id={`board-${b}-${lang}`} className="h-4 w-4 cursor-pointer" /><Label htmlFor={`board-${b}-${lang}`} className="text-[14px] font-normal cursor-pointer">{b}</Label></div>)}
+                        {['Science', 'Commerce', 'Arts'].map(s => (
+                          <div key={s} className="flex items-center space-x-1.5">
+                            <RadioGroupItem value={s} id={`stream-${s}-${lang || 'default'}`} className="h-4 w-4 cursor-pointer" />
+                            <Label htmlFor={`stream-${s}-${lang || 'default'}`} className="text-[14px] font-normal cursor-pointer">{lang === 'en' ? s : (s === 'Science' ? 'ವಿಜ್ಞಾನ' : s === 'Commerce' ? 'ವಾಣಿಜ್ಯ' : 'ಕಲೆ')}</Label>
+                          </div>
+                        ))}
                       </RadioGroup>
                     </FormItem>
                   )} />
-                )}
-
-                {selectedCourse === 'PUC' && (
-                  <div className="space-y-3 pt-1">
-                    <FormField control={form.control} name="pucStream" render={({ field }) => (
-                      <FormItem className="space-y-1">
-                        <FormLabel className="text-[16px] font-bold">{t.streamLabel} <span className="text-destructive">*</span></FormLabel>
-                        <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
-                          {['Science', 'Commerce', 'Arts'].map(s => (
-                            <div key={s} className="flex items-center space-x-1.5">
-                              <RadioGroupItem value={s} id={`stream-${s}-${lang}`} className="h-4 w-4 cursor-pointer" />
-                              <Label htmlFor={`stream-${s}-${lang}`} className="text-[14px] font-normal cursor-pointer">{lang === 'en' ? s : (s === 'Science' ? 'ವಿಜ್ಞಾನ' : s === 'Commerce' ? 'ವಾಣಿಜ್ಯ' : 'ಕಲೆ')}</Label>
-                            </div>
-                          ))}
-                        </RadioGroup>
-                      </FormItem>
-                    )} />
-                    {selectedStream && (
-                      <FormField control={form.control} name="combination" render={({ field }) => {
-                        const options = selectedStream === 'Science' ? t.scienceCombinations : selectedStream === 'Commerce' ? t.commerceCombinations : t.artsCombinations;
-                        const label = lang === 'en' 
-                          ? (selectedStream === 'Science' ? t.scienceCombination : selectedStream === 'Commerce' ? t.commerceCombination : t.artsCombination)
-                          : (selectedStream === 'Science' ? 'ವಿಜ್ಞಾನ ವಿಭಾಗ' : selectedStream === 'Commerce' ? 'ವಾಣಿಜ್ಯ ವಿಭಾಗ' : 'ಕಲೆ ವಿಭಾಗ');
-                        return (
-                          <FormItem className="space-y-1">
-                            <FormLabel className="text-[16px] font-bold">{label} <span className="text-destructive">*</span></FormLabel>
-                            <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
-                              {options.map((c, idx) => <div key={idx} className="flex items-center space-x-1.5"><RadioGroupItem value={c} id={`comb-${idx}-${selectedStream}-${lang}`} className="h-4 w-4 cursor-pointer" /><Label htmlFor={`comb-${idx}-${selectedStream}-${lang}`} className="text-[14px] cursor-pointer">{c}</Label></div>)}
-                            </RadioGroup>
-                          </FormItem>
-                        );
-                      }} />
-                    )}
-                    { (watchedCombination === 'Other' || watchedCombination === 'ಇತರೆ') && (
-                      <FormField control={form.control} name="otherCourse" render={({ field }) => (
+                  {selectedStream && (
+                    <FormField control={form.control} name="combination" render={({ field }) => {
+                      const options = selectedStream === 'Science' ? t.scienceCombinations : selectedStream === 'Commerce' ? t.commerceCombinations : t.artsCombinations;
+                      const label = lang === 'en' 
+                        ? (selectedStream === 'Science' ? t.scienceCombination : selectedStream === 'Commerce' ? t.commerceCombination : t.artsCombination)
+                        : (selectedStream === 'Science' ? 'ವಿಜ್ಞಾನ ವಿಭಾಗ' : selectedStream === 'Commerce' ? 'ವಾಣಿಜ್ಯ ವಿಭಾಗ' : 'ಕಲೆ ವಿಭಾಗ');
+                      return (
                         <FormItem className="space-y-1">
-                          <FormLabel className="text-[16px] font-bold">{t.otherCourseLabel} <span className="text-destructive">*</span></FormLabel>
-                          <FormControl><Input className="h-10 bg-muted/20 text-[14px]" {...field} /></FormControl>
+                          <FormLabel className="text-[16px] font-bold">{label} <span className="text-destructive">*</span></FormLabel>
+                          <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
+                            {options.map((c, idx) => <div key={idx} className="flex items-center space-x-1.5"><RadioGroupItem value={c} id={`comb-${idx}-${selectedStream}-${lang || 'default'}`} className="h-4 w-4 cursor-pointer" /><Label htmlFor={`comb-${idx}-${selectedStream}-${lang || 'default'}`} className="text-[14px] cursor-pointer">{c}</Label></div>)}
+                          </RadioGroup>
                         </FormItem>
-                      )} />
-                    )}
-                  </div>
-                )}
-
-                {['Diploma', 'Degree', 'Engineering'].includes(selectedCourse || '') && (
-                  <div className="space-y-3">
-                    <FormField control={form.control} name="branch" render={({ field }) => (
-                      <FormItem className="space-y-1">
-                        <FormLabel className="text-[16px] font-bold">{t.branchLabel} <span className="text-destructive">*</span></FormLabel>
-                        <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
-                          {(selectedCourse === 'Engineering' ? t.engineeringCourses : selectedCourse === 'Diploma' ? t.diplomaCourses : selectedCourse === 'Degree' ? t.degreeCourses : []).map((c, idx) => (
-                            <div key={idx} className="flex items-center space-x-1.5"><RadioGroupItem value={c} id={`branch-${idx}-${selectedCourse}-${lang}`} className="h-4 w-4 cursor-pointer" /><Label htmlFor={`branch-${idx}-${selectedCourse}-${lang}`} className="text-[14px] cursor-pointer">{c}</Label></div>
-                          ))}
-                        </RadioGroup>
-                      </FormItem>
-                    )} />
-
-                    { (watchedBranch === 'Other' || watchedBranch === 'ಇತರೆ') && (
-                      <FormField control={form.control} name="otherCourse" render={({ field }) => (
-                        <FormItem className="space-y-1">
-                          <FormLabel className="text-[16px] font-bold">{t.otherCourseLabel} <span className="text-destructive">*</span></FormLabel>
-                          <FormControl><Input className="h-10 bg-muted/20 text-[14px]" {...field} /></FormControl>
-                        </FormItem>
-                      )} />
-                    )}
-
-                    <FormField control={form.control} name="scoreType" render={({ field }) => (
-                      <FormItem className="space-y-1">
-                        <FormLabel className="text-[16px] font-bold">{t.scoreTypeLabel} <span className="text-destructive">*</span></FormLabel>
-                        <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-row gap-4">
-                          <div className="flex items-center space-x-1.5"><RadioGroupItem value="CGPA" id={`score-cgpa-${lang}`} className="cursor-pointer" /><Label htmlFor={`score-cgpa-${lang}`} className="text-[14px] cursor-pointer">{t.cgpaLabel}</Label></div>
-                          <div className="flex items-center space-x-1.5"><RadioGroupItem value="Percentage" id={`score-pct-${lang}`} className="cursor-pointer" /><Label htmlFor={`score-pct-${lang}`} className="text-[14px] cursor-pointer">{t.percentageLabel}</Label></div>
-                        </RadioGroup>
-                      </FormItem>
-                    )} />
-
-                    {scoreType === 'CGPA' && (
-                      <FormField control={form.control} name="cgpa" render={({ field }) => (
-                        <FormItem className="space-y-1">
-                          <FormLabel className="text-[16px] font-bold">{t.cgpaLabel} <span className="text-destructive">*</span></FormLabel>
-                          <FormControl><Input type="number" step="0.01" className="h-10 bg-muted/20 text-[14px]" {...field} /></FormControl>
-                          {eligibilityError && (
-                            <Alert variant="destructive" className="py-1 px-2 mt-1 flex items-center gap-2 border-destructive/20 bg-destructive/5">
-                              <AlertCircle className="h-4 w-4 shrink-0" />
-                              <AlertDescription className="leading-tight font-medium text-[14px]">{eligibilityError}</AlertDescription>
-                            </Alert>
-                          )}
-                        </FormItem>
-                      )} />
-                    )}
-
-                    {scoreType === 'Percentage' && (
-                      <FormField control={form.control} name="percentage" render={({ field }) => (
-                        <FormItem className="space-y-1">
-                          <FormLabel className="text-[16px] font-bold">{t.percentageLabel} <span className="text-destructive">*</span></FormLabel>
-                          <FormControl><Input type="number" step="0.01" className="h-10 bg-muted/20 text-[14px]" {...field} /></FormControl>
-                          {eligibilityError && (
-                            <Alert variant="destructive" className="py-1 px-2 mt-1 flex items-center gap-2 border-destructive/20 bg-destructive/5">
-                              <AlertCircle className="h-4 w-4 shrink-0" />
-                              <AlertDescription className="leading-tight font-medium text-[14px]">{eligibilityError}</AlertDescription>
-                            </Alert>
-                          )}
-                        </FormItem>
-                      )} />
-                    )}
-                  </div>
-                )}
-
-                {selectedCourse === 'Other' && (
-                  <div className="space-y-3">
+                      );
+                    }} />
+                  )}
+                  { (watchedCombination === 'Other' || watchedCombination === 'ಇತರೆ') && (
                     <FormField control={form.control} name="otherCourse" render={({ field }) => (
                       <FormItem className="space-y-1">
                         <FormLabel className="text-[16px] font-bold">{t.otherCourseLabel} <span className="text-destructive">*</span></FormLabel>
                         <FormControl><Input className="h-10 bg-muted/20 text-[14px]" {...field} /></FormControl>
                       </FormItem>
                     )} />
+                  )}
+                </div>
+              )}
 
-                    <FormField control={form.control} name="scoreType" render={({ field }) => (
+              {['Diploma', 'Degree', 'Engineering'].includes(selectedCourse || '') && (
+                <div className="space-y-3">
+                  <FormField control={form.control} name="branch" render={({ field }) => (
+                    <FormItem className="space-y-1">
+                      <FormLabel className="text-[16px] font-bold">{t.branchLabel} <span className="text-destructive">*</span></FormLabel>
+                      <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
+                        {(selectedCourse === 'Engineering' ? t.engineeringCourses : selectedCourse === 'Diploma' ? t.diplomaCourses : selectedCourse === 'Degree' ? t.degreeCourses : []).map((c, idx) => (
+                          <div key={idx} className="flex items-center space-x-1.5"><RadioGroupItem value={c} id={`branch-${idx}-${selectedCourse}-${lang || 'default'}`} className="h-4 w-4 cursor-pointer" /><Label htmlFor={`branch-${idx}-${selectedCourse}-${lang || 'default'}`} className="text-[14px] cursor-pointer">{c}</Label></div>
+                        ))}
+                      </RadioGroup>
+                    </FormItem>
+                  )} />
+
+                  { (watchedBranch === 'Other' || watchedBranch === 'ಇತರೆ') && (
+                    <FormField control={form.control} name="otherCourse" render={({ field }) => (
                       <FormItem className="space-y-1">
-                        <FormLabel className="text-[16px] font-bold">{t.scoreTypeLabel} <span className="text-destructive">*</span></FormLabel>
-                        <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-row gap-4">
-                          <div className="flex items-center space-x-1.5"><RadioGroupItem value="CGPA" id={`other-score-cgpa-${lang}`} className="cursor-pointer" /><Label htmlFor={`other-score-cgpa-${lang}`} className="text-[14px] cursor-pointer">{t.cgpaLabel}</Label></div>
-                          <div className="flex items-center space-x-1.5"><RadioGroupItem value="Percentage" id={`other-score-pct-${lang}`} className="cursor-pointer" /><Label htmlFor={`other-score-pct-${lang}`} className="text-[14px] cursor-pointer">{lang === 'en' ? 'Marks' : 'ಅಂಕಗಳು'}</Label></div>
-                        </RadioGroup>
+                        <FormLabel className="text-[16px] font-bold">{t.otherCourseLabel} <span className="text-destructive">*</span></FormLabel>
+                        <FormControl><Input className="h-10 bg-muted/20 text-[14px]" {...field} /></FormControl>
                       </FormItem>
                     )} />
+                  )}
 
-                    {scoreType === 'CGPA' && (
-                      <FormField control={form.control} name="cgpa" render={({ field }) => (
+                  <FormField control={form.control} name="scoreType" render={({ field }) => (
+                    <FormItem className="space-y-1">
+                      <FormLabel className="text-[16px] font-bold">{t.scoreTypeLabel} <span className="text-destructive">*</span></FormLabel>
+                      <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-row gap-4">
+                        <div className="flex items-center space-x-1.5"><RadioGroupItem value="CGPA" id={`score-cgpa-${lang || 'default'}`} className="cursor-pointer" /><Label htmlFor={`score-cgpa-${lang || 'default'}`} className="text-[14px] cursor-pointer">{t.cgpaLabel}</Label></div>
+                        <div className="flex items-center space-x-1.5"><RadioGroupItem value="Percentage" id={`score-pct-${lang || 'default'}`} className="cursor-pointer" /><Label htmlFor={`score-pct-${lang || 'default'}`} className="text-[14px] cursor-pointer">{t.percentageLabel}</Label></div>
+                      </RadioGroup>
+                    </FormItem>
+                  )} />
+
+                  {scoreType === 'CGPA' && (
+                    <FormField control={form.control} name="cgpa" render={({ field }) => (
+                      <FormItem className="space-y-1">
+                        <FormLabel className="text-[16px] font-bold">{t.cgpaLabel} <span className="text-destructive">*</span></FormLabel>
+                        <FormControl><Input type="number" step="0.01" className="h-10 bg-muted/20 text-[14px]" {...field} /></FormControl>
+                        {eligibilityError && (
+                          <Alert variant="destructive" className="py-1 px-2 mt-1 flex items-center gap-2 border-destructive/20 bg-destructive/5">
+                            <AlertCircle className="h-4 w-4 shrink-0" />
+                            <AlertDescription className="leading-tight font-medium text-[14px]">{eligibilityError}</AlertDescription>
+                          </Alert>
+                        )}
+                      </FormItem>
+                    )} />
+                  )}
+
+                  {scoreType === 'Percentage' && (
+                    <FormField control={form.control} name="percentage" render={({ field }) => (
+                      <FormItem className="space-y-1">
+                        <FormLabel className="text-[16px] font-bold">{t.percentageLabel} <span className="text-destructive">*</span></FormLabel>
+                        <FormControl><Input type="number" step="0.01" className="h-10 bg-muted/20 text-[14px]" {...field} /></FormControl>
+                        {eligibilityError && (
+                          <Alert variant="destructive" className="py-1 px-2 mt-1 flex items-center gap-2 border-destructive/20 bg-destructive/5">
+                            <AlertCircle className="h-4 w-4 shrink-0" />
+                            <AlertDescription className="leading-tight font-medium text-[14px]">{eligibilityError}</AlertDescription>
+                          </Alert>
+                        )}
+                      </FormItem>
+                    )} />
+                  )}
+                </div>
+              )}
+
+              {selectedCourse === 'Other' && (
+                <div className="space-y-3">
+                  <FormField control={form.control} name="otherCourse" render={({ field }) => (
+                    <FormItem className="space-y-1">
+                      <FormLabel className="text-[16px] font-bold">{t.otherCourseLabel} <span className="text-destructive">*</span></FormLabel>
+                      <FormControl><Input className="h-10 bg-muted/20 text-[14px]" {...field} /></FormControl>
+                    </FormItem>
+                  )} />
+
+                  <FormField control={form.control} name="scoreType" render={({ field }) => (
+                    <FormItem className="space-y-1">
+                      <FormLabel className="text-[16px] font-bold">{t.scoreTypeLabel} <span className="text-destructive">*</span></FormLabel>
+                      <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-row gap-4">
+                        <div className="flex items-center space-x-1.5"><RadioGroupItem value="CGPA" id={`other-score-cgpa-${lang || 'default'}`} className="cursor-pointer" /><Label htmlFor={`other-score-cgpa-${lang || 'default'}`} className="text-[14px] cursor-pointer">{t.cgpaLabel}</Label></div>
+                        <div className="flex items-center space-x-1.5"><RadioGroupItem value="Percentage" id={`other-score-pct-${lang || 'default'}`} className="cursor-pointer" /><Label htmlFor={`other-score-pct-${lang || 'default'}`} className="text-[14px] cursor-pointer">{lang === 'en' ? 'Marks' : 'ಅಂಕಗಳು'}</Label></div>
+                      </RadioGroup>
+                    </FormItem>
+                  )} />
+
+                  {scoreType === 'CGPA' && (
+                    <FormField control={form.control} name="cgpa" render={({ field }) => (
+                      <FormItem className="space-y-1">
+                        <FormLabel className="text-[16px] font-bold">{t.cgpaLabel} <span className="text-destructive">*</span></FormLabel>
+                        <FormControl><Input type="number" step="0.01" className="h-10 bg-muted/20 text-[14px]" {...field} /></FormControl>
+                        {eligibilityError && (
+                          <Alert variant="destructive" className="py-1 px-2 mt-1 flex items-center gap-2 border-destructive/20 bg-destructive/5">
+                            <AlertCircle className="h-4 w-4 shrink-0" />
+                            <AlertDescription className="leading-tight font-medium text-[14px]">{eligibilityError}</AlertDescription>
+                          </Alert>
+                        )}
+                      </FormItem>
+                    )} />
+                  )}
+                </div>
+              )}
+
+              {selectedCourse && (
+                <div className="space-y-3 pt-1">
+                  {((['SSLC', 'PUC'].includes(selectedCourse)) || (selectedCourse === 'Other' && scoreType === 'Percentage')) && (
+                    <>
+                      <FormField control={form.control} name="marksObtained" render={({ field }) => (
+                        <FormItem className="space-y-1"><FormLabel className="text-[16px] font-bold">{t.marksObtainedLabel} <span className="text-destructive">*</span></FormLabel><FormControl><Input type="number" className="h-10 bg-muted/20 text-[14px]" {...field} /></FormControl></FormItem>
+                      )} />
+                      <FormField control={form.control} name="totalMarks" render={({ field }) => (
                         <FormItem className="space-y-1">
-                          <FormLabel className="text-[16px] font-bold">{t.cgpaLabel} <span className="text-destructive">*</span></FormLabel>
-                          <FormControl><Input type="number" step="0.01" className="h-10 bg-muted/20 text-[14px]" {...field} /></FormControl>
+                          <FormLabel className="text-[16px] font-bold">{t.totalMarksLabel} <span className="text-destructive">*</span></FormLabel>
+                          <FormControl><Input type="number" className="h-10 bg-muted/20 text-[14px]" {...field} /></FormControl>
+                          {totalMarksError && <p className="font-medium pt-1 text-destructive text-[14px]">{totalMarksError}</p>}
+                        </FormItem>
+                      )} />
+                      <FormField control={form.control} name="percentage" render={({ field }) => (
+                        <FormItem className="space-y-1">
+                          <FormLabel className="text-[16px] font-bold">{t.percentageLabel}</FormLabel>
+                          <FormControl><Input readOnly className="h-10 bg-secondary/30 font-bold text-[14px]" {...field} /></FormControl>
                           {eligibilityError && (
                             <Alert variant="destructive" className="py-1 px-2 mt-1 flex items-center gap-2 border-destructive/20 bg-destructive/5">
                               <AlertCircle className="h-4 w-4 shrink-0" />
@@ -781,80 +812,49 @@ export function LinguaForm() {
                           )}
                         </FormItem>
                       )} />
-                    )}
-                  </div>
-                )}
+                    </>
+                  )}
 
-                {selectedCourse && (
-                  <div className="space-y-3 pt-1">
-                    {((['SSLC', 'PUC'].includes(selectedCourse)) || (selectedCourse === 'Other' && scoreType === 'Percentage')) && (
-                      <>
-                        <FormField control={form.control} name="marksObtained" render={({ field }) => (
-                          <FormItem className="space-y-1"><FormLabel className="text-[16px] font-bold">{t.marksObtainedLabel} <span className="text-destructive">*</span></FormLabel><FormControl><Input type="number" className="h-10 bg-muted/20 text-[14px]" {...field} /></FormControl></FormItem>
-                        )} />
-                        <FormField control={form.control} name="totalMarks" render={({ field }) => (
-                          <FormItem className="space-y-1">
-                            <FormLabel className="text-[16px] font-bold">{t.totalMarksLabel} <span className="text-destructive">*</span></FormLabel>
-                            <FormControl><Input type="number" className="h-10 bg-muted/20 text-[14px]" {...field} /></FormControl>
-                            {totalMarksError && <p className="font-medium pt-1 text-destructive text-[14px]">{totalMarksError}</p>}
-                          </FormItem>
-                        )} />
-                        <FormField control={form.control} name="percentage" render={({ field }) => (
-                          <FormItem className="space-y-1">
-                            <FormLabel className="text-[16px] font-bold">{t.percentageLabel}</FormLabel>
-                            <FormControl><Input readOnly className="h-10 bg-secondary/30 font-bold text-[14px]" {...field} /></FormControl>
-                            {eligibilityError && (
-                              <Alert variant="destructive" className="py-1 px-2 mt-1 flex items-center gap-2 border-destructive/20 bg-destructive/5">
-                                <AlertCircle className="h-4 w-4 shrink-0" />
-                                <AlertDescription className="leading-tight font-medium text-[14px]">{eligibilityError}</AlertDescription>
-                              </Alert>
-                            )}
-                          </FormItem>
-                        )} />
-                      </>
-                    )}
-
-                    <FormField control={form.control} name="yearOfPassing" render={({ field }) => {
-                      const year = selectedCourse === 'SSLC' ? '2024-2025' : '2025-2026';
-                      return (
-                        <FormItem className="space-y-1">
-                          <FormLabel className="text-[16px] font-bold">{t.yearPassingLabel} <span className="text-destructive">*</span></FormLabel>
-                          <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
-                            <div className="flex items-center space-x-1.5"><RadioGroupItem value={year} id={`year-${year}-${lang}`} className="h-4 w-4 cursor-pointer" /><Label htmlFor={`year-${year}-${lang}`} className="text-[14px] font-normal cursor-pointer">{year}</Label></div>
-                          </RadioGroup>
-                        </FormItem>
-                      );
-                    }} />
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-
-            <Card className="shadow-sm border-none" key={`docs-${lang}`}>
-              <CardContent className="p-4 space-y-3">
-                <div className="flex items-center gap-2 pb-1.5 border-b"><FileCheck className="w-4 h-4 text-primary" /><h2 className="font-bold text-[16px]">{t.docsTitle}</h2></div>
-                <div className="space-y-2">
-                  <div className="space-y-1">
-                    <Label htmlFor="photo-upload" className="text-[16px] font-bold cursor-default">{t.photoLabel} <span className="text-destructive">*</span></Label>
-                    <Input id="photo-upload" type="file" accept="image/*" className="h-10 text-[14px] file:mr-4 file:py-1 file:px-3 file:rounded-md file:border file:border-solid file:border-border file:bg-secondary/50 file:text-[14px] file:font-medium cursor-pointer bg-muted/5 border-border/40" onChange={handlePhotoChange} />
-                  </div>
-                  <div className="space-y-1">
-                    <Label htmlFor="marks-upload" className="text-[16px] font-bold cursor-default">{t.marksCardLabel} <span className="text-destructive">*</span></Label>
-                    <Input id="marks-upload" type="file" accept=".pdf" className="h-10 text-[14px] file:mr-4 file:py-1 file:px-3 file:rounded-md file:border file:border-solid file:border-border file:bg-secondary/50 file:text-[14px] file:font-medium cursor-pointer bg-muted/5 border-border/40" onChange={handleMarksChange} />
-                  </div>
-                  {fileError && <p className="text-destructive text-[14px] font-bold">{fileError}</p>}
+                  <FormField control={form.control} name="yearOfPassing" render={({ field }) => {
+                    const year = selectedCourse === 'SSLC' ? '2024-2025' : '2025-2026';
+                    return (
+                      <FormItem className="space-y-1">
+                        <FormLabel className="text-[16px] font-bold">{t.yearPassingLabel} <span className="text-destructive">*</span></FormLabel>
+                        <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
+                          <div className="flex items-center space-x-1.5"><RadioGroupItem value={year} id={`year-${year}-${lang || 'default'}`} className="h-4 w-4 cursor-pointer" /><Label htmlFor={`year-${year}-${lang || 'default'}`} className="text-[14px] font-normal cursor-pointer">{year}</Label></div>
+                        </RadioGroup>
+                      </FormItem>
+                    );
+                  }} />
                 </div>
-              </CardContent>
-            </Card>
+              )}
+            </CardContent>
+          </Card>
 
-            <div className="flex pt-1">
-              <Button type="submit" className="w-full h-11 font-bold text-[16px]" disabled={isSubmitting || !!eligibilityError || !!totalMarksError || !!fileError || !canSubmit()}>
-                {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> {t.processing}</> : <><Send className="mr-2 h-4 w-4" /> {t.submitButton}</>}
-              </Button>
-            </div>
-          </form>
-        </Form>
-      )}
+          <Card className="shadow-sm border-none" key={`docs-${lang || 'default'}`}>
+            <CardContent className="p-4 space-y-3">
+              <div className="flex items-center gap-2 pb-1.5 border-b"><FileCheck className="w-4 h-4 text-primary" /><h2 className="font-bold text-[16px]">{t.docsTitle}</h2></div>
+              <div className="space-y-2">
+                <div className="space-y-1">
+                  <Label htmlFor="photo-upload" className="text-[16px] font-bold cursor-default">{t.photoLabel} <span className="text-destructive">*</span></Label>
+                  <Input id="photo-upload" type="file" accept="image/*" className="h-10 text-[14px] file:mr-4 file:py-1 file:px-3 file:rounded-md file:border file:border-solid file:border-border file:bg-secondary/50 file:text-[14px] file:font-medium cursor-pointer bg-muted/5 border-border/40" onChange={handlePhotoChange} />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="marks-upload" className="text-[16px] font-bold cursor-default">{t.marksCardLabel} <span className="text-destructive">*</span></Label>
+                  <Input id="marks-upload" type="file" accept=".pdf" className="h-10 text-[14px] file:mr-4 file:py-1 file:px-3 file:rounded-md file:border file:border-solid file:border-border file:bg-secondary/50 file:text-[14px] file:font-medium cursor-pointer bg-muted/5 border-border/40" onChange={handleMarksChange} />
+                </div>
+                {fileError && <p className="text-destructive text-[14px] font-bold">{fileError}</p>}
+              </div>
+            </CardContent>
+          </Card>
+
+          <div className="flex pt-1">
+            <Button type="submit" className="w-full h-11 font-bold text-[16px]" disabled={isSubmitting || !!eligibilityError || !!totalMarksError || !!fileError || !canSubmit()}>
+              {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> {t.processing}</> : <><Send className="mr-2 h-4 w-4" /> {t.submitButton}</>}
+            </Button>
+          </div>
+        </form>
+      </Form>
     </div>
   );
 }
