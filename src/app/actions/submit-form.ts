@@ -33,6 +33,10 @@ export async function submitLinguaForm(data: any): Promise<SubmissionResult> {
       errorEmitter.emit('permission-error', permissionError);
     });
 
+    const successMessage = data.language === 'en' 
+      ? "The award distribution will take place on 23/04/2026. All receiving students, along with their families, are requested to compulsorily attend the Lord's service."
+      : "ದಿನಾಂಕ:23/04/2026 ರಂದು ಎಲ್ಲಾ ಮಕ್ಕಳಿಗೂ ಪುರಸ್ಕರಿಸಲಾಗುವುದು. ಹಾಗಾಗಿ ಸಂಬಂಧಪಟ್ಟ ಮಕ್ಕಳು ಹಾಗೂ ಕುಟುಂಬ ಕಡ್ಡಾಯವಾಗಿ ಭಗವಂತನ ಕೈಂಕರ್ಯಕ್ಕೆ ಹಾಜರಾಗುವುದು.";
+
     // Construct submission summary for AI context
     const submissionDetails = `
       Course: ${data.course}
@@ -41,26 +45,31 @@ export async function submitLinguaForm(data: any): Promise<SubmissionResult> {
       Result: ${data.percentage ? data.percentage + '%' : data.cgpa + ' CGPA'}
     `.trim();
 
-    // Call Genkit flow to generate personalized confirmation content in the correct language
-    const emailData = await generatePersonalizedConfirmationEmail({
-      userName: data.studentName,
-      userEmail: data.email,
-      submissionDetails,
-      preferredLanguage: data.language as 'en' | 'kn',
-    });
+    // AI and Email tasks are handled as secondary so they don't block the success UI
+    try {
+      // Call Genkit flow to generate personalized confirmation content in the correct language
+      const emailData = await generatePersonalizedConfirmationEmail({
+        userName: data.studentName,
+        userEmail: data.email,
+        submissionDetails,
+        preferredLanguage: data.language as 'en' | 'kn',
+      });
 
-    // Send the email via Server Action
-    await sendConfirmationEmail(data.email, emailData.subject, emailData.body);
+      // Send the email via Server Action
+      await sendConfirmationEmail(data.email, emailData.subject, emailData.body);
 
-    const successMessage = data.language === 'en' 
-      ? "The award distribution will take place on 23/04/2026. All receiving students, along with their families, are requested to compulsorily attend the Lord's service."
-      : "ದಿನಾಂಕ:23/04/2026 ರಂದು ಎಲ್ಲಾ ಮಕ್ಕಳಿಗೂ ಪುರಸ್ಕರಿಸಲಾಗುವುದು. ಹಾಗಾಗಿ ಸಂಬಂಧಪಟ್ಟ ಮಕ್ಕಳು ಹಾಗೂ ಕುಟುಂಬ ಕಡ್ಡಾಯವಾಗಿ ಭಗವಂತನ ಕೈಂಕರ್ಯಕ್ಕೆ ಹಾಜರಾಗುವುದು.";
-
-    return {
-      success: true,
-      message: successMessage,
-      emailData,
-    };
+      return {
+        success: true,
+        message: successMessage,
+        emailData,
+      };
+    } catch (aiError) {
+      console.warn('AI/Email failed but database record was saved:', aiError);
+      return {
+        success: true,
+        message: successMessage,
+      };
+    }
   } catch (error) {
     return {
       success: false,
