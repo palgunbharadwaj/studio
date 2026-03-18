@@ -267,7 +267,7 @@ export function LinguaForm() {
       studentNameLabel: "ವಿದ್ಯಾರ್ಥಿಯ ಹೆಸರು",
       relationshipLabel: "S/O ಅಥವಾ D/O",
       fatherNameLabel: "ತಂದೆಯ ಹೆಸರು",
-      motherNameLabel: "ತಾಯಿಯ ಹೆಸರು",
+      motherNameLabel: "ಮಾಯಿಯ ಹೆಸರು",
       courseLabel: "ಕೋರ್ಸ್",
       boardLabel: "ಮಂಡಳಿ",
       streamLabel: "ವಿಭಾಗ",
