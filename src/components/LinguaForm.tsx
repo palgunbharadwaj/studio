@@ -532,8 +532,8 @@ export function LinguaForm() {
           <div className="space-y-2">
             <Label className="font-bold text-[#202124] text-[16px]">{t.langLabel} <span className="text-destructive">*</span></Label>
             <RadioGroup value={lang} onValueChange={(v) => setLang(v as 'en' | 'kn')} className="flex flex-col gap-1.5">
-              <div className="flex items-center space-x-2.5 py-0.5"><RadioGroupItem value="en" id="lang-en" className="h-4 w-4 cursor-pointer" /><Label htmlFor="lang-en" className="font-normal text-[14px] cursor-pointer">English</Label></div>
               <div className="flex items-center space-x-2.5 py-0.5"><RadioGroupItem value="kn" id="lang-kn" className="h-4 w-4 cursor-pointer" /><Label htmlFor="lang-kn" className="font-normal text-[14px] cursor-pointer">ಕನ್ನಡ</Label></div>
+              <div className="flex items-center space-x-2.5 py-0.5"><RadioGroupItem value="en" id="lang-en" className="h-4 w-4 cursor-pointer" /><Label htmlFor="lang-en" className="font-normal text-[14px] cursor-pointer">English</Label></div>
             </RadioGroup>
           </div>
         </CardContent>
@@ -595,8 +595,8 @@ export function LinguaForm() {
                   <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
                     {['SSLC', 'PUC', 'Diploma', 'Degree', 'Engineering', 'Other'].map((c) => (
                       <div key={c} className="flex items-center space-x-1.5">
-                        <RadioGroupItem value={c} id={`course-${c}`} className="h-4 w-4 cursor-pointer" />
-                        <Label htmlFor={`course-${c}`} className="text-[14px] font-normal cursor-pointer">
+                        <RadioGroupItem value={c} id={`main-course-${c}-${lang}`} className="h-4 w-4 cursor-pointer" />
+                        <Label htmlFor={`main-course-${c}-${lang}`} className="text-[14px] font-normal cursor-pointer">
                           {c === 'PUC' ? (lang === 'en' ? '2nd PUC' : 'ದ್ವಿತೀಯ ಪಿ.ಯು.ಸಿ') : 
                            c === 'SSLC' ? (lang === 'en' ? 'SSLC / 10th' : 'ಎಸ್.ಎಸ್.ಎಲ್.ಸಿ. / 10 ನೇ ತರಗತಿ') : 
                            c === 'Diploma' ? (lang === 'en' ? 'Diploma' : 'ಡಿಪ್ಲೊಮಾ') :
