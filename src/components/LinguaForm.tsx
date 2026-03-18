@@ -473,9 +473,9 @@ export function LinguaForm() {
         <Card className="shadow-sm border-none">
           <CardContent className="p-6 text-center space-y-4">
             <div className="flex justify-center"><Loader2 className="w-12 h-12 text-primary animate-pulse" /></div>
-            <h2 className="text-[15px] font-bold text-primary">{t.successTitle}</h2>
-            <p className="text-[13px] text-muted-foreground">{result.message}</p>
-            <Button onClick={() => window.location.reload()} className="h-9 px-6 text-[13px] font-bold">Done</Button>
+            <h2 className="text-[16px] font-bold text-primary">{t.successTitle}</h2>
+            <p className="text-[14px] text-muted-foreground">{result.message}</p>
+            <Button onClick={() => window.location.reload()} className="h-9 px-6 text-[14px] font-bold">Done</Button>
           </CardContent>
         </Card>
       </div>
@@ -489,19 +489,19 @@ export function LinguaForm() {
           {t.trustName && (
             <p className="text-[18px] font-bold text-[#202124] text-center mb-2">{t.trustName}</p>
           )}
-          <p className="text-[15px] font-bold text-[#202124]">{t.headerBold}</p>
-          <p className="text-[13px] text-[#202124]">{t.headerDesc}</p>
-          <div className="pt-2 font-bold italic text-destructive text-[13px]">{t.requiredNote}</div>
+          <p className="text-[16px] font-bold text-[#202124]">{t.headerBold}</p>
+          <p className="text-[14px] text-[#202124]">{t.headerDesc}</p>
+          <div className="pt-2 font-bold italic text-destructive text-[14px]">{t.requiredNote}</div>
         </CardContent>
       </Card>
 
       <Card className="shadow-sm border-none">
         <CardContent className="p-4">
           <div className="space-y-2">
-            <Label className="font-bold text-[#202124] text-[15px]">{t.langLabel} <span className="text-destructive">*</span></Label>
+            <Label className="font-bold text-[#202124] text-[16px]">{t.langLabel} <span className="text-destructive">*</span></Label>
             <RadioGroup value={lang} onValueChange={(v) => setLang(v as 'en' | 'kn')} className="flex flex-col gap-1.5">
-              <div className="flex items-center space-x-2.5 py-0.5"><RadioGroupItem value="en" id="en" className="h-4 w-4 cursor-pointer" /><Label htmlFor="en" className="font-normal text-[13px] cursor-pointer">English</Label></div>
-              <div className="flex items-center space-x-2.5 py-0.5"><RadioGroupItem value="kn" id="kn" className="h-4 w-4 cursor-pointer" /><Label htmlFor="kn" className="font-normal text-[13px] cursor-pointer">ಕನ್ನಡ</Label></div>
+              <div className="flex items-center space-x-2.5 py-0.5"><RadioGroupItem value="en" id="en" className="h-4 w-4 cursor-pointer" /><Label htmlFor="en" className="font-normal text-[14px] cursor-pointer">English</Label></div>
+              <div className="flex items-center space-x-2.5 py-0.5"><RadioGroupItem value="kn" id="kn" className="h-4 w-4 cursor-pointer" /><Label htmlFor="kn" className="font-normal text-[14px] cursor-pointer">ಕನ್ನಡ</Label></div>
             </RadioGroup>
           </div>
         </CardContent>
@@ -513,9 +513,9 @@ export function LinguaForm() {
             <CardContent className="p-4">
               <FormField control={form.control} name="email" render={({ field }) => (
                 <FormItem className="space-y-1">
-                  <FormLabel className="font-bold text-[15px]">{t.emailLabel} <span className="text-destructive">*</span></FormLabel>
-                  <FormControl><Input placeholder="example@email.com" className="h-9 bg-muted/20 text-[13px]" {...field} /></FormControl>
-                  <FormMessage className="text-[13px]" />
+                  <FormLabel className="font-bold text-[16px]">{t.emailLabel} <span className="text-destructive">*</span></FormLabel>
+                  <FormControl><Input placeholder="example@email.com" className="h-9 bg-muted/20 text-[14px]" {...field} /></FormControl>
+                  <FormMessage className="text-[14px]" />
                 </FormItem>
               )} />
             </CardContent>
@@ -523,32 +523,32 @@ export function LinguaForm() {
 
           <Card className="shadow-sm border-none">
             <CardContent className="p-4 space-y-3">
-              <div className="flex items-center gap-2 pb-1.5 border-b"><User className="w-4 h-4 text-primary" /><h2 className="font-bold text-[15px]">{t.personalDetailsHeader}</h2></div>
+              <div className="flex items-center gap-2 pb-1.5 border-b"><User className="w-4 h-4 text-primary" /><h2 className="font-bold text-[16px]">{t.personalDetailsHeader}</h2></div>
               <FormField control={form.control} name="studentName" render={({ field }) => (
                 <FormItem className="space-y-1">
-                  <FormLabel className="font-bold text-[15px]">{t.studentNameLabel} <span className="text-destructive">*</span></FormLabel>
-                  <FormControl><Input className="h-9 bg-muted/20 text-[13px]" {...field} /></FormControl>
+                  <FormLabel className="font-bold text-[16px]">{t.studentNameLabel} <span className="text-destructive">*</span></FormLabel>
+                  <FormControl><Input className="h-9 bg-muted/20 text-[14px]" {...field} /></FormControl>
                 </FormItem>
               )} />
               <FormField control={form.control} name="relationship" render={({ field }) => (
                 <FormItem className="space-y-1">
-                  <FormLabel className="font-bold text-[15px]">{t.relationshipLabel} <span className="text-destructive">*</span></FormLabel>
+                  <FormLabel className="font-bold text-[16px]">{t.relationshipLabel} <span className="text-destructive">*</span></FormLabel>
                   <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
-                    <div className="flex items-center space-x-1.5"><RadioGroupItem value="SO" id="so" className="h-4 w-4 cursor-pointer" /><Label htmlFor="so" className="text-[13px] font-normal cursor-pointer">{lang === 'en' ? 'S/O (Son of)' : 'S/O (ಮಗ)'}</Label></div>
-                    <div className="flex items-center space-x-1.5"><RadioGroupItem value="DO" id="do" className="h-4 w-4 cursor-pointer" /><Label htmlFor="do" className="text-[13px] font-normal cursor-pointer">{lang === 'en' ? 'D/O (Daughter of)' : 'D/O (ಮಗಳು)'}</Label></div>
+                    <div className="flex items-center space-x-1.5"><RadioGroupItem value="SO" id="so" className="h-4 w-4 cursor-pointer" /><Label htmlFor="so" className="text-[14px] font-normal cursor-pointer">{lang === 'en' ? 'S/O (Son of)' : 'S/O (ಮಗ)'}</Label></div>
+                    <div className="flex items-center space-x-1.5"><RadioGroupItem value="DO" id="do" className="h-4 w-4 cursor-pointer" /><Label htmlFor="do" className="text-[14px] font-normal cursor-pointer">{lang === 'en' ? 'D/O (Daughter of)' : 'D/O (ಮಗಳು)'}</Label></div>
                   </RadioGroup>
                 </FormItem>
               )} />
               <FormField control={form.control} name="fatherName" render={({ field }) => (
                 <FormItem className="space-y-1">
-                  <FormLabel className="font-bold text-[15px]">{t.fatherNameLabel} <span className="text-destructive">*</span></FormLabel>
-                  <FormControl><Input className="h-9 bg-muted/20 text-[13px]" {...field} /></FormControl>
+                  <FormLabel className="font-bold text-[16px]">{t.fatherNameLabel} <span className="text-destructive">*</span></FormLabel>
+                  <FormControl><Input className="h-9 bg-muted/20 text-[14px]" {...field} /></FormControl>
                 </FormItem>
               )} />
               <FormField control={form.control} name="motherName" render={({ field }) => (
                 <FormItem className="space-y-1">
-                  <FormLabel className="font-bold text-[15px]">{t.motherNameLabel} <span className="text-destructive">*</span></FormLabel>
-                  <FormControl><Input className="h-9 bg-muted/20 text-[13px]" {...field} /></FormControl>
+                  <FormLabel className="font-bold text-[16px]">{t.motherNameLabel} <span className="text-destructive">*</span></FormLabel>
+                  <FormControl><Input className="h-9 bg-muted/20 text-[14px]" {...field} /></FormControl>
                 </FormItem>
               )} />
             </CardContent>
@@ -556,15 +556,15 @@ export function LinguaForm() {
 
           <Card className="shadow-sm border-none">
             <CardContent className="p-4 space-y-3">
-              <div className="flex items-center gap-2 pb-1.5 border-b"><GraduationCap className="w-4 h-4 text-primary" /><h2 className="font-bold text-[15px]">{t.academicDetailsHeader}</h2></div>
+              <div className="flex items-center gap-2 pb-1.5 border-b"><GraduationCap className="w-4 h-4 text-primary" /><h2 className="font-bold text-[16px]">{t.academicDetailsHeader}</h2></div>
               <FormField control={form.control} name="course" render={({ field }) => (
                 <FormItem className="space-y-1">
-                  <FormLabel className="font-bold text-[15px]">{t.courseLabel} <span className="text-destructive">*</span></FormLabel>
+                  <FormLabel className="font-bold text-[16px]">{t.courseLabel} <span className="text-destructive">*</span></FormLabel>
                   <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
                     {['SSLC', 'PUC', 'Diploma', 'Degree', 'Engineering', 'Other'].map((c) => (
                       <div key={c} className="flex items-center space-x-1.5">
                         <RadioGroupItem value={c} id={c} className="h-4 w-4 cursor-pointer" />
-                        <Label htmlFor={c} className="text-[13px] font-normal cursor-pointer">
+                        <Label htmlFor={c} className="text-[14px] font-normal cursor-pointer">
                           {c === 'PUC' ? (lang === 'en' ? '2nd PUC' : 'ದ್ವಿತೀಯ ಪಿ.ಯು.ಸಿ') : 
                            c === 'SSLC' ? (lang === 'en' ? 'SSLC / 10th' : 'ಎಸ್.ಎಸ್.ಎಲ್.ಸಿ. / 10 ನೇ ತರಗತಿ') : 
                            c === 'Diploma' ? (lang === 'en' ? 'Diploma' : 'ಡಿಪ್ಲೊಮಾ') :
@@ -581,9 +581,9 @@ export function LinguaForm() {
               {selectedCourse === 'SSLC' && (
                 <FormField control={form.control} name="board" render={({ field }) => (
                   <FormItem className="space-y-1">
-                    <FormLabel className="text-[15px] font-bold">{t.boardLabel} <span className="text-destructive">*</span></FormLabel>
+                    <FormLabel className="text-[16px] font-bold">{t.boardLabel} <span className="text-destructive">*</span></FormLabel>
                     <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
-                      {t.boards.map(b => <div key={b} className="flex items-center space-x-1.5"><RadioGroupItem value={b} id={b} className="h-4 w-4 cursor-pointer" /><Label htmlFor={b} className="text-[13px] font-normal cursor-pointer">{b}</Label></div>)}
+                      {t.boards.map(b => <div key={b} className="flex items-center space-x-1.5"><RadioGroupItem value={b} id={b} className="h-4 w-4 cursor-pointer" /><Label htmlFor={b} className="text-[14px] font-normal cursor-pointer">{b}</Label></div>)}
                     </RadioGroup>
                   </FormItem>
                 )} />
@@ -593,12 +593,12 @@ export function LinguaForm() {
                 <div className="space-y-3 pt-1">
                   <FormField control={form.control} name="pucStream" render={({ field }) => (
                     <FormItem className="space-y-1">
-                      <FormLabel className="text-[15px] font-bold">{t.streamLabel} <span className="text-destructive">*</span></FormLabel>
+                      <FormLabel className="text-[16px] font-bold">{t.streamLabel} <span className="text-destructive">*</span></FormLabel>
                       <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
                         {['Science', 'Commerce', 'Arts'].map(s => (
                           <div key={s} className="flex items-center space-x-1.5">
                             <RadioGroupItem value={s} id={s} className="h-4 w-4 cursor-pointer" />
-                            <Label htmlFor={s} className="text-[13px] font-normal cursor-pointer">{lang === 'en' ? s : (s === 'Science' ? 'ವಿಜ್ಞಾನ' : s === 'Commerce' ? 'ವಾಣಿಜ್ಯ' : 'ಕಲೆ')}</Label>
+                            <Label htmlFor={s} className="text-[14px] font-normal cursor-pointer">{lang === 'en' ? s : (s === 'Science' ? 'ವಿಜ್ಞಾನ' : s === 'Commerce' ? 'ವಾಣಿಜ್ಯ' : 'ಕಲೆ')}</Label>
                           </div>
                         ))}
                       </RadioGroup>
@@ -612,9 +612,9 @@ export function LinguaForm() {
                         : (selectedStream === 'Science' ? 'ವಿಜ್ಞಾನ ವಿಭಾಗ' : selectedStream === 'Commerce' ? 'ವಾಣಿಜ್ಯ ವಿಭಾಗ' : 'ಕಲೆ ವಿಭಾಗ');
                       return (
                         <FormItem className="space-y-1">
-                          <FormLabel className="text-[15px] font-bold">{label} <span className="text-destructive">*</span></FormLabel>
+                          <FormLabel className="text-[16px] font-bold">{label} <span className="text-destructive">*</span></FormLabel>
                           <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
-                            {options.map(c => <div key={c} className="flex items-center space-x-1.5"><RadioGroupItem value={c} id={c} className="h-4 w-4 cursor-pointer" /><Label htmlFor={c} className="text-[13px] cursor-pointer">{c}</Label></div>)}
+                            {options.map(c => <div key={c} className="flex items-center space-x-1.5"><RadioGroupItem value={c} id={c} className="h-4 w-4 cursor-pointer" /><Label htmlFor={c} className="text-[14px] cursor-pointer">{c}</Label></div>)}
                           </RadioGroup>
                         </FormItem>
                       );
@@ -623,8 +623,8 @@ export function LinguaForm() {
                   { (watchedCombination === 'Other' || watchedCombination === 'ಇತರೆ') && (
                     <FormField control={form.control} name="otherCourse" render={({ field }) => (
                       <FormItem className="space-y-1">
-                        <FormLabel className="text-[15px] font-bold">{t.otherCourseLabel} <span className="text-destructive">*</span></FormLabel>
-                        <FormControl><Input className="h-9 bg-muted/20 text-[13px]" {...field} /></FormControl>
+                        <FormLabel className="text-[16px] font-bold">{t.otherCourseLabel} <span className="text-destructive">*</span></FormLabel>
+                        <FormControl><Input className="h-9 bg-muted/20 text-[14px]" {...field} /></FormControl>
                       </FormItem>
                     )} />
                   )}
@@ -635,10 +635,10 @@ export function LinguaForm() {
                 <div className="space-y-3">
                   <FormField control={form.control} name="branch" render={({ field }) => (
                     <FormItem className="space-y-1">
-                      <FormLabel className="text-[15px] font-bold">{t.branchLabel} <span className="text-destructive">*</span></FormLabel>
+                      <FormLabel className="text-[16px] font-bold">{t.branchLabel} <span className="text-destructive">*</span></FormLabel>
                       <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
                         {(selectedCourse === 'Engineering' ? t.engineeringCourses : selectedCourse === 'Diploma' ? t.diplomaCourses : selectedCourse === 'Degree' ? t.degreeCourses : []).map(c => (
-                          <div key={c} className="flex items-center space-x-1.5"><RadioGroupItem value={c} id={c} className="h-4 w-4 cursor-pointer" /><Label htmlFor={c} className="text-[13px] cursor-pointer">{c}</Label></div>
+                          <div key={c} className="flex items-center space-x-1.5"><RadioGroupItem value={c} id={c} className="h-4 w-4 cursor-pointer" /><Label htmlFor={c} className="text-[14px] cursor-pointer">{c}</Label></div>
                         ))}
                       </RadioGroup>
                     </FormItem>
@@ -647,18 +647,18 @@ export function LinguaForm() {
                   { (watchedBranch === 'Other' || watchedBranch === 'ಇತರೆ') && (
                     <FormField control={form.control} name="otherCourse" render={({ field }) => (
                       <FormItem className="space-y-1">
-                        <FormLabel className="text-[15px] font-bold">{t.otherCourseLabel} <span className="text-destructive">*</span></FormLabel>
-                        <FormControl><Input className="h-9 bg-muted/20 text-[13px]" {...field} /></FormControl>
+                        <FormLabel className="text-[16px] font-bold">{t.otherCourseLabel} <span className="text-destructive">*</span></FormLabel>
+                        <FormControl><Input className="h-9 bg-muted/20 text-[14px]" {...field} /></FormControl>
                       </FormItem>
                     )} />
                   )}
 
                   <FormField control={form.control} name="scoreType" render={({ field }) => (
                     <FormItem className="space-y-1">
-                      <FormLabel className="text-[15px] font-bold">{t.scoreTypeLabel} <span className="text-destructive">*</span></FormLabel>
+                      <FormLabel className="text-[16px] font-bold">{t.scoreTypeLabel} <span className="text-destructive">*</span></FormLabel>
                       <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-row gap-4">
-                        <div className="flex items-center space-x-1.5"><RadioGroupItem value="CGPA" id="score-cgpa" className="cursor-pointer" /><Label htmlFor="score-cgpa" className="text-[13px] cursor-pointer">{t.cgpaLabel}</Label></div>
-                        <div className="flex items-center space-x-1.5"><RadioGroupItem value="Percentage" id="score-pct" className="cursor-pointer" /><Label htmlFor="score-pct" className="text-[13px] cursor-pointer">{t.percentageLabel}</Label></div>
+                        <div className="flex items-center space-x-1.5"><RadioGroupItem value="CGPA" id="score-cgpa" className="cursor-pointer" /><Label htmlFor="score-cgpa" className="text-[14px] cursor-pointer">{t.cgpaLabel}</Label></div>
+                        <div className="flex items-center space-x-1.5"><RadioGroupItem value="Percentage" id="score-pct" className="cursor-pointer" /><Label htmlFor="score-pct" className="text-[14px] cursor-pointer">{t.percentageLabel}</Label></div>
                       </RadioGroup>
                     </FormItem>
                   )} />
@@ -666,12 +666,12 @@ export function LinguaForm() {
                   {scoreType === 'CGPA' && (
                     <FormField control={form.control} name="cgpa" render={({ field }) => (
                       <FormItem className="space-y-1">
-                        <FormLabel className="text-[15px] font-bold">{t.cgpaLabel} <span className="text-destructive">*</span></FormLabel>
-                        <FormControl><Input type="number" step="0.01" className="h-9 bg-muted/20 text-[13px]" {...field} /></FormControl>
+                        <FormLabel className="text-[16px] font-bold">{t.cgpaLabel} <span className="text-destructive">*</span></FormLabel>
+                        <FormControl><Input type="number" step="0.01" className="h-9 bg-muted/20 text-[14px]" {...field} /></FormControl>
                         {eligibilityError && (
                           <Alert variant="destructive" className="py-1 px-2 mt-1 flex items-center gap-2 border-destructive/20 bg-destructive/5">
                             <AlertCircle className="h-4 w-4 shrink-0" />
-                            <AlertDescription className="leading-tight font-medium text-[13px]">{eligibilityError}</AlertDescription>
+                            <AlertDescription className="leading-tight font-medium text-[14px]">{eligibilityError}</AlertDescription>
                           </Alert>
                         )}
                       </FormItem>
@@ -681,12 +681,12 @@ export function LinguaForm() {
                   {scoreType === 'Percentage' && (
                     <FormField control={form.control} name="percentage" render={({ field }) => (
                       <FormItem className="space-y-1">
-                        <FormLabel className="text-[15px] font-bold">{t.percentageLabel} <span className="text-destructive">*</span></FormLabel>
-                        <FormControl><Input type="number" step="0.01" className="h-9 bg-muted/20 text-[13px]" {...field} /></FormControl>
+                        <FormLabel className="text-[16px] font-bold">{t.percentageLabel} <span className="text-destructive">*</span></FormLabel>
+                        <FormControl><Input type="number" step="0.01" className="h-9 bg-muted/20 text-[14px]" {...field} /></FormControl>
                         {eligibilityError && (
                           <Alert variant="destructive" className="py-1 px-2 mt-1 flex items-center gap-2 border-destructive/20 bg-destructive/5">
                             <AlertCircle className="h-4 w-4 shrink-0" />
-                            <AlertDescription className="leading-tight font-medium text-[13px]">{eligibilityError}</AlertDescription>
+                            <AlertDescription className="leading-tight font-medium text-[14px]">{eligibilityError}</AlertDescription>
                           </Alert>
                         )}
                       </FormItem>
@@ -699,17 +699,17 @@ export function LinguaForm() {
                 <div className="space-y-3">
                   <FormField control={form.control} name="otherCourse" render={({ field }) => (
                     <FormItem className="space-y-1">
-                      <FormLabel className="text-[15px] font-bold">{t.otherCourseLabel} <span className="text-destructive">*</span></FormLabel>
-                      <FormControl><Input className="h-9 bg-muted/20 text-[13px]" {...field} /></FormControl>
+                      <FormLabel className="text-[16px] font-bold">{t.otherCourseLabel} <span className="text-destructive">*</span></FormLabel>
+                      <FormControl><Input className="h-9 bg-muted/20 text-[14px]" {...field} /></FormControl>
                     </FormItem>
                   )} />
 
                   <FormField control={form.control} name="scoreType" render={({ field }) => (
                     <FormItem className="space-y-1">
-                      <FormLabel className="text-[15px] font-bold">{t.scoreTypeLabel} <span className="text-destructive">*</span></FormLabel>
+                      <FormLabel className="text-[16px] font-bold">{t.scoreTypeLabel} <span className="text-destructive">*</span></FormLabel>
                       <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-row gap-4">
-                        <div className="flex items-center space-x-1.5"><RadioGroupItem value="CGPA" id="other-score-cgpa" className="cursor-pointer" /><Label htmlFor="other-score-cgpa" className="text-[13px] cursor-pointer">{t.cgpaLabel}</Label></div>
-                        <div className="flex items-center space-x-1.5"><RadioGroupItem value="Percentage" id="other-score-pct" className="cursor-pointer" /><Label htmlFor="other-score-pct" className="text-[13px] cursor-pointer">{lang === 'en' ? 'Marks' : 'ಅಂಕಗಳು'}</Label></div>
+                        <div className="flex items-center space-x-1.5"><RadioGroupItem value="CGPA" id="other-score-cgpa" className="cursor-pointer" /><Label htmlFor="other-score-cgpa" className="text-[14px] cursor-pointer">{t.cgpaLabel}</Label></div>
+                        <div className="flex items-center space-x-1.5"><RadioGroupItem value="Percentage" id="other-score-pct" className="cursor-pointer" /><Label htmlFor="other-score-pct" className="text-[14px] cursor-pointer">{lang === 'en' ? 'Marks' : 'ಅಂಕಗಳು'}</Label></div>
                       </RadioGroup>
                     </FormItem>
                   )} />
@@ -717,12 +717,12 @@ export function LinguaForm() {
                   {scoreType === 'CGPA' && (
                     <FormField control={form.control} name="cgpa" render={({ field }) => (
                       <FormItem className="space-y-1">
-                        <FormLabel className="text-[15px] font-bold">{t.cgpaLabel} <span className="text-destructive">*</span></FormLabel>
-                        <FormControl><Input type="number" step="0.01" className="h-9 bg-muted/20 text-[13px]" {...field} /></FormControl>
+                        <FormLabel className="text-[16px] font-bold">{t.cgpaLabel} <span className="text-destructive">*</span></FormLabel>
+                        <FormControl><Input type="number" step="0.01" className="h-9 bg-muted/20 text-[14px]" {...field} /></FormControl>
                         {eligibilityError && (
                           <Alert variant="destructive" className="py-1 px-2 mt-1 flex items-center gap-2 border-destructive/20 bg-destructive/5">
                             <AlertCircle className="h-4 w-4 shrink-0" />
-                            <AlertDescription className="leading-tight font-medium text-[13px]">{eligibilityError}</AlertDescription>
+                            <AlertDescription className="leading-tight font-medium text-[14px]">{eligibilityError}</AlertDescription>
                           </Alert>
                         )}
                       </FormItem>
@@ -736,23 +736,23 @@ export function LinguaForm() {
                   {((['SSLC', 'PUC'].includes(selectedCourse)) || (selectedCourse === 'Other' && scoreType === 'Percentage')) && (
                     <>
                       <FormField control={form.control} name="marksObtained" render={({ field }) => (
-                        <FormItem className="space-y-1"><FormLabel className="text-[15px] font-bold">{t.marksObtainedLabel} <span className="text-destructive">*</span></FormLabel><FormControl><Input type="number" className="h-9 bg-muted/20 text-[13px]" {...field} /></FormControl></FormItem>
+                        <FormItem className="space-y-1"><FormLabel className="text-[16px] font-bold">{t.marksObtainedLabel} <span className="text-destructive">*</span></FormLabel><FormControl><Input type="number" className="h-9 bg-muted/20 text-[14px]" {...field} /></FormControl></FormItem>
                       )} />
                       <FormField control={form.control} name="totalMarks" render={({ field }) => (
                         <FormItem className="space-y-1">
-                          <FormLabel className="text-[15px] font-bold">{t.totalMarksLabel} <span className="text-destructive">*</span></FormLabel>
-                          <FormControl><Input type="number" className="h-9 bg-muted/20 text-[13px]" {...field} /></FormControl>
-                          {totalMarksError && <p className="font-medium pt-1 text-destructive text-[13px]">{totalMarksError}</p>}
+                          <FormLabel className="text-[16px] font-bold">{t.totalMarksLabel} <span className="text-destructive">*</span></FormLabel>
+                          <FormControl><Input type="number" className="h-9 bg-muted/20 text-[14px]" {...field} /></FormControl>
+                          {totalMarksError && <p className="font-medium pt-1 text-destructive text-[14px]">{totalMarksError}</p>}
                         </FormItem>
                       )} />
                       <FormField control={form.control} name="percentage" render={({ field }) => (
                         <FormItem className="space-y-1">
-                          <FormLabel className="text-[15px] font-bold">{t.percentageLabel}</FormLabel>
-                          <FormControl><Input readOnly className="h-9 bg-secondary/30 font-bold text-[13px]" {...field} /></FormControl>
+                          <FormLabel className="text-[16px] font-bold">{t.percentageLabel}</FormLabel>
+                          <FormControl><Input readOnly className="h-9 bg-secondary/30 font-bold text-[14px]" {...field} /></FormControl>
                           {eligibilityError && (
                             <Alert variant="destructive" className="py-1 px-2 mt-1 flex items-center gap-2 border-destructive/20 bg-destructive/5">
                               <AlertCircle className="h-4 w-4 shrink-0" />
-                              <AlertDescription className="leading-tight font-medium text-[13px]">{eligibilityError}</AlertDescription>
+                              <AlertDescription className="leading-tight font-medium text-[14px]">{eligibilityError}</AlertDescription>
                             </Alert>
                           )}
                         </FormItem>
@@ -764,9 +764,9 @@ export function LinguaForm() {
                     const year = selectedCourse === 'SSLC' ? '2024-2025' : '2025-2026';
                     return (
                       <FormItem className="space-y-1">
-                        <FormLabel className="text-[15px] font-bold">{t.yearPassingLabel} <span className="text-destructive">*</span></FormLabel>
+                        <FormLabel className="text-[16px] font-bold">{t.yearPassingLabel} <span className="text-destructive">*</span></FormLabel>
                         <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
-                          <div className="flex items-center space-x-1.5"><RadioGroupItem value={year} id={year} className="h-4 w-4 cursor-pointer" /><Label htmlFor={year} className="text-[13px] font-normal cursor-pointer">{year}</Label></div>
+                          <div className="flex items-center space-x-1.5"><RadioGroupItem value={year} id={year} className="h-4 w-4 cursor-pointer" /><Label htmlFor={year} className="text-[14px] font-normal cursor-pointer">{year}</Label></div>
                         </RadioGroup>
                       </FormItem>
                     );
@@ -778,23 +778,23 @@ export function LinguaForm() {
 
           <Card className="shadow-sm border-none">
             <CardContent className="p-4 space-y-3">
-              <div className="flex items-center gap-2 pb-1.5 border-b"><FileCheck className="w-4 h-4 text-primary" /><h2 className="font-bold text-[15px]">{t.docsTitle}</h2></div>
+              <div className="flex items-center gap-2 pb-1.5 border-b"><FileCheck className="w-4 h-4 text-primary" /><h2 className="font-bold text-[16px]">{t.docsTitle}</h2></div>
               <div className="space-y-2">
                 <div className="space-y-1">
-                  <FormLabel className="text-[15px] font-bold">{t.photoLabel} <span className="text-destructive">*</span></FormLabel>
-                  <Input type="file" accept="image/*" className="h-9 text-[13px] file:text-[13px]" onChange={handlePhotoChange} />
+                  <FormLabel className="text-[16px] font-bold">{t.photoLabel} <span className="text-destructive">*</span></FormLabel>
+                  <Input type="file" accept="image/*" className="h-9 text-[14px] file:text-[14px]" onChange={handlePhotoChange} />
                 </div>
                 <div className="space-y-1">
-                  <FormLabel className="text-[15px] font-bold">{t.marksCardLabel} <span className="text-destructive">*</span></FormLabel>
-                  <Input type="file" accept=".pdf" className="h-9 text-[13px] file:text-[13px]" onChange={handleMarksChange} />
+                  <FormLabel className="text-[16px] font-bold">{t.marksCardLabel} <span className="text-destructive">*</span></FormLabel>
+                  <Input type="file" accept=".pdf" className="h-9 text-[14px] file:text-[14px]" onChange={handleMarksChange} />
                 </div>
-                {fileError && <p className="text-destructive text-[13px] font-bold">{fileError}</p>}
+                {fileError && <p className="text-destructive text-[14px] font-bold">{fileError}</p>}
               </div>
             </CardContent>
           </Card>
 
           <div className="flex pt-1">
-            <Button type="submit" className="w-full h-10 font-bold text-[15px]" disabled={isSubmitting || !!eligibilityError || !!totalMarksError || !!fileError || !canSubmit()}>
+            <Button type="submit" className="w-full h-10 font-bold text-[16px]" disabled={isSubmitting || !!eligibilityError || !!totalMarksError || !!fileError || !canSubmit()}>
               {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> {t.processing}</> : <><Send className="mr-2 h-4 w-4" /> {t.submitButton}</>}
             </Button>
           </div>
