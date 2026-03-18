@@ -132,10 +132,13 @@ export function LinguaForm() {
     }
   }, [selectedCourse, form]);
 
-  // 3. Academic Switch (Stream): Reset Combination + Other + Documents
+  // 3. Academic Switch (Stream): Reset Combination + Marks + Other + Documents
   useEffect(() => {
     if (selectedStream) {
       form.setValue('combination', undefined);
+      form.setValue('marksObtained', '');
+      form.setValue('totalMarks', '');
+      form.setValue('percentage', '');
       form.setValue('otherCourse', '');
       setPhotoFile(null);
       setMarksFile(null);
@@ -894,3 +897,4 @@ export function LinguaForm() {
     </div>
   );
 }
+
