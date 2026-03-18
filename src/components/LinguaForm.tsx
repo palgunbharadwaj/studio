@@ -166,6 +166,9 @@ export function LinguaForm() {
       boardLabel: "Board",
       streamLabel: "Stream",
       combinationLabel: "Combination",
+      scienceCombination: "2nd PUC Science Combination",
+      commerceCombination: "2nd PUC Commerce Combination",
+      artsCombination: "2nd PUC Arts Combination",
       branchLabel: "Course",
       scoreTypeLabel: "Select Score Type",
       percentageLabel: "Percentage (%)",
@@ -269,6 +272,9 @@ export function LinguaForm() {
       boardLabel: "ಮಂಡಳಿ",
       streamLabel: "ವಿಭಾಗ",
       combinationLabel: "ವಿಭಾಗ",
+      scienceCombination: "ವಿಜ್ಞಾನ ವಿಭಾಗ",
+      commerceCombination: "ವಾಣಿಜ್ಯ ವಿಭಾಗ",
+      artsCombination: "ಕಲೆ ವಿಭಾಗ",
       branchLabel: "ವಿಭಾಗ",
       scoreTypeLabel: "ಅಂಕಗಳ ಪ್ರಕಾರವನ್ನು ಆರಿಸಿ",
       percentageLabel: "ಶೇಕಡಾ (%)",
@@ -575,11 +581,14 @@ export function LinguaForm() {
                   {selectedStream && (
                     <FormField control={form.control} name="combination" render={({ field }) => {
                       const options = selectedStream === 'Science' ? t.scienceCombinations : selectedStream === 'Commerce' ? t.commerceCombinations : t.artsCombinations;
+                      const label = lang === 'en' 
+                        ? (selectedStream === 'Science' ? t.scienceCombination : selectedStream === 'Commerce' ? t.commerceCombination : t.artsCombination)
+                        : (selectedStream === 'Science' ? t.scienceCombination : selectedStream === 'Commerce' ? t.commerceCombination : t.artsCombination);
                       return (
                         <FormItem className="space-y-1">
-                          <FormLabel className="text-[15px] font-bold">{t.combinationLabel} <span className="text-destructive">*</span></FormLabel>
+                          <FormLabel className="text-[15px] font-bold">{label} <span className="text-destructive">*</span></FormLabel>
                           <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
-                            {options.map(c => <div key={c} className="flex items-center space-x-1.5"><RadioGroupItem value={c} id={c} className="h-4 w-4 cursor-pointer" /><Label htmlFor={c} className="text-[13px] font-normal cursor-pointer">{c}</Label></div>)}
+                            {options.map(c => <div key={c} className="flex items-center space-x-1.5"><RadioGroupItem value={c} id={c} className="h-4 w-4 cursor-pointer" /><Label htmlFor={c} className="text-[13px] cursor-pointer">{c}</Label></div>)}
                           </RadioGroup>
                         </FormItem>
                       );
@@ -595,7 +604,7 @@ export function LinguaForm() {
                       <FormLabel className="text-[15px] font-bold">{t.branchLabel} <span className="text-destructive">*</span></FormLabel>
                       <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
                         {(selectedCourse === 'Engineering' ? t.engineeringCourses : selectedCourse === 'Diploma' ? t.diplomaCourses : t.degreeCourses).map(c => (
-                          <div key={c} className="flex items-center space-x-1.5"><RadioGroupItem value={c} id={c} className="h-4 w-4 cursor-pointer" /><Label htmlFor={c} className="text-[13px] font-normal cursor-pointer">{c}</Label></div>
+                          <div key={c} className="flex items-center space-x-1.5"><RadioGroupItem value={c} id={c} className="h-4 w-4 cursor-pointer" /><Label htmlFor={c} className="text-[13px] cursor-pointer">{c}</Label></div>
                         ))}
                       </RadioGroup>
                     </FormItem>
