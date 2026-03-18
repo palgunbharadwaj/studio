@@ -20,7 +20,7 @@ export async function submitLinguaForm(data: any): Promise<SubmissionResult> {
   try {
     const docRef = collection(firestore, 'registrations');
     
-    // Create submission record without awaiting (optimistic UI pattern)
+    // Initiate write without awaiting to allow optimistic success
     addDoc(docRef, {
       ...data,
       createdAt: serverTimestamp(),
@@ -45,7 +45,7 @@ export async function submitLinguaForm(data: any): Promise<SubmissionResult> {
       Result: ${data.percentage ? data.percentage + '%' : data.cgpa + ' CGPA'}
     `.trim();
 
-    // AI and Email tasks are handled gracefully so they don't block the main success UI
+    // Secondary tasks (AI/Email) are decoupled to not block the success UI
     try {
       // Call Genkit flow to generate personalized confirmation content
       const emailData = await generatePersonalizedConfirmationEmail({
@@ -64,13 +64,14 @@ export async function submitLinguaForm(data: any): Promise<SubmissionResult> {
         emailData,
       };
     } catch (aiError) {
-      console.warn('Secondary tasks (AI/Email) failed but database record initiated:', aiError);
+      console.warn('Background tasks (AI/Email) failed but registration initiated:', aiError);
       return {
         success: true,
         message: successMessage,
       };
     }
   } catch (error) {
+    console.error('Submission failed:', error);
     return {
       success: false,
       message: 'An error occurred during submission.',

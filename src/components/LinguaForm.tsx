@@ -115,7 +115,6 @@ export function LinguaForm() {
   // 2. Academic Switch Reset: Reset academic sub-fields and documents
   useEffect(() => {
     if (selectedCourse) {
-      // Clear all academic details below the course selection
       form.setValue('board', undefined);
       form.setValue('pucStream', undefined);
       form.setValue('combination', undefined);
@@ -128,7 +127,6 @@ export function LinguaForm() {
       form.setValue('scoreType', undefined);
       form.setValue('yearOfPassing', '');
       
-      // Clear document section
       setPhotoFile(null);
       setMarksFile(null);
       setEligibilityError(null);
@@ -138,30 +136,19 @@ export function LinguaForm() {
     }
   }, [selectedCourse, form]);
 
-  // 3. PUC Stream Reset
+  // 3. PUC Stream / Score Type Reset
   useEffect(() => {
-    if (selectedStream && selectedCourse === 'PUC') {
-      form.setValue('combination', undefined);
-      form.setValue('marksObtained', '');
-      form.setValue('totalMarks', '');
-      form.setValue('percentage', '');
-      form.setValue('otherCourse', '');
-      setPhotoFile(null);
-      setMarksFile(null);
-    }
-  }, [selectedStream, selectedCourse, form]);
-
-  // 4. Score Type Switch Reset
-  useEffect(() => {
-    if (scoreType) {
+    if (selectedStream || scoreType) {
       form.setValue('marksObtained', '');
       form.setValue('totalMarks', '');
       form.setValue('cgpa', '');
       form.setValue('percentage', '');
       setPhotoFile(null);
       setMarksFile(null);
+      setEligibilityError(null);
+      setTotalMarksError(null);
     }
-  }, [scoreType, form]);
+  }, [selectedStream, scoreType, form]);
 
   // Calculation and Eligibility Logic
   useEffect(() => {
@@ -361,6 +348,7 @@ export function LinguaForm() {
     if (!photoFile || !marksFile) return;
 
     setIsSubmitting(true);
+    setResult(null);
     try {
       const photoBase64 = await fileToBase64(photoFile);
       const marksCardBase64 = await fileToBase64(marksFile);
@@ -373,8 +361,8 @@ export function LinguaForm() {
       });
       setResult(response);
     } catch (err) {
-      console.error(err);
-      setResult({ success: false, message: 'Submission failed.', error: String(err) } as any);
+      console.error('Submission catch:', err);
+      setResult({ success: false, message: 'Submission failed.', error: String(err) });
     } finally {
       setIsSubmitting(false);
     }
