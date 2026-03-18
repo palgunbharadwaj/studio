@@ -34,7 +34,7 @@ const formSchema = z.object({
   percentage: z.string().optional(),
   marksObtained: z.string().optional(),
   totalMarks: z.string().optional(),
-  yearOfPassing: z.string().min(1, { message: "Year of passing is required." }),
+  yearOfPassing: z.string().optional(),
   cgpa: z.string().optional(),
   otherCourse: z.string().optional(),
   branch: z.string().optional(),
@@ -73,7 +73,17 @@ export function LinguaForm() {
     },
   });
 
-  // Reset entire form when language changes
+  const selectedCourse = useWatch({ control: form.control, name: 'course' });
+  const selectedStream = useWatch({ control: form.control, name: 'pucStream' });
+  const marksObtained = useWatch({ control: form.control, name: 'marksObtained' });
+  const totalMarks = useWatch({ control: form.control, name: 'totalMarks' });
+  const cgpaValue = useWatch({ control: form.control, name: 'cgpa' });
+  const scoreType = useWatch({ control: form.control, name: 'scoreType' });
+  const percentageValue = useWatch({ control: form.control, name: 'percentage' });
+  const watchedCombination = useWatch({ control: form.control, name: 'combination' });
+  const watchedBranch = useWatch({ control: form.control, name: 'branch' });
+
+  // 1. Language Switch: Reset WHOLE form + documents
   useEffect(() => {
     form.reset({
       email: '',
@@ -101,17 +111,7 @@ export function LinguaForm() {
     setFileError(null);
   }, [lang, form]);
 
-  const selectedCourse = useWatch({ control: form.control, name: 'course' });
-  const selectedStream = useWatch({ control: form.control, name: 'pucStream' });
-  const marksObtained = useWatch({ control: form.control, name: 'marksObtained' });
-  const totalMarks = useWatch({ control: form.control, name: 'totalMarks' });
-  const cgpaValue = useWatch({ control: form.control, name: 'cgpa' });
-  const scoreType = useWatch({ control: form.control, name: 'scoreType' });
-  const percentageValue = useWatch({ control: form.control, name: 'percentage' });
-  const watchedCombination = useWatch({ control: form.control, name: 'combination' });
-  const watchedBranch = useWatch({ control: form.control, name: 'branch' });
-
-  // Granular Reset: Clear academic sub-fields when main course switches, preserving personal info
+  // 2. Academic Switch (Course): Reset Academic Fields + Documents, Preserve Personal
   useEffect(() => {
     if (selectedCourse) {
       form.setValue('board', undefined);
@@ -125,14 +125,22 @@ export function LinguaForm() {
       form.setValue('otherCourse', '');
       form.setValue('yearOfPassing', '');
       form.setValue('scoreType', undefined);
+      
+      // Reset Documents section on course change
+      setPhotoFile(null);
+      setMarksFile(null);
     }
   }, [selectedCourse, form]);
 
-  // Granular Reset: Clear combination when stream switches
+  // 3. Academic Switch (Stream): Reset Combination + Documents
   useEffect(() => {
     if (selectedStream) {
       form.setValue('combination', undefined);
       form.setValue('otherCourse', '');
+      
+      // Reset Documents section on stream change
+      setPhotoFile(null);
+      setMarksFile(null);
     }
   }, [selectedStream, form]);
 
@@ -560,12 +568,12 @@ export function LinguaForm() {
             <Label className="font-bold text-[#202124] text-[16px]">{t.langLabel} <span className="text-destructive">*</span></Label>
             <RadioGroup value={lang} onValueChange={(v) => setLang(v as 'en' | 'kn')} className="flex flex-col gap-1.5">
               <div className="flex items-center space-x-2.5 py-0.5">
-                <RadioGroupItem value="kn" id="lang-kn" className="h-4 w-4 cursor-pointer" />
-                <Label htmlFor="lang-kn" className="font-normal text-[14px] cursor-pointer">ಕನ್ನಡ</Label>
+                <RadioGroupItem value="kn" id="lang-kn-radio" className="h-4 w-4 cursor-pointer" />
+                <Label htmlFor="lang-kn-radio" className="font-normal text-[14px] cursor-pointer">ಕನ್ನಡ</Label>
               </div>
               <div className="flex items-center space-x-2.5 py-0.5">
-                <RadioGroupItem value="en" id="lang-en" className="h-4 w-4 cursor-pointer" />
-                <Label htmlFor="lang-en" className="font-normal text-[14px] cursor-pointer">English</Label>
+                <RadioGroupItem value="en" id="lang-en-radio" className="h-4 w-4 cursor-pointer" />
+                <Label htmlFor="lang-en-radio" className="font-normal text-[14px] cursor-pointer">English</Label>
               </div>
             </RadioGroup>
           </div>
@@ -599,8 +607,8 @@ export function LinguaForm() {
                 <FormItem className="space-y-1">
                   <FormLabel className="font-bold text-[16px]">{t.relationshipLabel} <span className="text-destructive">*</span></FormLabel>
                   <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
-                    <div className="flex items-center space-x-1.5"><RadioGroupItem value="SO" id="rel-so" className="h-4 w-4 cursor-pointer" /><Label htmlFor="rel-so" className="text-[14px] font-normal cursor-pointer">{lang === 'en' ? 'S/O (Son of)' : 'S/O (ಮಗ)'}</Label></div>
-                    <div className="flex items-center space-x-1.5"><RadioGroupItem value="DO" id="rel-do" className="h-4 w-4 cursor-pointer" /><Label htmlFor="rel-do" className="text-[14px] font-normal cursor-pointer">{lang === 'en' ? 'D/O (Daughter of)' : 'D/O (ಮಗಳು)'}</Label></div>
+                    <div className="flex items-center space-x-1.5"><RadioGroupItem value="SO" id="rel-so-p" className="h-4 w-4 cursor-pointer" /><Label htmlFor="rel-so-p" className="text-[14px] font-normal cursor-pointer">{lang === 'en' ? 'S/O (Son of)' : 'S/O (ಮಗ)'}</Label></div>
+                    <div className="flex items-center space-x-1.5"><RadioGroupItem value="DO" id="rel-do-p" className="h-4 w-4 cursor-pointer" /><Label htmlFor="rel-do-p" className="text-[14px] font-normal cursor-pointer">{lang === 'en' ? 'D/O (Daughter of)' : 'D/O (ಮಗಳು)'}</Label></div>
                   </RadioGroup>
                 </FormItem>
               )} />
@@ -628,8 +636,8 @@ export function LinguaForm() {
                   <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
                     {['SSLC', 'PUC', 'Diploma', 'Degree', 'Engineering', 'Other'].map((c) => (
                       <div key={c} className="flex items-center space-x-1.5">
-                        <RadioGroupItem value={c} id={`main-course-${c}-${lang}`} className="h-4 w-4 cursor-pointer" />
-                        <Label htmlFor={`main-course-${c}-${lang}`} className="text-[14px] font-normal cursor-pointer">
+                        <RadioGroupItem value={c} id={`main-course-${c}-${lang}-opt`} className="h-4 w-4 cursor-pointer" />
+                        <Label htmlFor={`main-course-${c}-${lang}-opt`} className="text-[14px] font-normal cursor-pointer">
                           {c === 'PUC' ? (lang === 'en' ? '2nd PUC' : 'ದ್ವಿತೀಯ ಪಿ.ಯು.ಸಿ') : 
                            c === 'SSLC' ? (lang === 'en' ? 'SSLC / 10th' : 'ಎಸ್.ಎಸ್.ಎಲ್.ಸಿ. / 10 ನೇ ತರಗತಿ') : 
                            c === 'Diploma' ? (lang === 'en' ? 'Diploma' : 'ಡಿಪ್ಲೊಮಾ') :
@@ -648,7 +656,7 @@ export function LinguaForm() {
                   <FormItem className="space-y-1">
                     <FormLabel className="text-[16px] font-bold">{t.boardLabel} <span className="text-destructive">*</span></FormLabel>
                     <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
-                      {t.boards.map(b => <div key={b} className="flex items-center space-x-1.5"><RadioGroupItem value={b} id={`board-${b}-${lang}`} className="h-4 w-4 cursor-pointer" /><Label htmlFor={`board-${b}-${lang}`} className="text-[14px] font-normal cursor-pointer">{b}</Label></div>)}
+                      {t.boards.map(b => <div key={b} className="flex items-center space-x-1.5"><RadioGroupItem value={b} id={`board-${b}-${lang}-opt`} className="h-4 w-4 cursor-pointer" /><Label htmlFor={`board-${b}-${lang}-opt`} className="text-[14px] font-normal cursor-pointer">{b}</Label></div>)}
                     </RadioGroup>
                   </FormItem>
                 )} />
@@ -662,8 +670,8 @@ export function LinguaForm() {
                       <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
                         {['Science', 'Commerce', 'Arts'].map(s => (
                           <div key={s} className="flex items-center space-x-1.5">
-                            <RadioGroupItem value={s} id={`stream-${s}-${lang}`} className="h-4 w-4 cursor-pointer" />
-                            <Label htmlFor={`stream-${s}-${lang}`} className="text-[14px] font-normal cursor-pointer">{lang === 'en' ? s : (s === 'Science' ? 'ವಿಜ್ಞಾನ' : s === 'Commerce' ? 'ವಾಣಿಜ್ಯ' : 'ಕಲೆ')}</Label>
+                            <RadioGroupItem value={s} id={`stream-${s}-${lang}-opt`} className="h-4 w-4 cursor-pointer" />
+                            <Label htmlFor={`stream-${s}-${lang}-opt`} className="text-[14px] font-normal cursor-pointer">{lang === 'en' ? s : (s === 'Science' ? 'ವಿಜ್ಞಾನ' : s === 'Commerce' ? 'ವಾಣಿಜ್ಯ' : 'ಕಲೆ')}</Label>
                           </div>
                         ))}
                       </RadioGroup>
@@ -679,7 +687,7 @@ export function LinguaForm() {
                         <FormItem className="space-y-1">
                           <FormLabel className="text-[16px] font-bold">{label} <span className="text-destructive">*</span></FormLabel>
                           <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
-                            {options.map((c, idx) => <div key={idx} className="flex items-center space-x-1.5"><RadioGroupItem value={c} id={`comb-${idx}-${selectedStream}-${lang}`} className="h-4 w-4 cursor-pointer" /><Label htmlFor={`comb-${idx}-${selectedStream}-${lang}`} className="text-[14px] cursor-pointer">{c}</Label></div>)}
+                            {options.map((c, idx) => <div key={idx} className="flex items-center space-x-1.5"><RadioGroupItem value={c} id={`comb-${idx}-${selectedStream}-${lang}-opt`} className="h-4 w-4 cursor-pointer" /><Label htmlFor={`comb-${idx}-${selectedStream}-${lang}-opt`} className="text-[14px] cursor-pointer">{c}</Label></div>)}
                           </RadioGroup>
                         </FormItem>
                       );
@@ -703,7 +711,7 @@ export function LinguaForm() {
                       <FormLabel className="text-[16px] font-bold">{t.branchLabel} <span className="text-destructive">*</span></FormLabel>
                       <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
                         {(selectedCourse === 'Engineering' ? t.engineeringCourses : selectedCourse === 'Diploma' ? t.diplomaCourses : selectedCourse === 'Degree' ? t.degreeCourses : []).map((c, idx) => (
-                          <div key={idx} className="flex items-center space-x-1.5"><RadioGroupItem value={c} id={`branch-${idx}-${selectedCourse}-${lang}`} className="h-4 w-4 cursor-pointer" /><Label htmlFor={`branch-${idx}-${selectedCourse}-${lang}`} className="text-[14px] cursor-pointer">{c}</Label></div>
+                          <div key={idx} className="flex items-center space-x-1.5"><RadioGroupItem value={c} id={`branch-${idx}-${selectedCourse}-${lang}-opt`} className="h-4 w-4 cursor-pointer" /><Label htmlFor={`branch-${idx}-${selectedCourse}-${lang}-opt`} className="text-[14px] cursor-pointer">{c}</Label></div>
                         ))}
                       </RadioGroup>
                     </FormItem>
@@ -722,8 +730,8 @@ export function LinguaForm() {
                     <FormItem className="space-y-1">
                       <FormLabel className="text-[16px] font-bold">{t.scoreTypeLabel} <span className="text-destructive">*</span></FormLabel>
                       <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-row gap-4">
-                        <div className="flex items-center space-x-1.5"><RadioGroupItem value="CGPA" id={`score-cgpa-${lang}`} className="cursor-pointer" /><Label htmlFor={`score-cgpa-${lang}`} className="text-[14px] cursor-pointer">{t.cgpaLabel}</Label></div>
-                        <div className="flex items-center space-x-1.5"><RadioGroupItem value="Percentage" id={`score-pct-${lang}`} className="cursor-pointer" /><Label htmlFor={`score-pct-${lang}`} className="text-[14px] cursor-pointer">{t.percentageLabel}</Label></div>
+                        <div className="flex items-center space-x-1.5"><RadioGroupItem value="CGPA" id={`score-cgpa-${lang}-opt`} className="cursor-pointer" /><Label htmlFor={`score-cgpa-${lang}-opt`} className="text-[14px] cursor-pointer">{t.cgpaLabel}</Label></div>
+                        <div className="flex items-center space-x-1.5"><RadioGroupItem value="Percentage" id={`score-pct-${lang}-opt`} className="cursor-pointer" /><Label htmlFor={`score-pct-${lang}-opt`} className="text-[14px] cursor-pointer">{t.percentageLabel}</Label></div>
                       </RadioGroup>
                     </FormItem>
                   )} />
@@ -773,8 +781,8 @@ export function LinguaForm() {
                     <FormItem className="space-y-1">
                       <FormLabel className="text-[16px] font-bold">{t.scoreTypeLabel} <span className="text-destructive">*</span></FormLabel>
                       <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-row gap-4">
-                        <div className="flex items-center space-x-1.5"><RadioGroupItem value="CGPA" id={`other-score-cgpa-${lang}`} className="cursor-pointer" /><Label htmlFor={`other-score-cgpa-${lang}`} className="text-[14px] cursor-pointer">{t.cgpaLabel}</Label></div>
-                        <div className="flex items-center space-x-1.5"><RadioGroupItem value="Percentage" id={`other-score-pct-${lang}`} className="cursor-pointer" /><Label htmlFor={`other-score-pct-${lang}`} className="text-[14px] cursor-pointer">{lang === 'en' ? 'Marks' : 'ಅಂಕಗಳು'}</Label></div>
+                        <div className="flex items-center space-x-1.5"><RadioGroupItem value="CGPA" id={`other-score-cgpa-${lang}-opt`} className="cursor-pointer" /><Label htmlFor={`other-score-cgpa-${lang}-opt`} className="text-[14px] cursor-pointer">{t.cgpaLabel}</Label></div>
+                        <div className="flex items-center space-x-1.5"><RadioGroupItem value="Percentage" id={`other-score-pct-${lang}-opt`} className="cursor-pointer" /><Label htmlFor={`other-score-pct-${lang}-opt`} className="text-[14px] cursor-pointer">{lang === 'en' ? 'Marks' : 'ಅಂಕಗಳು'}</Label></div>
                       </RadioGroup>
                     </FormItem>
                   )} />
@@ -831,7 +839,7 @@ export function LinguaForm() {
                       <FormItem className="space-y-1">
                         <FormLabel className="text-[16px] font-bold">{t.yearPassingLabel} <span className="text-destructive">*</span></FormLabel>
                         <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
-                          <div className="flex items-center space-x-1.5"><RadioGroupItem value={year} id={`year-${year}-${lang}`} className="h-4 w-4 cursor-pointer" /><Label htmlFor={`year-${year}-${lang}`} className="text-[14px] font-normal cursor-pointer">{year}</Label></div>
+                          <div className="flex items-center space-x-1.5"><RadioGroupItem value={year} id={`year-${year}-${lang}-opt`} className="h-4 w-4 cursor-pointer" /><Label htmlFor={`year-${year}-${lang}-opt`} className="text-[14px] font-normal cursor-pointer">{year}</Label></div>
                         </RadioGroup>
                       </FormItem>
                     );
@@ -841,17 +849,17 @@ export function LinguaForm() {
             </CardContent>
           </Card>
 
-          <Card className="shadow-sm border-none" key={`docs-${lang}`}>
+          <Card className="shadow-sm border-none" key={`docs-container-${lang}-${selectedCourse}-${selectedStream}`}>
             <CardContent className="p-4 space-y-3">
               <div className="flex items-center gap-2 pb-1.5 border-b"><FileCheck className="w-4 h-4 text-primary" /><h2 className="font-bold text-[16px]">{t.docsTitle}</h2></div>
               <div className="space-y-2">
                 <div className="space-y-1">
-                  <Label htmlFor="photo-upload" className="text-[16px] font-bold cursor-default">{t.photoLabel} <span className="text-destructive">*</span></Label>
-                  <Input id="photo-upload" type="file" accept="image/*" className="h-10 text-[14px] file:mr-4 file:py-1 file:px-3 file:rounded-md file:border file:border-solid file:border-border file:bg-secondary/50 file:text-[14px] file:font-medium cursor-pointer bg-muted/5 border-border/40" onChange={handlePhotoChange} />
+                  <Label htmlFor="photo-upload-input" className="text-[16px] font-bold cursor-default">{t.photoLabel} <span className="text-destructive">*</span></Label>
+                  <Input id="photo-upload-input" type="file" accept="image/*" className="h-10 text-[14px] file:mr-4 file:py-1 file:px-3 file:rounded-md file:border file:border-solid file:border-border file:bg-secondary/50 file:text-[14px] file:font-medium cursor-pointer file:cursor-pointer bg-muted/5 border-border/40" onChange={handlePhotoChange} />
                 </div>
                 <div className="space-y-1">
-                  <Label htmlFor="marks-upload" className="text-[16px] font-bold cursor-default">{t.marksCardLabel} <span className="text-destructive">*</span></Label>
-                  <Input id="marks-upload" type="file" accept=".pdf" className="h-10 text-[14px] file:mr-4 file:py-1 file:px-3 file:rounded-md file:border file:border-solid file:border-border file:bg-secondary/50 file:text-[14px] file:font-medium cursor-pointer bg-muted/5 border-border/40" onChange={handleMarksChange} />
+                  <Label htmlFor="marks-upload-input" className="text-[16px] font-bold cursor-default">{t.marksCardLabel} <span className="text-destructive">*</span></Label>
+                  <Input id="marks-upload-input" type="file" accept=".pdf" className="h-10 text-[14px] file:mr-4 file:py-1 file:px-3 file:rounded-md file:border file:border-solid file:border-border file:bg-secondary/50 file:text-[14px] file:font-medium cursor-pointer file:cursor-pointer bg-muted/5 border-border/40" onChange={handleMarksChange} />
                 </div>
                 {fileError && <p className="text-destructive text-[14px] font-bold">{fileError}</p>}
               </div>
