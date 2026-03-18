@@ -66,7 +66,7 @@ export function LinguaForm() {
       totalMarks: '',
       cgpa: '',
       yearOfPassing: '',
-      scoreType: 'CGPA',
+      scoreType: 'Percentage',
       otherCourse: '',
     },
   });
@@ -85,7 +85,8 @@ export function LinguaForm() {
     setEligibilityError(null);
     setTotalMarksError(null);
 
-    if (['SSLC', 'PUC', 'Other'].includes(selectedCourse || '')) {
+    // Percentage calculation for SSLC, PUC, or 'Other' when Percentage is selected
+    if (['SSLC', 'PUC'].includes(selectedCourse || '') || (selectedCourse === 'Other' && scoreType === 'Percentage')) {
       if (marksObtained && totalMarks) {
         const marks = parseFloat(marksObtained);
         const total = parseFloat(totalMarks);
@@ -128,7 +129,7 @@ export function LinguaForm() {
           }
         }
       }
-    } else if (['Diploma', 'Degree', 'Engineering'].includes(selectedCourse || '')) {
+    } else if (['Diploma', 'Degree', 'Engineering', 'Other'].includes(selectedCourse || '')) {
       if (scoreType === 'CGPA' && cgpaValue) {
         const cgpa = parseFloat(cgpaValue);
         if (!isNaN(cgpa)) {
@@ -139,7 +140,8 @@ export function LinguaForm() {
             setEligibilityError(errorMsg);
           }
         }
-      } else if (scoreType === 'Percentage' && percentageValue) {
+      } else if (scoreType === 'Percentage' && percentageValue && !['SSLC', 'PUC'].includes(selectedCourse || '')) {
+        // Validation for direct percentage entry in technical courses
         const p = parseFloat(percentageValue);
         if (!isNaN(p)) {
           if (p < 90.0 || p > 100.0) {
@@ -446,7 +448,11 @@ export function LinguaForm() {
         if (v.scoreType === 'CGPA' && !v.cgpa) return false;
         if (v.scoreType === 'Percentage' && !v.percentage) return false;
     }
-    if (v.course === 'Other' && (!v.otherCourse || !v.marksObtained || !v.totalMarks)) return false;
+    if (v.course === 'Other') {
+        if (!v.otherCourse || !v.scoreType) return false;
+        if (v.scoreType === 'CGPA' && !v.cgpa) return false;
+        if (v.scoreType === 'Percentage' && (!v.marksObtained || !v.totalMarks)) return false;
+    }
     if (!photoFile || !marksFile) return false;
     return true;
   };
@@ -595,7 +601,7 @@ export function LinguaForm() {
                         <FormItem className="space-y-1">
                           <FormLabel className="text-[15px] font-bold">{label} <span className="text-destructive">*</span></FormLabel>
                           <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
-                            {options.map(c => <div key={c} className="flex items-center space-x-1.5"><RadioGroupItem value={c} id={c} className="h-4 w-4 cursor-pointer" /><Label htmlFor={c} className="text-[13px] cursor-pointer">{c}</Label></div>)}
+                            {options.map(c => <div key={c} className="flex items-center space-x-1.5"><RadioGroupItem value={c} id={c} className="h-4 w-4 cursor-pointer" /><Label htmlFor={c} className="text-[12px] cursor-pointer">{c}</Label></div>)}
                           </RadioGroup>
                         </FormItem>
                       );
@@ -618,7 +624,7 @@ export function LinguaForm() {
                     <FormItem className="space-y-1">
                       <FormLabel className="text-[15px] font-bold">{t.branchLabel} <span className="text-destructive">*</span></FormLabel>
                       <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
-                        {(selectedCourse === 'Engineering' ? t.engineeringCourses : selectedCourse === 'Diploma' ? t.diplomaCourses : t.degreeCourses).map(c => (
+                        {(selectedCourse === 'Engineering' ? t.engineeringCourses : selectedCourse === 'Diploma' ? t.diplomaCourses : selectedCourse === 'Degree' ? t.degreeCourses : []).map(c => (
                           <div key={c} className="flex items-center space-x-1.5"><RadioGroupItem value={c} id={c} className="h-4 w-4 cursor-pointer" /><Label htmlFor={c} className="text-[13px] cursor-pointer">{c}</Label></div>
                         ))}
                       </RadioGroup>
@@ -677,17 +683,44 @@ export function LinguaForm() {
               )}
 
               {selectedCourse === 'Other' && (
-                <FormField control={form.control} name="otherCourse" render={({ field }) => (
-                  <FormItem className="space-y-1">
-                    <FormLabel className="text-[15px] font-bold">{t.otherCourseLabel} <span className="text-destructive">*</span></FormLabel>
-                    <FormControl><Input className="h-9 bg-muted/20 text-[13px]" {...field} /></FormControl>
-                  </FormItem>
-                )} />
+                <div className="space-y-3">
+                  <FormField control={form.control} name="otherCourse" render={({ field }) => (
+                    <FormItem className="space-y-1">
+                      <FormLabel className="text-[15px] font-bold">{t.otherCourseLabel} <span className="text-destructive">*</span></FormLabel>
+                      <FormControl><Input className="h-9 bg-muted/20 text-[13px]" {...field} /></FormControl>
+                    </FormItem>
+                  )} />
+
+                  <FormField control={form.control} name="scoreType" render={({ field }) => (
+                    <FormItem className="space-y-1">
+                      <FormLabel className="text-[15px] font-bold">{t.scoreTypeLabel} <span className="text-destructive">*</span></FormLabel>
+                      <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-row gap-4">
+                        <div className="flex items-center space-x-1.5"><RadioGroupItem value="CGPA" id="other-score-cgpa" className="cursor-pointer" /><Label htmlFor="other-score-cgpa" className="text-[13px] cursor-pointer">{t.cgpaLabel}</Label></div>
+                        <div className="flex items-center space-x-1.5"><RadioGroupItem value="Percentage" id="other-score-pct" className="cursor-pointer" /><Label htmlFor="other-score-pct" className="text-[13px] cursor-pointer">{lang === 'en' ? 'Marks' : 'ಅಂಕಗಳು'}</Label></div>
+                      </RadioGroup>
+                    </FormItem>
+                  )} />
+
+                  {scoreType === 'CGPA' && (
+                    <FormField control={form.control} name="cgpa" render={({ field }) => (
+                      <FormItem className="space-y-1">
+                        <FormLabel className="text-[15px] font-bold">{t.cgpaLabel} <span className="text-destructive">*</span></FormLabel>
+                        <FormControl><Input type="number" step="0.01" className="h-9 bg-muted/20 text-[13px]" {...field} /></FormControl>
+                        {eligibilityError && (
+                          <Alert variant="destructive" className="py-1 px-2 mt-1 flex items-center gap-2 border-destructive/20 bg-destructive/5">
+                            <AlertCircle className="h-4 w-4 shrink-0" />
+                            <AlertDescription className="leading-tight font-medium text-[13px]">{eligibilityError}</AlertDescription>
+                          </Alert>
+                        )}
+                      </FormItem>
+                    )} />
+                  )}
+                </div>
               )}
 
               {selectedCourse && (
                 <div className="space-y-3 pt-1">
-                  {['SSLC', 'PUC', 'Other'].includes(selectedCourse) && (
+                  {((['SSLC', 'PUC'].includes(selectedCourse)) || (selectedCourse === 'Other' && scoreType === 'Percentage')) && (
                     <>
                       <FormField control={form.control} name="marksObtained" render={({ field }) => (
                         <FormItem className="space-y-1"><FormLabel className="text-[15px] font-bold">{t.marksObtainedLabel} <span className="text-destructive">*</span></FormLabel><FormControl><Input type="number" className="h-9 bg-muted/20 text-[13px]" {...field} /></FormControl></FormItem>
