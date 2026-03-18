@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -143,6 +144,29 @@ export function LinguaForm() {
       setMarksFile(null);
     }
   }, [selectedStream, form]);
+
+  // 4. Score Type Switch: Reset Score Fields + Documents
+  useEffect(() => {
+    if (scoreType) {
+      form.setValue('marksObtained', '');
+      form.setValue('totalMarks', '');
+      form.setValue('cgpa', '');
+      form.setValue('percentage', '');
+      
+      // Reset Documents section on score type change
+      setPhotoFile(null);
+      setMarksFile(null);
+    }
+  }, [scoreType, form]);
+
+  // 5. Combination/Branch/Other Specification Switch: Reset Documents
+  useEffect(() => {
+    if (watchedCombination || watchedBranch) {
+      // Reset Documents section
+      setPhotoFile(null);
+      setMarksFile(null);
+    }
+  }, [watchedCombination, watchedBranch]);
 
   useEffect(() => {
     setEligibilityError(null);
@@ -849,7 +873,7 @@ export function LinguaForm() {
             </CardContent>
           </Card>
 
-          <Card className="shadow-sm border-none" key={`docs-container-${lang}-${selectedCourse}-${selectedStream}`}>
+          <Card className="shadow-sm border-none" key={`docs-container-${lang}-${selectedCourse}-${selectedStream}-${scoreType}`}>
             <CardContent className="p-4 space-y-3">
               <div className="flex items-center gap-2 pb-1.5 border-b"><FileCheck className="w-4 h-4 text-primary" /><h2 className="font-bold text-[16px]">{t.docsTitle}</h2></div>
               <div className="space-y-2">
