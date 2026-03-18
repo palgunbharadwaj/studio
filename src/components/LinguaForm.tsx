@@ -165,8 +165,9 @@ export function LinguaForm() {
 
   const translations = {
     en: {
-      headerBold: "Prathibha Puraskahara 2025-2026:",
-      headerDesc: "Prathibha Puraskahara at the temple level for the students who have secured more than 85% in PUC and 90% in SSLC/Degree/Vocational courses or rank in the March and April exams of 2025 and 2026",
+      trustName: "Sri Jalavasudeva Srivaishnava Seva Trust (R), Kulaganam",
+      headerBold: "Pratibha Puraskar 2025-2026:",
+      headerDesc: "Temple-level award for students who have scored more than 85% in the P.U.C. examinations held in March and April of the years 2025 and 2026, and for those who have secured a rank or more than 90% marks in S.S.L.C. / Degree / Job-oriented education.",
       langLabel: "Choose Language / ಭಾಷೆ ಆಯ್ಕೆಮಾಡಿ",
       personalDetailsHeader: "Personal Details",
       academicDetailsHeader: "Academic Details",
@@ -485,7 +486,7 @@ export function LinguaForm() {
     <div className="space-y-2 w-full max-w-xl mx-auto pb-5 cursor-default relative">
       <Card className="shadow-sm border-none">
         <CardContent className="p-4 space-y-0 text-left">
-          {lang === 'kn' && t.trustName && (
+          {t.trustName && (
             <p className="text-[18px] font-bold text-[#202124] text-center mb-2">{t.trustName}</p>
           )}
           <p className="text-[15px] font-bold text-[#202124]">{t.headerBold}</p>
