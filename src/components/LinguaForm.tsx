@@ -473,8 +473,16 @@ export function LinguaForm() {
         <Card className="shadow-sm border-none">
           <CardContent className="p-6 text-center space-y-6">
             <div className="flex justify-center"><Loader2 className="w-12 h-12 text-primary animate-pulse" /></div>
-            <h2 className="text-[16px] font-bold text-[#202124] leading-tight">{t.successTitle}</h2>
-            <p className="text-[14px] text-[#202124] font-bold leading-relaxed">{result.message}</p>
+            <h2 className="text-[16px] font-bold text-[#202124] leading-tight">
+              {lang === 'en' 
+                ? "Your application for the Pratibha Puraskar 2025-2026 has been received. Thank you."
+                : "ಪ್ರತಿಭಾ ಪುರಸ್ಕಾರ 2025-2026 ಕ್ಕಾಗಿ ನಿಮ್ಮ ಅರ್ಜಿಯನ್ನು ಸ್ವೀಕರಿಸಲಾಗಿದೆ. ಧನ್ಯವಾದಗಳು."}
+            </h2>
+            <p className="text-[14px] text-[#202124] font-bold leading-relaxed">
+              {lang === 'en'
+                ? "The award distribution will take place on 23/04/2026. All receiving students, along with their families, are requested to compulsorily attend the Lord's service."
+                : "ದಿನಾಂಕ:23/04/2026 ರಂದು ಎಲ್ಲಾ ಮಕ್ಕಳಿಗೂ ಪುರಸ್ಕರಿಸಲಾಗುವುದು. ಹಾಗಾಗಿ ಸಂಬಂಧಪಟ್ಟ ಮಕ್ಕಳು ಹಾಗೂ ಕುಟುಂಬ ಕಡ್ಡಾಯವಾಗಿ ಭಗವಂತನ ಕೈಂಕರ್ಯಕ್ಕೆ ಹಾಜರಾಗುವುದು."}
+            </p>
             <Button onClick={() => window.location.reload()} className="h-10 px-8 text-[14px] font-bold">Done</Button>
           </CardContent>
         </Card>
@@ -487,8 +495,8 @@ export function LinguaForm() {
       <Card className="shadow-sm border-none">
         <CardContent className="p-4 space-y-0 text-left">
           <p className="text-[18px] font-bold text-[#202124] text-center mb-2">{t.trustName}</p>
-          <p className="text-[16px] font-bold text-[#202124]">{t.headerBold}</p>
-          <p className="text-[14px] text-[#202124]">{t.headerDesc}</p>
+          <p className="text-[16px] font-bold text-[#202124] text-center">{t.headerBold}</p>
+          <p className="text-[14px] text-[#202124] text-center">{t.headerDesc}</p>
           <div className="pt-2 font-bold italic text-destructive text-[14px]">{t.requiredNote}</div>
         </CardContent>
       </Card>
