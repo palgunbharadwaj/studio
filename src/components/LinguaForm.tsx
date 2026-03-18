@@ -225,17 +225,17 @@ export function LinguaForm() {
         'Civil (Civil Engineering)',
         'IP (Industrial Production Engineering)',
         'EIE (Electronics and Instrumentation Engineering)',
-        'ECE (Electronics & Computer Engineering)',
-        'Mechatronics Engineering',
-        'Automobile Engineering',
-        'Aerospace Engineering',
-        'Chemical Engineering',
-        'Biotechnology Engineering',
-        'Data Science and Engineering',
-        'AIDS (Artificial Intelligence and Data Science Engineering)',
-        'Robotics and Automation Engineering',
-        'ECS (Electronics & Computer Science Engineering)',
+        'ECS (Electronics and Computer Science Engineering)',
+        'ECE (Electronics and Computer Engineering)',
         'CSBS (Computer Science and Business Systems)',
+        'Mechatronics (Mechatronics Engineering)',
+        'Automobile (Automobile Engineering)',
+        'Aerospace (Aerospace Engineering)',
+        'Chemical (Rasamayika Engineering)',
+        'Biotechnology (Biotechnology Engineering)',
+        'Data Science (Data Science and Engineering)',
+        'AI & Data Science (Artificial Intelligence and Data Science Engineering)',
+        'Robotics & Automation (Robotics and Automation Engineering)',
         'Other'
       ],
       diplomaCourses: [
@@ -270,7 +270,7 @@ export function LinguaForm() {
       studentNameLabel: "ವಿದ್ಯಾರ್ಥಿಯ ಹೆಸರು",
       relationshipLabel: "S/O ಅಥವಾ D/O",
       fatherNameLabel: "ತಂದೆಯ ಹೆಸರು",
-      motherNameLabel: "ಮಾಯಿಯ ಹೆಸರು",
+      motherNameLabel: "ತಾಯಿಯ ಹೆಸರು",
       courseLabel: "ಕೋರ್ಸ್",
       boardLabel: "ಮಂಡಳಿ",
       streamLabel: "ವಿಭಾಗ",
@@ -595,7 +595,7 @@ export function LinguaForm() {
                         <FormItem className="space-y-1">
                           <FormLabel className="text-[15px] font-bold">{label} <span className="text-destructive">*</span></FormLabel>
                           <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
-                            {options.map(c => <div key={c} className="flex items-center space-x-1.5"><RadioGroupItem value={c} id={c} className="h-4 w-4 cursor-pointer" /><Label htmlFor={c} className="text-[12px] cursor-pointer">{c}</Label></div>)}
+                            {options.map(c => <div key={c} className="flex items-center space-x-1.5"><RadioGroupItem value={c} id={c} className="h-4 w-4 cursor-pointer" /><Label htmlFor={c} className="text-[13px] cursor-pointer">{c}</Label></div>)}
                           </RadioGroup>
                         </FormItem>
                       );
