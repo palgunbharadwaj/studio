@@ -486,9 +486,7 @@ export function LinguaForm() {
     <div className="space-y-2 w-full max-w-xl mx-auto pb-5 cursor-default relative">
       <Card className="shadow-sm border-none">
         <CardContent className="p-4 space-y-0 text-left">
-          {t.trustName && (
-            <p className="text-[18px] font-bold text-[#202124] text-center mb-2">{t.trustName}</p>
-          )}
+          <p className="text-[18px] font-bold text-[#202124] text-center mb-2">{t.trustName}</p>
           <p className="text-[16px] font-bold text-[#202124]">{t.headerBold}</p>
           <p className="text-[14px] text-[#202124]">{t.headerDesc}</p>
           <div className="pt-2 font-bold italic text-destructive text-[14px]">{t.requiredNote}</div>
