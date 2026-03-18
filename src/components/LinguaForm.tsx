@@ -196,7 +196,7 @@ export function LinguaForm() {
       marksCardLabel: "Marks Card (PDF only, max 10MB)",
       submitButton: "Submit",
       processing: "Processing...",
-      successTitle: "Submission Received!",
+      successTitle: "Your application for the Pratibha Puraskar 2025-2026 has been received. Thank you.",
       requiredNote: "* Indicates required question",
       boards: ['State', 'CBSE', 'ICSE'],
       scienceCombinations: [
@@ -303,7 +303,7 @@ export function LinguaForm() {
       marksCardLabel: "ಅಂಕಪಟ್ಟಿ (PDF ಮಾತ್ರ, ಗರಿಷ್ಠ 10MB)",
       submitButton: "ಸಲ್ಲಿಸಿ",
       processing: "ಪ್ರಕ್ರಿಯೆಯಲ್ಲಿದೆ...",
-      successTitle: "ಸಲ್ಲಿಸುವಿಕೆ ಸ್ವೀಕರಿಸಲಾಗಿದೆ!",
+      successTitle: "ಪ್ರತಿಭಾ ಪುರಸ್ಕಾರ 2025-2026 ಕ್ಕಾಗಿ ನಿಮ್ಮ ಅರ್ಜಿಯನ್ನು ಸ್ವೀಕರಿಸಲಾಗಿದೆ. ಧನ್ಯವಾದಗಳು.",
       requiredNote: "* ಕಡ್ಡಾಯ ಪ್ರಶ್ನೆಯನ್ನು ಸೂಚಿಸುತ್ತದೆ",
       boards: ['ರಾಜ್ಯ (State)', 'ಸಿಬಿಎಸ್ ಇ (CBSE)', 'ಐಸಿಎಸ್ ಇ (ICSE)'],
       scienceCombinations: [
@@ -473,8 +473,8 @@ export function LinguaForm() {
         <Card className="shadow-sm border-none">
           <CardContent className="p-6 text-center space-y-4">
             <div className="flex justify-center"><Loader2 className="w-12 h-12 text-primary animate-pulse" /></div>
-            <h2 className="text-[16px] font-bold text-primary">{t.successTitle}</h2>
-            <p className="text-[14px] text-muted-foreground">{result.message}</p>
+            <h2 className="text-[16px] font-bold text-[#202124]">{t.successTitle}</h2>
+            <p className="text-[14px] text-[#202124] font-bold">{result.message}</p>
             <Button onClick={() => window.location.reload()} className="h-10 px-8 text-[14px] font-bold">Done</Button>
           </CardContent>
         </Card>
