@@ -471,10 +471,10 @@ export function LinguaForm() {
     return (
       <div className="w-full max-xl mx-auto py-10 space-y-4">
         <Card className="shadow-sm border-none">
-          <CardContent className="p-6 text-center space-y-4">
+          <CardContent className="p-6 text-center space-y-6">
             <div className="flex justify-center"><Loader2 className="w-12 h-12 text-primary animate-pulse" /></div>
-            <h2 className="text-[16px] font-bold text-[#202124]">{t.successTitle}</h2>
-            <p className="text-[14px] text-[#202124] font-bold">{result.message}</p>
+            <h2 className="text-[16px] font-bold text-[#202124] leading-tight">{t.successTitle}</h2>
+            <p className="text-[14px] text-[#202124] font-bold leading-relaxed">{result.message}</p>
             <Button onClick={() => window.location.reload()} className="h-10 px-8 text-[14px] font-bold">Done</Button>
           </CardContent>
         </Card>
