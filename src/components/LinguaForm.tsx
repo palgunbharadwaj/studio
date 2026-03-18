@@ -83,7 +83,7 @@ export function LinguaForm() {
   const watchedCombination = useWatch({ control: form.control, name: 'combination' });
   const watchedBranch = useWatch({ control: form.control, name: 'branch' });
 
-  // 1. Language Switch Reset: Full Reset
+  // 1. Language Switch Reset: Full Reset of everything
   useEffect(() => {
     form.reset({
       email: '',
@@ -112,7 +112,7 @@ export function LinguaForm() {
     setResult(null);
   }, [lang, form]);
 
-  // 2. Academic Switch Reset: Reset academic sub-fields and documents
+  // 2. Academic Switch Reset: Reset academic fields and documents while preserving personal details
   useEffect(() => {
     if (selectedCourse) {
       form.setValue('board', undefined);
@@ -124,21 +124,33 @@ export function LinguaForm() {
       form.setValue('cgpa', '');
       form.setValue('percentage', '');
       form.setValue('otherCourse', '');
-      form.setValue('scoreType', undefined);
+      form.setValue('scoreType', undefined); // Explicitly reset score type
       form.setValue('yearOfPassing', '');
       
       setPhotoFile(null);
       setMarksFile(null);
       setEligibilityError(null);
       setTotalMarksError(null);
-      setFileError(null);
-      setResult(null);
     }
   }, [selectedCourse, form]);
 
-  // 3. PUC Stream / Score Type Reset
+  // 3. 2nd PUC Stream Switch Reset: Clears combinations and results if stream changes
   useEffect(() => {
-    if (selectedStream || scoreType) {
+    if (selectedStream) {
+      form.setValue('combination', undefined);
+      form.setValue('marksObtained', '');
+      form.setValue('totalMarks', '');
+      form.setValue('percentage', '');
+      setPhotoFile(null);
+      setMarksFile(null);
+      setEligibilityError(null);
+      setTotalMarksError(null);
+    }
+  }, [selectedStream, form]);
+
+  // 4. Score Type Reset: Clears result fields and documents if scoring method changes
+  useEffect(() => {
+    if (scoreType) {
       form.setValue('marksObtained', '');
       form.setValue('totalMarks', '');
       form.setValue('cgpa', '');
@@ -148,7 +160,7 @@ export function LinguaForm() {
       setEligibilityError(null);
       setTotalMarksError(null);
     }
-  }, [selectedStream, scoreType, form]);
+  }, [scoreType, form]);
 
   // Calculation and Eligibility Logic
   useEffect(() => {
