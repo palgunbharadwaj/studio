@@ -76,10 +76,10 @@ export function LinguaForm() {
 
   const selectedCourse = useWatch({ control: form.control, name: 'course' });
   const selectedStream = useWatch({ control: form.control, name: 'pucStream' });
+  const scoreType = useWatch({ control: form.control, name: 'scoreType' });
   const marksObtained = useWatch({ control: form.control, name: 'marksObtained' });
   const totalMarks = useWatch({ control: form.control, name: 'totalMarks' });
   const cgpaValue = useWatch({ control: form.control, name: 'cgpa' });
-  const scoreType = useWatch({ control: form.control, name: 'scoreType' });
   const percentageValue = useWatch({ control: form.control, name: 'percentage' });
   const watchedCombination = useWatch({ control: form.control, name: 'combination' });
   const watchedBranch = useWatch({ control: form.control, name: 'branch' });
