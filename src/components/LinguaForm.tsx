@@ -620,7 +620,7 @@ export function LinguaForm() {
                         <FormItem className="space-y-1">
                           <FormLabel className="text-[16px] font-bold">{label} <span className="text-destructive">*</span></FormLabel>
                           <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
-                            {options.map((c, idx) => <div key={idx} className="flex items-center space-x-1.5"><RadioGroupItem value={c} id={`comb-${idx}`} className="h-4 w-4 cursor-pointer" /><Label htmlFor={`comb-${idx}`} className="text-[14px] cursor-pointer">{c}</Label></div>)}
+                            {options.map((c, idx) => <div key={idx} className="flex items-center space-x-1.5"><RadioGroupItem value={c} id={`comb-${idx}-${selectedStream}`} className="h-4 w-4 cursor-pointer" /><Label htmlFor={`comb-${idx}-${selectedStream}`} className="text-[14px] cursor-pointer">{c}</Label></div>)}
                           </RadioGroup>
                         </FormItem>
                       );
@@ -644,7 +644,7 @@ export function LinguaForm() {
                       <FormLabel className="text-[16px] font-bold">{t.branchLabel} <span className="text-destructive">*</span></FormLabel>
                       <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
                         {(selectedCourse === 'Engineering' ? t.engineeringCourses : selectedCourse === 'Diploma' ? t.diplomaCourses : selectedCourse === 'Degree' ? t.degreeCourses : []).map((c, idx) => (
-                          <div key={idx} className="flex items-center space-x-1.5"><RadioGroupItem value={c} id={`branch-${idx}`} className="h-4 w-4 cursor-pointer" /><Label htmlFor={`branch-${idx}`} className="text-[14px] cursor-pointer">{c}</Label></div>
+                          <div key={idx} className="flex items-center space-x-1.5"><RadioGroupItem value={c} id={`branch-${idx}-${selectedCourse}`} className="h-4 w-4 cursor-pointer" /><Label htmlFor={`branch-${idx}-${selectedCourse}`} className="text-[14px] cursor-pointer">{c}</Label></div>
                         ))}
                       </RadioGroup>
                     </FormItem>
@@ -787,12 +787,12 @@ export function LinguaForm() {
               <div className="flex items-center gap-2 pb-1.5 border-b"><FileCheck className="w-4 h-4 text-primary" /><h2 className="font-bold text-[16px]">{t.docsTitle}</h2></div>
               <div className="space-y-2">
                 <div className="space-y-1">
-                  <FormLabel className="text-[16px] font-bold">{t.photoLabel} <span className="text-destructive">*</span></FormLabel>
-                  <Input type="file" accept="image/*" className="h-10 text-[14px] file:text-[14px]" onChange={handlePhotoChange} />
+                  <Label htmlFor="photo-upload" className="text-[16px] font-bold cursor-pointer">{t.photoLabel} <span className="text-destructive">*</span></Label>
+                  <Input id="photo-upload" type="file" accept="image/*" className="h-10 text-[14px] file:text-[14px] cursor-pointer" onChange={handlePhotoChange} />
                 </div>
                 <div className="space-y-1">
-                  <FormLabel className="text-[16px] font-bold">{t.marksCardLabel} <span className="text-destructive">*</span></FormLabel>
-                  <Input type="file" accept=".pdf" className="h-10 text-[14px] file:text-[14px]" onChange={handleMarksChange} />
+                  <Label htmlFor="marks-upload" className="text-[16px] font-bold cursor-pointer">{t.marksCardLabel} <span className="text-destructive">*</span></Label>
+                  <Input id="marks-upload" type="file" accept=".pdf" className="h-10 text-[14px] file:text-[14px] cursor-pointer" onChange={handleMarksChange} />
                 </div>
                 {fileError && <p className="text-destructive text-[14px] font-bold">{fileError}</p>}
               </div>
