@@ -85,7 +85,6 @@ export function LinguaForm() {
     setEligibilityError(null);
     setTotalMarksError(null);
 
-    // Percentage calculation for SSLC, PUC, or 'Other' when Percentage is selected
     if (['SSLC', 'PUC'].includes(selectedCourse || '') || (selectedCourse === 'Other' && scoreType === 'Percentage')) {
       if (marksObtained && totalMarks) {
         const marks = parseFloat(marksObtained);
@@ -129,7 +128,7 @@ export function LinguaForm() {
           }
         }
       }
-    } else if (['Diploma', 'Degree', 'Engineering', 'Other'].includes(selectedCourse || '')) {
+    } else if (['Diploma', 'Degree', 'Engineering'].includes(selectedCourse || '')) {
       if (scoreType === 'CGPA' && cgpaValue) {
         const cgpa = parseFloat(cgpaValue);
         if (!isNaN(cgpa)) {
@@ -140,8 +139,7 @@ export function LinguaForm() {
             setEligibilityError(errorMsg);
           }
         }
-      } else if (scoreType === 'Percentage' && percentageValue && !['SSLC', 'PUC'].includes(selectedCourse || '')) {
-        // Validation for direct percentage entry in technical courses
+      } else if (scoreType === 'Percentage' && percentageValue) {
         const p = parseFloat(percentageValue);
         if (!isNaN(p)) {
           if (p < 90.0 || p > 100.0) {
@@ -152,13 +150,23 @@ export function LinguaForm() {
           }
         }
       }
+    } else if (selectedCourse === 'Other' && scoreType === 'CGPA' && cgpaValue) {
+      const cgpa = parseFloat(cgpaValue);
+      if (!isNaN(cgpa)) {
+        if (cgpa < 9.0 || cgpa > 10.0) {
+          const errorMsg = lang === 'en' 
+            ? "CGPA must be between 9.0 and 10.0." 
+            : "ಸಿಜಿಪಿಎ 9.0 ರಿಂದ 10.0 ರ ನಡುವೆ ಇರಬೇಕು.";
+          setEligibilityError(errorMsg);
+        }
+      }
     }
   }, [marksObtained, totalMarks, cgpaValue, percentageValue, selectedCourse, lang, form, scoreType]);
 
   const translations = {
     en: {
-      headerBold: "ಪತಿಭಾ ಪುರಸ್ಕಾರ 2025-2026:",
-      headerDesc: "2025 ಮತ್ತು 2026ರ ಸಾಲಿನ ಮಾರ್ಚಿ ಮತ್ತು ಏಪ್ರಿಲ್ ನಲ್ಲಿ ನಡೆದ ಪಿ.ಯು.ಸಿ ಪರೀಕ್ಷೆಯಲ್ಲಿ ಶೇ.85 ಕ್ಕಿಂತ ಹಾಗೂ ಎಸ್.ಎಸ್.ಎಲ್.ಸಿ/ಪದವಿ/ಉದ್ಯೋಗಾಧಾರಿತ ಶಿಕ್ಷಣದಲ್ಲಿ ರ‍್ಯಾಂಕ್‌ ಅಥವಾ ಶೇ.90 ಕ್ಕಿಂತ ಹೆಚ್ಚು ಅಂಕ ಪಡೆದ ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ದೇವಾಲಯದ ಮಟ್ಟದಲ್ಲಿ ಪುರಸ್ಕಾರ",
+      headerBold: "Prathibha Puraskahara 2025-2026:",
+      headerDesc: "Prathibha Puraskahara at the temple level for the students who have secured more than 85% in PUC and 90% in SSLC/Degree/Vocational courses or rank in the March and April exams of 2025 and 2026",
       langLabel: "Choose Language / ಭಾಷೆ ಆಯ್ಕೆಮಾಡಿ",
       personalDetailsHeader: "Personal Details",
       academicDetailsHeader: "Academic Details",
@@ -174,7 +182,7 @@ export function LinguaForm() {
       scienceCombination: "2nd PUC Science Combination",
       commerceCombination: "2nd PUC Commerce Combination",
       artsCombination: "2nd PUC Arts Combination",
-      branchLabel: "Course",
+      branchLabel: "Branch",
       scoreTypeLabel: "Select Score Type",
       percentageLabel: "Percentage (%)",
       marksObtainedLabel: "Marks Obtained",
@@ -263,6 +271,7 @@ export function LinguaForm() {
       ]
     },
     kn: {
+      trustName: "ಶ್ರೀ ಜಲವಾಸುದೇವ ಶ್ರೀವೈಷ್ಣವ ಸೇವಾ ಟ್ರಸ್ಟ್(ರಿ),ಕುಲಗಣಂ",
       headerBold: "ಪತಿಭಾ ಪುರಸ್ಕಾರ 2025-2026:",
       headerDesc: "2025 ಮತ್ತು 2026ರ ಸಾಲಿನ ಮಾರ್ಚಿ ಮತ್ತು ಏಪ್ರಿಲ್ ನಲ್ಲಿ ನಡೆದ ಪಿ.ಯು.ಸಿ ಪರೀಕ್ಷೆಯಲ್ಲಿ ಶೇ.85 ಕ್ಕಿಂತ ಹಾಗೂ ಎಸ್.ಎಸ್.ಎಲ್.ಸಿ/ಪದವಿ/ಉದ್ಯೋಗಾಧಾರಿತ ಶಿಕ್ಷಣದಲ್ಲಿ ರ‍್ಯಾಂಕ್‌ ಅಥವಾ ಶೇ.90 ಕ್ಕಿಂತ ಹೆಚ್ಚು ಅಂಕ ಪಡೆದ ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ದೇವಾಲಯದ ಮಟ್ಟದಲ್ಲಿ ಪುರಸ್ಕಾರ",
       langLabel: "Choose Language / ಭಾಷೆ ಆಯ್ಕೆಮಾಡಿ",
@@ -459,7 +468,7 @@ export function LinguaForm() {
 
   if (result?.success) {
     return (
-      <div className="w-full max-w-xl mx-auto py-10 space-y-4">
+      <div className="w-full max-xl mx-auto py-10 space-y-4">
         <Card className="shadow-sm border-none">
           <CardContent className="p-6 text-center space-y-4">
             <div className="flex justify-center"><Loader2 className="w-12 h-12 text-primary animate-pulse" /></div>
@@ -476,6 +485,9 @@ export function LinguaForm() {
     <div className="space-y-2 w-full max-w-xl mx-auto pb-5 cursor-default relative">
       <Card className="shadow-sm border-none">
         <CardContent className="p-4 space-y-0 text-left">
+          {lang === 'kn' && t.trustName && (
+            <p className="text-[18px] font-bold text-[#202124] text-center mb-2">{t.trustName}</p>
+          )}
           <p className="text-[15px] font-bold text-[#202124]">{t.headerBold}</p>
           <p className="text-[13px] text-[#202124]">{t.headerDesc}</p>
           <div className="pt-2 font-bold italic text-destructive text-[13px]">{t.requiredNote}</div>
@@ -596,12 +608,12 @@ export function LinguaForm() {
                       const options = selectedStream === 'Science' ? t.scienceCombinations : selectedStream === 'Commerce' ? t.commerceCombinations : t.artsCombinations;
                       const label = lang === 'en' 
                         ? (selectedStream === 'Science' ? t.scienceCombination : selectedStream === 'Commerce' ? t.commerceCombination : t.artsCombination)
-                        : (selectedStream === 'Science' ? t.scienceCombination : selectedStream === 'Commerce' ? t.commerceCombination : t.artsCombination);
+                        : (selectedStream === 'Science' ? 'ವಿಜ್ಞಾನ ವಿಭಾಗ' : selectedStream === 'Commerce' ? 'ವಾಣಿಜ್ಯ ವಿಭಾಗ' : 'ಕಲೆ ವಿಭಾಗ');
                       return (
                         <FormItem className="space-y-1">
                           <FormLabel className="text-[15px] font-bold">{label} <span className="text-destructive">*</span></FormLabel>
                           <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
-                            {options.map(c => <div key={c} className="flex items-center space-x-1.5"><RadioGroupItem value={c} id={c} className="h-4 w-4 cursor-pointer" /><Label htmlFor={c} className="text-[12px] cursor-pointer">{c}</Label></div>)}
+                            {options.map(c => <div key={c} className="flex items-center space-x-1.5"><RadioGroupItem value={c} id={c} className="h-4 w-4 cursor-pointer" /><Label htmlFor={c} className="text-[13px] cursor-pointer">{c}</Label></div>)}
                           </RadioGroup>
                         </FormItem>
                       );
