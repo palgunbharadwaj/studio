@@ -514,7 +514,7 @@ export function LinguaForm() {
               <FormField control={form.control} name="email" render={({ field }) => (
                 <FormItem className="space-y-1">
                   <FormLabel className="font-bold text-[16px]">{t.emailLabel} <span className="text-destructive">*</span></FormLabel>
-                  <FormControl><Input placeholder="example@email.com" className="h-9 bg-muted/20 text-[14px]" {...field} /></FormControl>
+                  <FormControl><Input placeholder="example@email.com" className="h-10 bg-muted/20 text-[14px]" {...field} /></FormControl>
                   <FormMessage className="text-[14px]" />
                 </FormItem>
               )} />
@@ -527,7 +527,7 @@ export function LinguaForm() {
               <FormField control={form.control} name="studentName" render={({ field }) => (
                 <FormItem className="space-y-1">
                   <FormLabel className="font-bold text-[16px]">{t.studentNameLabel} <span className="text-destructive">*</span></FormLabel>
-                  <FormControl><Input className="h-9 bg-muted/20 text-[14px]" {...field} /></FormControl>
+                  <FormControl><Input className="h-10 bg-muted/20 text-[14px]" {...field} /></FormControl>
                 </FormItem>
               )} />
               <FormField control={form.control} name="relationship" render={({ field }) => (
@@ -542,13 +542,13 @@ export function LinguaForm() {
               <FormField control={form.control} name="fatherName" render={({ field }) => (
                 <FormItem className="space-y-1">
                   <FormLabel className="font-bold text-[16px]">{t.fatherNameLabel} <span className="text-destructive">*</span></FormLabel>
-                  <FormControl><Input className="h-9 bg-muted/20 text-[14px]" {...field} /></FormControl>
+                  <FormControl><Input className="h-10 bg-muted/20 text-[14px]" {...field} /></FormControl>
                 </FormItem>
               )} />
               <FormField control={form.control} name="motherName" render={({ field }) => (
                 <FormItem className="space-y-1">
                   <FormLabel className="font-bold text-[16px]">{t.motherNameLabel} <span className="text-destructive">*</span></FormLabel>
-                  <FormControl><Input className="h-9 bg-muted/20 text-[14px]" {...field} /></FormControl>
+                  <FormControl><Input className="h-10 bg-muted/20 text-[14px]" {...field} /></FormControl>
                 </FormItem>
               )} />
             </CardContent>
@@ -624,7 +624,7 @@ export function LinguaForm() {
                     <FormField control={form.control} name="otherCourse" render={({ field }) => (
                       <FormItem className="space-y-1">
                         <FormLabel className="text-[16px] font-bold">{t.otherCourseLabel} <span className="text-destructive">*</span></FormLabel>
-                        <FormControl><Input className="h-9 bg-muted/20 text-[14px]" {...field} /></FormControl>
+                        <FormControl><Input className="h-10 bg-muted/20 text-[14px]" {...field} /></FormControl>
                       </FormItem>
                     )} />
                   )}
@@ -648,7 +648,7 @@ export function LinguaForm() {
                     <FormField control={form.control} name="otherCourse" render={({ field }) => (
                       <FormItem className="space-y-1">
                         <FormLabel className="text-[16px] font-bold">{t.otherCourseLabel} <span className="text-destructive">*</span></FormLabel>
-                        <FormControl><Input className="h-9 bg-muted/20 text-[14px]" {...field} /></FormControl>
+                        <FormControl><Input className="h-10 bg-muted/20 text-[14px]" {...field} /></FormControl>
                       </FormItem>
                     )} />
                   )}
@@ -667,7 +667,7 @@ export function LinguaForm() {
                     <FormField control={form.control} name="cgpa" render={({ field }) => (
                       <FormItem className="space-y-1">
                         <FormLabel className="text-[16px] font-bold">{t.cgpaLabel} <span className="text-destructive">*</span></FormLabel>
-                        <FormControl><Input type="number" step="0.01" className="h-9 bg-muted/20 text-[14px]" {...field} /></FormControl>
+                        <FormControl><Input type="number" step="0.01" className="h-10 bg-muted/20 text-[14px]" {...field} /></FormControl>
                         {eligibilityError && (
                           <Alert variant="destructive" className="py-1 px-2 mt-1 flex items-center gap-2 border-destructive/20 bg-destructive/5">
                             <AlertCircle className="h-4 w-4 shrink-0" />
@@ -682,7 +682,7 @@ export function LinguaForm() {
                     <FormField control={form.control} name="percentage" render={({ field }) => (
                       <FormItem className="space-y-1">
                         <FormLabel className="text-[16px] font-bold">{t.percentageLabel} <span className="text-destructive">*</span></FormLabel>
-                        <FormControl><Input type="number" step="0.01" className="h-9 bg-muted/20 text-[14px]" {...field} /></FormControl>
+                        <FormControl><Input type="number" step="0.01" className="h-10 bg-muted/20 text-[14px]" {...field} /></FormControl>
                         {eligibilityError && (
                           <Alert variant="destructive" className="py-1 px-2 mt-1 flex items-center gap-2 border-destructive/20 bg-destructive/5">
                             <AlertCircle className="h-4 w-4 shrink-0" />
@@ -700,7 +700,7 @@ export function LinguaForm() {
                   <FormField control={form.control} name="otherCourse" render={({ field }) => (
                     <FormItem className="space-y-1">
                       <FormLabel className="text-[16px] font-bold">{t.otherCourseLabel} <span className="text-destructive">*</span></FormLabel>
-                      <FormControl><Input className="h-9 bg-muted/20 text-[14px]" {...field} /></FormControl>
+                      <FormControl><Input className="h-10 bg-muted/20 text-[14px]" {...field} /></FormControl>
                     </FormItem>
                   )} />
 
@@ -718,7 +718,7 @@ export function LinguaForm() {
                     <FormField control={form.control} name="cgpa" render={({ field }) => (
                       <FormItem className="space-y-1">
                         <FormLabel className="text-[16px] font-bold">{t.cgpaLabel} <span className="text-destructive">*</span></FormLabel>
-                        <FormControl><Input type="number" step="0.01" className="h-9 bg-muted/20 text-[14px]" {...field} /></FormControl>
+                        <FormControl><Input type="number" step="0.01" className="h-10 bg-muted/20 text-[14px]" {...field} /></FormControl>
                         {eligibilityError && (
                           <Alert variant="destructive" className="py-1 px-2 mt-1 flex items-center gap-2 border-destructive/20 bg-destructive/5">
                             <AlertCircle className="h-4 w-4 shrink-0" />
@@ -736,19 +736,19 @@ export function LinguaForm() {
                   {((['SSLC', 'PUC'].includes(selectedCourse)) || (selectedCourse === 'Other' && scoreType === 'Percentage')) && (
                     <>
                       <FormField control={form.control} name="marksObtained" render={({ field }) => (
-                        <FormItem className="space-y-1"><FormLabel className="text-[16px] font-bold">{t.marksObtainedLabel} <span className="text-destructive">*</span></FormLabel><FormControl><Input type="number" className="h-9 bg-muted/20 text-[14px]" {...field} /></FormControl></FormItem>
+                        <FormItem className="space-y-1"><FormLabel className="text-[16px] font-bold">{t.marksObtainedLabel} <span className="text-destructive">*</span></FormLabel><FormControl><Input type="number" className="h-10 bg-muted/20 text-[14px]" {...field} /></FormControl></FormItem>
                       )} />
                       <FormField control={form.control} name="totalMarks" render={({ field }) => (
                         <FormItem className="space-y-1">
                           <FormLabel className="text-[16px] font-bold">{t.totalMarksLabel} <span className="text-destructive">*</span></FormLabel>
-                          <FormControl><Input type="number" className="h-9 bg-muted/20 text-[14px]" {...field} /></FormControl>
+                          <FormControl><Input type="number" className="h-10 bg-muted/20 text-[14px]" {...field} /></FormControl>
                           {totalMarksError && <p className="font-medium pt-1 text-destructive text-[14px]">{totalMarksError}</p>}
                         </FormItem>
                       )} />
                       <FormField control={form.control} name="percentage" render={({ field }) => (
                         <FormItem className="space-y-1">
                           <FormLabel className="text-[16px] font-bold">{t.percentageLabel}</FormLabel>
-                          <FormControl><Input readOnly className="h-9 bg-secondary/30 font-bold text-[14px]" {...field} /></FormControl>
+                          <FormControl><Input readOnly className="h-10 bg-secondary/30 font-bold text-[14px]" {...field} /></FormControl>
                           {eligibilityError && (
                             <Alert variant="destructive" className="py-1 px-2 mt-1 flex items-center gap-2 border-destructive/20 bg-destructive/5">
                               <AlertCircle className="h-4 w-4 shrink-0" />
@@ -782,11 +782,11 @@ export function LinguaForm() {
               <div className="space-y-2">
                 <div className="space-y-1">
                   <FormLabel className="text-[16px] font-bold">{t.photoLabel} <span className="text-destructive">*</span></FormLabel>
-                  <Input type="file" accept="image/*" className="h-9 text-[14px] file:text-[14px]" onChange={handlePhotoChange} />
+                  <Input type="file" accept="image/*" className="h-10 text-[14px] file:text-[14px]" onChange={handlePhotoChange} />
                 </div>
                 <div className="space-y-1">
                   <FormLabel className="text-[16px] font-bold">{t.marksCardLabel} <span className="text-destructive">*</span></FormLabel>
-                  <Input type="file" accept=".pdf" className="h-9 text-[14px] file:text-[14px]" onChange={handleMarksChange} />
+                  <Input type="file" accept=".pdf" className="h-10 text-[14px] file:text-[14px]" onChange={handleMarksChange} />
                 </div>
                 {fileError && <p className="text-destructive text-[14px] font-bold">{fileError}</p>}
               </div>
@@ -794,7 +794,7 @@ export function LinguaForm() {
           </Card>
 
           <div className="flex pt-1">
-            <Button type="submit" className="w-full h-10 font-bold text-[16px]" disabled={isSubmitting || !!eligibilityError || !!totalMarksError || !!fileError || !canSubmit()}>
+            <Button type="submit" className="w-full h-11 font-bold text-[16px]" disabled={isSubmitting || !!eligibilityError || !!totalMarksError || !!fileError || !canSubmit()}>
               {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> {t.processing}</> : <><Send className="mr-2 h-4 w-4" /> {t.submitButton}</>}
             </Button>
           </div>
