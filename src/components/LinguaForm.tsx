@@ -44,7 +44,6 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 export function LinguaForm() {
-  // Start with undefined so no language is selected by default
   const [lang, setLang] = useState<'kn' | 'en' | undefined>(undefined);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [result, setResult] = useState<SubmissionResult | null>(null);
@@ -67,12 +66,11 @@ export function LinguaForm() {
       totalMarks: '',
       cgpa: '',
       yearOfPassing: '',
-      scoreType: 'Percentage',
+      scoreType: undefined,
       otherCourse: '',
     },
   });
 
-  // Clear ALL form fields and file selections when language changes
   useEffect(() => {
     form.reset({
       email: '',
@@ -89,7 +87,7 @@ export function LinguaForm() {
       totalMarks: '',
       cgpa: '',
       yearOfPassing: '',
-      scoreType: 'Percentage',
+      scoreType: undefined,
       otherCourse: '',
       branch: undefined,
     });
@@ -110,7 +108,6 @@ export function LinguaForm() {
   const watchedCombination = useWatch({ control: form.control, name: 'combination' });
   const watchedBranch = useWatch({ control: form.control, name: 'branch' });
 
-  // Clear sub-fields when course changes within the same language
   useEffect(() => {
     if (selectedCourse) {
       form.setValue('board', undefined);
@@ -123,6 +120,7 @@ export function LinguaForm() {
       form.setValue('percentage', '');
       form.setValue('otherCourse', '');
       form.setValue('yearOfPassing', '');
+      form.setValue('scoreType', undefined);
     }
   }, [selectedCourse, form]);
 
@@ -549,8 +547,14 @@ export function LinguaForm() {
           <div className="space-y-2">
             <Label className="font-bold text-[#202124] text-[16px]">{t.langLabel} <span className="text-destructive">*</span></Label>
             <RadioGroup value={lang} onValueChange={(v) => setLang(v as 'en' | 'kn')} className="flex flex-col gap-1.5">
-              <div className="flex items-center space-x-2.5 py-0.5"><RadioGroupItem value="kn" id="lang-kn" className="h-4 w-4 cursor-pointer" /><Label htmlFor="lang-kn" className="font-normal text-[14px] cursor-pointer">ಕನ್ನಡ</Label></div>
-              <div className="flex items-center space-x-2.5 py-0.5"><RadioGroupItem value="en" id="lang-en" className="h-4 w-4 cursor-pointer" /><Label htmlFor="lang-en" className="font-normal text-[14px] cursor-pointer">English</Label></div>
+              <div className="flex items-center space-x-2.5 py-0.5">
+                <RadioGroupItem value="kn" id="lang-kn" className="h-4 w-4 cursor-pointer" />
+                <Label htmlFor="lang-kn" className="font-normal text-[14px] cursor-pointer">ಕನ್ನಡ</Label>
+              </div>
+              <div className="flex items-center space-x-2.5 py-0.5">
+                <RadioGroupItem value="en" id="lang-en" className="h-4 w-4 cursor-pointer" />
+                <Label htmlFor="lang-en" className="font-normal text-[14px] cursor-pointer">English</Label>
+              </div>
             </RadioGroup>
           </div>
         </CardContent>
