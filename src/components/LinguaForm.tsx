@@ -475,7 +475,7 @@ export function LinguaForm() {
             <div className="flex justify-center"><Loader2 className="w-12 h-12 text-primary animate-pulse" /></div>
             <h2 className="text-[16px] font-bold text-primary">{t.successTitle}</h2>
             <p className="text-[14px] text-muted-foreground">{result.message}</p>
-            <Button onClick={() => window.location.reload()} className="h-9 px-6 text-[14px] font-bold">Done</Button>
+            <Button onClick={() => window.location.reload()} className="h-10 px-8 text-[14px] font-bold">Done</Button>
           </CardContent>
         </Card>
       </div>
