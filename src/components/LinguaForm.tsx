@@ -18,7 +18,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { submitLinguaForm, SubmissionResult } from '@/app/actions/submit-form';
-import { Loader2, CheckCircle2, Send, User, GraduationCap, FileCheck, AlertCircle, Mail } from 'lucide-react';
+import { Loader2, Send, User, GraduationCap, FileCheck, AlertCircle } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
 const formSchema = z.object({
@@ -38,6 +38,7 @@ const formSchema = z.object({
   cgpa: z.string().optional(),
   otherCourse: z.string().optional(),
   branch: z.string().optional(),
+  scoreType: z.enum(['CGPA', 'Percentage']).optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -66,6 +67,7 @@ export function LinguaForm() {
       totalMarks: '',
       cgpa: '',
       yearOfPassing: '',
+      scoreType: 'CGPA',
     },
   });
 
@@ -77,6 +79,8 @@ export function LinguaForm() {
   const marksObtained = useWatch({ control: form.control, name: 'marksObtained' });
   const totalMarks = useWatch({ control: form.control, name: 'totalMarks' });
   const cgpaValue = useWatch({ control: form.control, name: 'cgpa' });
+  const scoreType = useWatch({ control: form.control, name: 'scoreType' });
+  const percentageValue = useWatch({ control: form.control, name: 'percentage' });
 
   useEffect(() => {
     const errors: {[key: string]: string | null} = {};
@@ -104,17 +108,7 @@ export function LinguaForm() {
     setEligibilityError(null);
     setTotalMarksError(null);
 
-    const checkNegative = (val: string | undefined) => val && parseFloat(val) < 0;
-    if (checkNegative(marksObtained) || checkNegative(totalMarks) || checkNegative(cgpaValue)) {
-      const errorMsg = lang === 'en' 
-        ? "Enter valid marks (must be positive)." 
-        : "ಸರಿಯಾದ ಅಂಕಗಳನ್ನು ನಮೂದಿಸಿ (ಶೂನ್ಯಕ್ಕಿಂತ ಹೆಚ್ಚಿರಬೇಕು).";
-      setEligibilityError(errorMsg);
-      form.setValue('percentage', '');
-      return;
-    }
-
-    if (['SSLC', 'PUC'].includes(selectedCourse || '')) {
+    if (['SSLC', 'PUC', 'Other'].includes(selectedCourse || '')) {
       if (marksObtained && totalMarks) {
         const marks = parseFloat(marksObtained);
         const total = parseFloat(totalMarks);
@@ -155,43 +149,37 @@ export function LinguaForm() {
               : `ಅರ್ಹತೆಗಾಗಿ ಕನಿಷ್ಠ ${minRequired}% ಅಂಕಗಳು ಅಗತ್ಯವಿದೆ.`;
             setEligibilityError(errorMsg);
           }
-        } else {
-          form.setValue('percentage', '');
         }
-      } else {
-        form.setValue('percentage', '');
       }
-    } else if (selectedCourse === 'Other') {
-        if (marksObtained && totalMarks) {
-          const marks = parseFloat(marksObtained);
-          const total = parseFloat(totalMarks);
-          if (!isNaN(marks) && !isNaN(total) && total > 0) {
-            if (marks > total) {
-              const errorMsg = lang === 'en' ? "Marks obtained cannot exceed total marks." : "ಗಳಿಸಿದ ಅಂಕಗಳು ಒಟ್ಟು ಅಂಕಗಳಿಗಿಂತ ಹೆಚ್ಚಿರಬಾರದು.";
-              setTotalMarksError(errorMsg);
-              form.setValue('percentage', '');
-            } else {
-              const roundedPercentage = ((marks / total) * 100).toFixed(2);
-              form.setValue('percentage', roundedPercentage);
-            }
-          }
-        }
     } else if (['Diploma', 'Degree', 'Engineering'].includes(selectedCourse || '')) {
-      if (cgpaValue) {
+      if (scoreType === 'CGPA' && cgpaValue) {
         const cgpa = parseFloat(cgpaValue);
         if (!isNaN(cgpa)) {
-          if (cgpa < 9.0) {
-            const errorMsg = lang === 'en' ? "Enter CGPA above 9" : "9 ಕ್ಕಿಂತ ಹೆಚ್ಚಿನ ಸಿಜಿಪಿಎ ನಮೂದಿಸಿ";
+          if (cgpa < 9.0 || cgpa > 10.0) {
+            const errorMsg = lang === 'en' 
+              ? "CGPA must be between 9.0 and 10.0." 
+              : "ಸಿಜಿಪಿಎ 9.0 ರಿಂದ 10.0 ರ ನಡುವೆ ಇರಬೇಕು.";
+            setEligibilityError(errorMsg);
+          }
+        }
+      } else if (scoreType === 'Percentage' && percentageValue) {
+        const p = parseFloat(percentageValue);
+        if (!isNaN(p)) {
+          if (p < 90.0 || p > 100.0) {
+            const errorMsg = lang === 'en' 
+              ? "Percentage must be between 90% and 100%." 
+              : "ಶೇಕಡಾ 90% ರಿಂದ 100% ರ ನಡುವೆ ಇರಬೇಕು.";
             setEligibilityError(errorMsg);
           }
         }
       }
     }
-  }, [marksObtained, totalMarks, cgpaValue, selectedCourse, lang, form]);
+  }, [marksObtained, totalMarks, cgpaValue, percentageValue, selectedCourse, lang, form, scoreType]);
 
   const translations = {
     en: {
-      header: "ಪತಿಭಾ ಪುರ ರ 2025-2026:\n2025 ಮತ್ತು 2026ರ ಸಾಲಿನ ಮಾರ್ಚಿ ಮತ್ತು ಏಪ್ರಿಲ್ ನಲ್ಲಿ ನಡೆದ ಪಿ.ಯು.ಸಿ ಪರೀಕ್ಷೆಯಲ್ಲಿ ಶೇ.85 ಕ್ಕಿಂತ ಹಾಗೂ ಎಸ್.ಎಸ್.ಎಲ್.ಸಿ/ಪದವಿ/ಉದ್ಯೋಗಾಧಾರಿತ ಶಿಕ್ಷಣದಲ್ಲಿ ರ‍್ಯಾಂಕ್‌ ಅಥವಾ ಶೇ.90 ಕ್ಕಿಂತ ಹೆಚ್ಚು ಅಂಕ ಪಡೆದ ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ದೇವಾಲಯದ ಮಟ್ಟದಲ್ಲಿ ಪುರಸ್ಕಾರ",
+      headerFirst: "ಪತಿಭಾ ಪುರ ರ 2025-2026:",
+      headerDesc: "2025 ಮತ್ತು 2026ರ ಸಾಲಿನ ಮಾರ್ಚಿ ಮತ್ತು ಏಪ್ರಿಲ್ ನಲ್ಲಿ ನಡೆದ ಪಿ.ಯು.ಸಿ ಪರೀಕ್ಷೆಯಲ್ಲಿ ಶೇ.85 ಕ್ಕಿಂತ ಹಾಗೂ ಎಸ್.ಎಸ್.ಎಲ್.ಸಿ/ಪದವಿ/ಉದ್ಯೋಗಾಧಾರಿತ ಶಿಕ್ಷಣದಲ್ಲಿ ರ‍್ಯಾಂಕ್‌ ಅಥವಾ ಶೇ.90 ಕ್ಕಿಂತ ಹೆಚ್ಚು ಅಂಕ ಪಡೆದ ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ದೇವಾಲಯದ ಮಟ್ಟದಲ್ಲಿ ಪುರಸ್ಕಾರ",
       langLabel: "Choose Language / ಭಾಷೆ ಆಯ್ಕೆಮಾಡಿ",
       personalDetailsHeader: "Personal Details",
       academicDetailsHeader: "Academic Details",
@@ -205,6 +193,7 @@ export function LinguaForm() {
       streamLabel: "Stream",
       combinationLabel: "Combination",
       branchLabel: "Course",
+      scoreTypeLabel: "Select Score Type",
       percentageLabel: "Percentage (%)",
       marksObtainedLabel: "Marks Obtained",
       totalMarksLabel: "Total Marks",
@@ -217,9 +206,7 @@ export function LinguaForm() {
       submitButton: "Submit",
       processing: "Processing...",
       successTitle: "Submission Received!",
-      successDesc: "Your registration has been submitted successfully and a confirmation email has been sent.",
       requiredNote: "* Indicates required question",
-      confMessage: "Confirmation message generated:",
       boards: ['State', 'CBSE', 'ICSE'],
       scienceCombinations: [
         'PCMB (Physics, Chemistry, Mathematics, Biology)',
@@ -258,7 +245,8 @@ export function LinguaForm() {
         'Civil (Civil Engineering)',
         'IP (Industrial Production Engineering)',
         'EIE (Electronics and Instrumentation Engineering)',
-        'ECE (Electronics & Computer Engineering)',
+        'ECS (Electronics & Computer Science Engineering)',
+        'CSBS (Computer Science and Business Systems)',
         'Mechatronics Engineering',
         'Automobile Engineering',
         'Aerospace Engineering',
@@ -267,8 +255,6 @@ export function LinguaForm() {
         'Data Science and Engineering',
         'AIDS (Artificial Intelligence and Data Science Engineering)',
         'Robotics and Automation Engineering',
-        'ECS (Electronics & Computer Science Engineering)',
-        'CSBS (Computer Science and Business Systems)',
         'Other'
       ],
       diplomaCourses: [
@@ -294,7 +280,8 @@ export function LinguaForm() {
       ]
     },
     kn: {
-      header: "ಪತಿಭಾ ಪುರ ರ 2025-2026:\n2025 ಮತ್ತು 2026ರ ಸಾಲಿನ ಮಾರ್ಚಿ ಮತ್ತು ಏಪ್ರಿಲ್ ನಲ್ಲಿ ನಡೆದ ಪಿ.ಯು.ಸಿ ಪರೀಕ್ಷೆಯಲ್ಲಿ ಶೇ.85 ಕ್ಕಿಂತ ಹಾಗೂ ಎಸ್.ಎಸ್.ಎಲ್.ಸಿ/ಪದವಿ/ಉದ್ಯೋಗಾಧಾರಿತ ಶಿಕ್ಷಣದಲ್ಲಿ ರ‍್ಯಾಂಕ್‌ ಅಥವಾ ಶೇ.90 ಕ್ಕಿಂತ ಹೆಚ್ಚು ಅಂಕ ಪಡೆದ ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ದೇವಾಲಯದ ಮಟ್ಟದಲ್ಲಿ ಪುರಸ್ಕಾರ",
+      headerFirst: "ಪತಿಭಾ ಪುರ ರ 2025-2026:",
+      headerDesc: "2025 ಮತ್ತು 2026ರ ಸಾಲಿನ ಮಾರ್ಚಿ ಮತ್ತು ಏಪ್ರಿಲ್ ನಲ್ಲಿ ನಡೆದ ಪಿ.ಯು.ಸಿ ಪರೀಕ್ಷೆಯಲ್ಲಿ ಶೇ.85 ಕ್ಕಿಂತ ಹಾಗೂ ಎಸ್.ಎಸ್.ಎಲ್.ಸಿ/ಪದವಿ/ಉದ್ಯೋಗಾಧಾರಿತ ಶಿಕ್ಷಣದಲ್ಲಿ ರ‍್ಯಾಂಕ್‌ ಅಥವಾ ಶೇ.90 ಕ್ಕಿಂತ ಹೆಚ್ಚು ಅಂಕ ಪಡೆದ ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ದೇವಾಲಯದ ಮಟ್ಟದಲ್ಲಿ ಪುರಸ್ಕಾರ",
       langLabel: "Choose Language / ಭಾಷೆ ಆಯ್ಕೆಮಾಡಿ",
       personalDetailsHeader: "ವೈಯಕ್ತಿಕ ವಿವರಗಳು",
       academicDetailsHeader: "ಶೈಕ್ಷಣಿಕ ವಿವರಗಳು",
@@ -308,6 +295,7 @@ export function LinguaForm() {
       streamLabel: "ವಿಭಾಗ",
       combinationLabel: "ವಿಭಾಗ",
       branchLabel: "ವಿಭಾಗ",
+      scoreTypeLabel: "ಅಂಕಗಳ ಪ್ರಕಾರವನ್ನು ಆರಿಸಿ",
       percentageLabel: "ಶೇಕಡಾ (%)",
       marksObtainedLabel: "ಗಳಿಸಿದ ಅಂಕಗಳು",
       totalMarksLabel: "ಒಟ್ಟು ಅಂಕಗಳು",
@@ -320,9 +308,7 @@ export function LinguaForm() {
       submitButton: "ಸಲ್ಲಿಸಿ",
       processing: "ಪ್ರಕ್ರಿಯೆಯಲ್ಲಿದೆ...",
       successTitle: "ಸಲ್ಲಿಸುವಿಕೆ ಸ್ವೀಕರಿಸಲಾಗಿದೆ!",
-      successDesc: "ನಿಮ್ಮ ನೋಂದಣಿಯನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಸಲ್ಲಿಸಲಾಗಿದೆ ಮತ್ತು ದೃಢೀಕರಣ ಇಮೇಲ್ ಕಳಿಸಲಾಗಿದೆ.",
       requiredNote: "* ಕಡ್ಡಾಯ ಪ್ರಶ್ನೆಯನ್ನು ಸೂಚಿಸುತ್ತದೆ",
-      confMessage: "ದೃಢೀಕರಣ ಸಂದೇಶ ರಚಿಸಲಾಗಿದೆ:",
       boards: ['ರಾಜ್ಯ (State)', 'ಸಿಬಿಎಸ್ ಇ (CBSE)', 'ಐಸಿಎಸ್ ಇ (ICSE)'],
       scienceCombinations: [
         'PCMB (ಭೌತಶಾಸ್ತ್ರ, ರಸಾಯನಶಾಸ್ತ್ರ, ಗಣಿತ, ಜೀವಶಾಸ್ತ್ರ)',
@@ -440,19 +426,7 @@ export function LinguaForm() {
   async function onSubmit(values: FormValues) {
     if (eligibilityError || totalMarksError || Object.keys(alphabetError).length > 0 || fileError) return;
     
-    if (!photoFile || !marksFile) {
-      alert(lang === 'en' ? "Please upload both student photo and marks card." : "ದಯವಿಟ್ಟು ವಿದ್ಯಾರ್ಥಿ ಫೋಟೋ ಮತ್ತು ಅಂಕಪಟ್ಟಿಯನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ.");
-      return;
-    }
-
-    if (!photoFile.type.startsWith('image/')) {
-      alert(lang === 'en' ? "Student photo must be an image." : "ವಿದ್ಯಾರ್ಥಿ ಫೋಟೋ ಚಿತ್ರದ ರೂಪದಲ್ಲಿರಬೇಕು.");
-      return;
-    }
-    if (marksFile.type !== 'application/pdf') {
-      alert(lang === 'en' ? "Marks card must be a PDF." : "ಅಂಕಪಟ್ಟಿ PDF ರೂಪದಲ್ಲಿರಬೇಕು.");
-      return;
-    }
+    if (!photoFile || !marksFile) return;
 
     setIsSubmitting(true);
     try {
@@ -480,47 +454,49 @@ export function LinguaForm() {
     
     if (v.course === 'SSLC' && (!v.board || !v.marksObtained || !v.totalMarks)) return false;
     if (v.course === 'PUC' && (!v.pucStream || !v.combination || !v.marksObtained || !v.totalMarks)) return false;
-    if (['Diploma', 'Degree', 'Engineering'].includes(v.course) && (!v.branch || !v.cgpa)) return false;
+    if (['Diploma', 'Degree', 'Engineering'].includes(v.course)) {
+        if (!v.branch || !v.scoreType) return false;
+        if (v.scoreType === 'CGPA' && !v.cgpa) return false;
+        if (v.scoreType === 'Percentage' && !v.percentage) return false;
+    }
     if (v.course === 'Other' && (!v.otherCourse || !v.marksObtained || !v.totalMarks)) return false;
     
     if (!photoFile || !marksFile) return false;
-    if (!photoFile.type.startsWith('image/')) return false;
-    if (marksFile.type !== 'application/pdf') return false;
-    
     return true;
   };
 
+  if (result?.success) {
+    return (
+      <div className="w-full max-w-xl mx-auto py-10 space-y-4">
+        <Card className="shadow-sm border-none">
+          <CardContent className="p-6 text-center space-y-4">
+            <div className="flex justify-center"><Loader2 className="w-12 h-12 text-primary animate-pulse" /></div>
+            <h2 className="text-[14px] font-bold text-primary">{t.successTitle}</h2>
+            <p className="text-[12px] text-muted-foreground">{result.message}</p>
+            <Button onClick={() => window.location.reload()} className="h-9 px-6 text-[12px] font-bold">Done</Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-2 w-full max-w-xl mx-auto pb-5 cursor-default relative">
-      <Card className="shadow-sm border-none cursor-default">
-        <CardContent className="p-4 space-y-1.5">
-          <div className="space-y-0.5">
-            <h1 className="tracking-tight text-[#202124] whitespace-pre-wrap">
-              {t.header.split('\n').map((line, i) => (
-                <span key={i} className={i === 0 ? "font-bold text-[14px]" : "text-[12px]"}>
-                  {line}
-                  {i < t.header.split('\n').length - 1 && <br />}
-                </span>
-              ))}
-            </h1>
-          </div>
-          <div className="pt-1 border-t mt-1 font-bold italic text-destructive text-[12px]">{t.requiredNote}</div>
+      <Card className="shadow-sm border-none">
+        <CardContent className="p-4 space-y-0 text-left">
+          <p className="text-[14px] font-bold text-[#202124]">{t.headerFirst}</p>
+          <p className="text-[12px] text-[#202124]">{t.headerDesc}</p>
+          <div className="pt-2 font-bold italic text-destructive text-[12px]">{t.requiredNote}</div>
         </CardContent>
       </Card>
 
-      <Card className="shadow-sm border-none cursor-default">
+      <Card className="shadow-sm border-none">
         <CardContent className="p-4">
           <div className="space-y-2">
             <Label className="font-bold text-[#202124] text-[14px]">{t.langLabel} <span className="text-destructive">*</span></Label>
             <RadioGroup value={lang} onValueChange={(v) => setLang(v as 'en' | 'kn')} className="flex flex-col gap-1.5">
-              <div className="flex items-center space-x-2.5 py-0.5 cursor-pointer" onClick={() => setLang('en')}>
-                <RadioGroupItem value="en" id="en" className="h-4 w-4 cursor-pointer" />
-                <Label htmlFor="en" className="cursor-pointer font-normal text-[12px]">English</Label>
-              </div>
-              <div className="flex items-center space-x-2.5 py-0.5 cursor-pointer" onClick={() => setLang('kn')}>
-                <RadioGroupItem value="kn" id="kn" className="h-4 w-4 cursor-pointer" />
-                <Label htmlFor="kn" className="cursor-pointer font-normal text-[12px]">ಕನ್ನಡ</Label>
-              </div>
+              <div className="flex items-center space-x-2.5 py-0.5"><RadioGroupItem value="en" id="en" className="h-4 w-4" /><Label htmlFor="en" className="font-normal text-[12px]">English</Label></div>
+              <div className="flex items-center space-x-2.5 py-0.5"><RadioGroupItem value="kn" id="kn" className="h-4 w-4" /><Label htmlFor="kn" className="font-normal text-[12px]">ಕನ್ನಡ</Label></div>
             </RadioGroup>
           </div>
         </CardContent>
@@ -528,59 +504,55 @@ export function LinguaForm() {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
-          <Card className="shadow-sm border-none cursor-default">
+          <Card className="shadow-sm border-none">
             <CardContent className="p-4">
               <FormField control={form.control} name="email" render={({ field }) => (
                 <FormItem className="space-y-1">
-                  <FormLabel className="font-bold text-[#202124] text-[14px]">{t.emailLabel} <span className="text-destructive">*</span></FormLabel>
-                  <FormControl><Input placeholder="example@email.com" className="h-9 bg-muted/20 rounded-sm cursor-text text-[12px]" {...field} /></FormControl>
+                  <FormLabel className="font-bold text-[14px]">{t.emailLabel} <span className="text-destructive">*</span></FormLabel>
+                  <FormControl><Input placeholder="example@email.com" className="h-9 bg-muted/20 text-[12px]" {...field} /></FormControl>
                   <FormMessage className="text-[12px]" />
                 </FormItem>
               )} />
             </CardContent>
           </Card>
 
-          <Card className="shadow-sm border-none cursor-default">
+          <Card className="shadow-sm border-none">
             <CardContent className="p-4 space-y-3">
               <div className="flex items-center gap-2 pb-1.5 border-b"><User className="w-4 h-4 text-primary" /><h2 className="font-bold text-[14px]">{t.personalDetailsHeader}</h2></div>
               <FormField control={form.control} name="studentName" render={({ field }) => (
                 <FormItem className="space-y-1">
                   <FormLabel className="font-bold text-[14px]">{t.studentNameLabel} <span className="text-destructive">*</span></FormLabel>
-                  <FormControl><Input placeholder={lang === 'en' ? "Enter student name" : "ವಿದ್ಯಾರ್ಥಿಯ ಹೆಸರನ್ನು ನಮೂದಿಸಿ"} className="h-9 bg-muted/20 cursor-text text-[12px]" {...field} /></FormControl>
+                  <FormControl><Input className="h-9 bg-muted/20 text-[12px]" {...field} /></FormControl>
                   {alphabetError.studentName && <p className="font-medium text-destructive text-[12px]">{alphabetError.studentName}</p>}
-                  <FormMessage className="text-[12px]" />
                 </FormItem>
               )} />
               <FormField control={form.control} name="relationship" render={({ field }) => (
                 <FormItem className="space-y-1">
                   <FormLabel className="font-bold text-[14px]">{t.relationshipLabel} <span className="text-destructive">*</span></FormLabel>
                   <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
-                    <div className="flex items-center space-x-1.5"><RadioGroupItem value="SO" id="so" className="h-4 w-4 cursor-pointer" /><Label htmlFor="so" className="cursor-pointer text-[12px] font-normal">{lang === 'en' ? 'S/O (Son of)' : 'S/O (ಮಗ)'}</Label></div>
-                    <div className="flex items-center space-x-1.5"><RadioGroupItem value="DO" id="do" className="h-4 w-4 cursor-pointer" /><Label htmlFor="do" className="cursor-pointer text-[12px] font-normal">{lang === 'en' ? 'D/O (Daughter of)' : 'D/O (ಮಗಳು)'}</Label></div>
+                    <div className="flex items-center space-x-1.5"><RadioGroupItem value="SO" id="so" className="h-4 w-4" /><Label htmlFor="so" className="text-[12px] font-normal">{lang === 'en' ? 'S/O (Son of)' : 'S/O (ಮಗ)'}</Label></div>
+                    <div className="flex items-center space-x-1.5"><RadioGroupItem value="DO" id="do" className="h-4 w-4" /><Label htmlFor="do" className="text-[12px] font-normal">{lang === 'en' ? 'D/O (Daughter of)' : 'D/O (ಮಗಳು)'}</Label></div>
                   </RadioGroup>
-                  <FormMessage className="text-[12px]" />
                 </FormItem>
               )} />
               <FormField control={form.control} name="fatherName" render={({ field }) => (
                 <FormItem className="space-y-1">
                   <FormLabel className="font-bold text-[14px]">{t.fatherNameLabel} <span className="text-destructive">*</span></FormLabel>
-                  <FormControl><Input className="h-9 bg-muted/20 cursor-text text-[12px]" {...field} /></FormControl>
+                  <FormControl><Input className="h-9 bg-muted/20 text-[12px]" {...field} /></FormControl>
                   {alphabetError.fatherName && <p className="font-medium text-destructive text-[12px]">{alphabetError.fatherName}</p>}
-                  <FormMessage className="text-[12px]" />
                 </FormItem>
               )} />
               <FormField control={form.control} name="motherName" render={({ field }) => (
                 <FormItem className="space-y-1">
                   <FormLabel className="font-bold text-[14px]">{t.motherNameLabel} <span className="text-destructive">*</span></FormLabel>
-                  <FormControl><Input className="h-9 bg-muted/20 cursor-text text-[12px]" {...field} /></FormControl>
+                  <FormControl><Input className="h-9 bg-muted/20 text-[12px]" {...field} /></FormControl>
                   {alphabetError.motherName && <p className="font-medium text-destructive text-[12px]">{alphabetError.motherName}</p>}
-                  <FormMessage className="text-[12px]" />
                 </FormItem>
               )} />
             </CardContent>
           </Card>
 
-          <Card className="shadow-sm border-none cursor-default">
+          <Card className="shadow-sm border-none">
             <CardContent className="p-4 space-y-3">
               <div className="flex items-center gap-2 pb-1.5 border-b"><GraduationCap className="w-4 h-4 text-primary" /><h2 className="font-bold text-[14px]">{t.academicDetailsHeader}</h2></div>
               <FormField control={form.control} name="course" render={({ field }) => (
@@ -589,8 +561,8 @@ export function LinguaForm() {
                   <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
                     {['SSLC', 'PUC', 'Diploma', 'Degree', 'Engineering', 'Other'].map((c) => (
                       <div key={c} className="flex items-center space-x-1.5">
-                        <RadioGroupItem value={c} id={c} className="h-4 w-4 cursor-pointer" />
-                        <Label htmlFor={c} className="cursor-pointer text-[12px] font-normal">
+                        <RadioGroupItem value={c} id={c} className="h-4 w-4" />
+                        <Label htmlFor={c} className="text-[12px] font-normal">
                           {c === 'PUC' ? (lang === 'en' ? '2nd PUC' : 'ದ್ವಿತೀಯ ಪಿ.ಯು.ಸಿ') : 
                            c === 'SSLC' ? (lang === 'en' ? 'SSLC / 10th' : 'ಎಸ್.ಎಸ್.ಎಲ್.ಸಿ. / 10 ನೇ ತರಗತಿ') : 
                            c === 'Diploma' ? (lang === 'en' ? 'Diploma' : 'ಡಿಪ್ಲೊಮಾ') :
@@ -601,7 +573,6 @@ export function LinguaForm() {
                       </div>
                     ))}
                   </RadioGroup>
-                  <FormMessage className="text-[12px]" />
                 </FormItem>
               )} />
 
@@ -610,7 +581,7 @@ export function LinguaForm() {
                   <FormItem className="space-y-1">
                     <FormLabel className="text-[14px] font-bold">{t.boardLabel} <span className="text-destructive">*</span></FormLabel>
                     <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
-                      {t.boards.map(b => <div key={b} className="flex items-center space-x-1.5"><RadioGroupItem value={b} id={b} className="h-4 w-4 cursor-pointer" /><Label htmlFor={b} className="text-[12px] cursor-pointer font-normal">{b}</Label></div>)}
+                      {t.boards.map(b => <div key={b} className="flex items-center space-x-1.5"><RadioGroupItem value={b} id={b} className="h-4 w-4" /><Label htmlFor={b} className="text-[12px] font-normal">{b}</Label></div>)}
                     </RadioGroup>
                   </FormItem>
                 )} />
@@ -624,8 +595,8 @@ export function LinguaForm() {
                       <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
                         {['Science', 'Commerce', 'Arts'].map(s => (
                           <div key={s} className="flex items-center space-x-1.5">
-                            <RadioGroupItem value={s} id={s} className="h-4 w-4 cursor-pointer" />
-                            <Label htmlFor={s} className="text-[12px] cursor-pointer font-normal">{lang === 'en' ? (s === 'Science' ? 'Science' : s === 'Commerce' ? 'Commerce' : 'Arts') : (s === 'Science' ? 'ವಿಜ್ಞಾನ' : s === 'Commerce' ? 'ವಾಣಿಜ್ಯ' : 'ಕಲೆ')}</Label>
+                            <RadioGroupItem value={s} id={s} className="h-4 w-4" />
+                            <Label htmlFor={s} className="text-[12px] font-normal">{lang === 'en' ? s : (s === 'Science' ? 'ವಿಜ್ಞಾನ' : s === 'Commerce' ? 'ವಾಣಿಜ್ಯ' : 'ಕಲೆ')}</Label>
                           </div>
                         ))}
                       </RadioGroup>
@@ -638,7 +609,7 @@ export function LinguaForm() {
                         <FormItem className="space-y-1">
                           <FormLabel className="text-[14px] font-bold">{t.combinationLabel} <span className="text-destructive">*</span></FormLabel>
                           <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
-                            {options.map(c => <div key={c} className="flex items-center space-x-1.5"><RadioGroupItem value={c} id={c} className="h-4 w-4 cursor-pointer" /><Label htmlFor={c} className="text-[12px] cursor-pointer font-normal">{c}</Label></div>)}
+                            {options.map(c => <div key={c} className="flex items-center space-x-1.5"><RadioGroupItem value={c} id={c} className="h-4 w-4" /><Label htmlFor={c} className="text-[12px] font-normal">{c}</Label></div>)}
                           </RadioGroup>
                         </FormItem>
                       );
@@ -647,42 +618,82 @@ export function LinguaForm() {
                 </div>
               )}
 
-              {(['Diploma', 'Degree', 'Engineering'].includes(selectedCourse || '')) && (
-                <FormField control={form.control} name="branch" render={({ field }) => (
-                  <FormItem className="space-y-1">
-                    <FormLabel className="text-[14px] font-bold">{t.branchLabel} <span className="text-destructive">*</span></FormLabel>
-                    <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
-                      {(selectedCourse === 'Engineering' ? t.engineeringCourses : selectedCourse === 'Diploma' ? t.diplomaCourses : t.degreeCourses).map(c => (
-                        <div key={c} className="flex items-center space-x-1.5"><RadioGroupItem value={c} id={c} className="h-4 w-4 cursor-pointer" /><Label htmlFor={c} className="text-[12px] cursor-pointer font-normal">{c}</Label></div>
-                      ))}
-                    </RadioGroup>
-                  </FormItem>
-                )} />
+              {['Diploma', 'Degree', 'Engineering'].includes(selectedCourse || '') && (
+                <div className="space-y-3">
+                  <FormField control={form.control} name="branch" render={({ field }) => (
+                    <FormItem className="space-y-1">
+                      <FormLabel className="text-[14px] font-bold">{t.branchLabel} <span className="text-destructive">*</span></FormLabel>
+                      <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
+                        {(selectedCourse === 'Engineering' ? t.engineeringCourses : selectedCourse === 'Diploma' ? t.diplomaCourses : t.degreeCourses).map(c => (
+                          <div key={c} className="flex items-center space-x-1.5"><RadioGroupItem value={c} id={c} className="h-4 w-4" /><Label htmlFor={c} className="text-[12px] font-normal">{c}</Label></div>
+                        ))}
+                      </RadioGroup>
+                    </FormItem>
+                  )} />
+
+                  <FormField control={form.control} name="scoreType" render={({ field }) => (
+                    <FormItem className="space-y-1">
+                      <FormLabel className="text-[14px] font-bold">{t.scoreTypeLabel} <span className="text-destructive">*</span></FormLabel>
+                      <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-row gap-4">
+                        <div className="flex items-center space-x-1.5"><RadioGroupItem value="CGPA" id="score-cgpa" /><Label htmlFor="score-cgpa" className="text-[12px]">{t.cgpaLabel}</Label></div>
+                        <div className="flex items-center space-x-1.5"><RadioGroupItem value="Percentage" id="score-pct" /><Label htmlFor="score-pct" className="text-[12px]">{t.percentageLabel}</Label></div>
+                      </RadioGroup>
+                    </FormItem>
+                  )} />
+
+                  {scoreType === 'CGPA' && (
+                    <FormField control={form.control} name="cgpa" render={({ field }) => (
+                      <FormItem className="space-y-1">
+                        <FormLabel className="text-[14px] font-bold">{t.cgpaLabel} <span className="text-destructive">*</span></FormLabel>
+                        <FormControl><Input type="number" step="0.01" className="h-9 bg-muted/20 text-[12px]" {...field} /></FormControl>
+                        {eligibilityError && (
+                          <Alert variant="destructive" className="py-1 px-2 mt-1 flex items-center gap-2 border-destructive/20 bg-destructive/5">
+                            <AlertCircle className="h-4 w-4 shrink-0" />
+                            <AlertDescription className="leading-tight font-medium text-[12px]">{eligibilityError}</AlertDescription>
+                          </Alert>
+                        )}
+                      </FormItem>
+                    )} />
+                  )}
+
+                  {scoreType === 'Percentage' && (
+                    <FormField control={form.control} name="percentage" render={({ field }) => (
+                      <FormItem className="space-y-1">
+                        <FormLabel className="text-[14px] font-bold">{t.percentageLabel} <span className="text-destructive">*</span></FormLabel>
+                        <FormControl><Input type="number" step="0.01" className="h-9 bg-muted/20 text-[12px]" {...field} /></FormControl>
+                        {eligibilityError && (
+                          <Alert variant="destructive" className="py-1 px-2 mt-1 flex items-center gap-2 border-destructive/20 bg-destructive/5">
+                            <AlertCircle className="h-4 w-4 shrink-0" />
+                            <AlertDescription className="leading-tight font-medium text-[12px]">{eligibilityError}</AlertDescription>
+                          </Alert>
+                        )}
+                      </FormItem>
+                    )} />
+                  )}
+                </div>
               )}
 
               {selectedCourse === 'Other' && (
                 <FormField control={form.control} name="otherCourse" render={({ field }) => (
                   <FormItem className="space-y-1">
                     <FormLabel className="text-[14px] font-bold">{t.otherCourseLabel} <span className="text-destructive">*</span></FormLabel>
-                    <FormControl><Input className="h-9 bg-muted/20 cursor-text text-[12px]" {...field} /></FormControl>
+                    <FormControl><Input className="h-9 bg-muted/20 text-[12px]" {...field} /></FormControl>
                   </FormItem>
                 )} />
               )}
 
               {selectedCourse && (
                 <div className="space-y-2 pt-1">
-                  {(['SSLC', 'PUC', 'Other'].includes(selectedCourse)) && (
+                  {['SSLC', 'PUC', 'Other'].includes(selectedCourse) && (
                     <>
                       <FormField control={form.control} name="marksObtained" render={({ field }) => (
-                        <FormItem className="space-y-1"><FormLabel className="text-[14px] font-bold">{t.marksObtainedLabel} <span className="text-destructive">*</span></FormLabel><FormControl><Input type="number" className="h-9 bg-muted/20 cursor-text text-[12px]" {...field} /></FormControl></FormItem>
+                        <FormItem className="space-y-1"><FormLabel className="text-[14px] font-bold">{t.marksObtainedLabel} <span className="text-destructive">*</span></FormLabel><FormControl><Input type="number" className="h-9 bg-muted/20 text-[12px]" {...field} /></FormControl></FormItem>
                       )} />
                       <FormField control={form.control} name="totalMarks" render={({ field }) => (
                         <FormItem className="space-y-1">
                           <FormLabel className="text-[14px] font-bold">{t.totalMarksLabel} <span className="text-destructive">*</span></FormLabel>
-                          <FormControl><Input type="number" className="h-9 bg-muted/20 cursor-text text-[12px]" {...field} /></FormControl>
-                          {totalMarksError && (
-                            <p className="font-medium pt-1 text-destructive text-[12px]">{totalMarksError}</p>
-                          )}
+                          <FormControl><Input type="number" className="h-9 bg-muted/20 text-[12px]" {...field} /></FormControl>
+                          {totalMarksError && <p className="font-medium pt-1 text-destructive text-[12px]">{totalMarksError}</p>}
                         </FormItem>
                       )} />
                       <FormField control={form.control} name="percentage" render={({ field }) => (
@@ -692,31 +703,12 @@ export function LinguaForm() {
                           {eligibilityError && (
                             <Alert variant="destructive" className="py-1 px-2 mt-1 flex items-center gap-2 border-destructive/20 bg-destructive/5">
                               <AlertCircle className="h-4 w-4 shrink-0" />
-                              <AlertDescription className="leading-tight font-medium text-[12px]">
-                                {eligibilityError}
-                              </AlertDescription>
+                              <AlertDescription className="leading-tight font-medium text-[12px]">{eligibilityError}</AlertDescription>
                             </Alert>
                           )}
                         </FormItem>
                       )} />
                     </>
-                  )}
-
-                  {(['Diploma', 'Degree', 'Engineering'].includes(selectedCourse)) && (
-                    <FormField control={form.control} name="cgpa" render={({ field }) => (
-                      <FormItem className="space-y-1">
-                        <FormLabel className="text-[14px] font-bold">{t.cgpaLabel} <span className="text-destructive">*</span></FormLabel>
-                        <FormControl><Input type="number" step="0.01" className="h-9 bg-muted/20 cursor-text text-[12px]" {...field} /></FormControl>
-                        {eligibilityError && (
-                          <Alert variant="destructive" className="py-1 px-2 mt-1 flex items-center gap-2 border-destructive/20 bg-destructive/5">
-                            <AlertCircle className="h-4 w-4 shrink-0" />
-                            <AlertDescription className="leading-tight font-medium text-[12px]">
-                                {eligibilityError}
-                            </AlertDescription>
-                          </Alert>
-                        )}
-                      </FormItem>
-                    )} />
                   )}
 
                   <FormField control={form.control} name="yearOfPassing" render={({ field }) => {
@@ -725,9 +717,8 @@ export function LinguaForm() {
                       <FormItem className="space-y-1">
                         <FormLabel className="text-[14px] font-bold">{t.yearPassingLabel} <span className="text-destructive">*</span></FormLabel>
                         <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
-                          <div className="flex items-center space-x-1.5"><RadioGroupItem value={year} id={year} className="h-4 w-4 cursor-pointer" /><Label htmlFor={year} className="text-[12px] cursor-pointer font-normal">{year}</Label></div>
+                          <div className="flex items-center space-x-1.5"><RadioGroupItem value={year} id={year} className="h-4 w-4" /><Label htmlFor={year} className="text-[12px] font-normal">{year}</Label></div>
                         </RadioGroup>
-                        <FormMessage className="text-[12px]" />
                       </FormItem>
                     );
                   }} />
@@ -736,17 +727,17 @@ export function LinguaForm() {
             </CardContent>
           </Card>
 
-          <Card className="shadow-sm border-none cursor-default">
+          <Card className="shadow-sm border-none">
             <CardContent className="p-4 space-y-3">
               <div className="flex items-center gap-2 pb-1.5 border-b"><FileCheck className="w-4 h-4 text-primary" /><h2 className="font-bold text-[14px]">{t.docsTitle}</h2></div>
               <div className="space-y-2">
                 <div className="space-y-1">
-                  <FormLabel className="text-[14px] font-bold cursor-pointer">{t.photoLabel} <span className="text-destructive">*</span></FormLabel>
-                  <Input type="file" accept="image/jpeg,image/jpg,image/png" className="h-9 cursor-pointer file:cursor-pointer text-[12px]" onChange={handlePhotoChange} />
+                  <FormLabel className="text-[14px] font-bold">{t.photoLabel} <span className="text-destructive">*</span></FormLabel>
+                  <Input type="file" accept="image/*" className="h-9 text-[12px] file:text-[12px]" onChange={handlePhotoChange} />
                 </div>
                 <div className="space-y-1">
-                  <FormLabel className="text-[14px] font-bold cursor-pointer">{t.marksCardLabel} <span className="text-destructive">*</span></FormLabel>
-                  <Input type="file" accept=".pdf" className="h-9 cursor-pointer file:cursor-pointer text-[12px]" onChange={handleMarksChange} />
+                  <FormLabel className="text-[14px] font-bold">{t.marksCardLabel} <span className="text-destructive">*</span></FormLabel>
+                  <Input type="file" accept=".pdf" className="h-9 text-[12px] file:text-[12px]" onChange={handleMarksChange} />
                 </div>
                 {fileError && <p className="text-destructive text-[12px] font-bold">{fileError}</p>}
               </div>
@@ -754,7 +745,7 @@ export function LinguaForm() {
           </Card>
 
           <div className="flex pt-1">
-            <Button type="submit" className="w-full h-9 font-bold rounded-md shadow cursor-pointer text-[14px]" disabled={isSubmitting || !!eligibilityError || !!totalMarksError || Object.keys(alphabetError).length > 0 || !!fileError || !canSubmit()}>
+            <Button type="submit" className="w-full h-9 font-bold text-[14px]" disabled={isSubmitting || !!eligibilityError || !!totalMarksError || Object.keys(alphabetError).length > 0 || !!fileError || !canSubmit()}>
               {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> {t.processing}</> : <><Send className="mr-2 h-4 w-4" /> {t.submitButton}</>}
             </Button>
           </div>
