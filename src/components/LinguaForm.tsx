@@ -787,12 +787,12 @@ export function LinguaForm() {
               <div className="flex items-center gap-2 pb-1.5 border-b"><FileCheck className="w-4 h-4 text-primary" /><h2 className="font-bold text-[16px]">{t.docsTitle}</h2></div>
               <div className="space-y-2">
                 <div className="space-y-1">
-                  <Label htmlFor="photo-upload" className="text-[16px] font-bold cursor-pointer">{t.photoLabel} <span className="text-destructive">*</span></Label>
-                  <Input id="photo-upload" type="file" accept="image/*" className="h-10 text-[14px] file:text-[14px] cursor-pointer" onChange={handlePhotoChange} />
+                  <Label htmlFor="photo-upload" className="text-[16px] font-bold">{t.photoLabel} <span className="text-destructive">*</span></Label>
+                  <Input id="photo-upload" type="file" accept="image/*" className="h-10 text-[14px] file:text-[14px] file:cursor-pointer" onChange={handlePhotoChange} />
                 </div>
                 <div className="space-y-1">
-                  <Label htmlFor="marks-upload" className="text-[16px] font-bold cursor-pointer">{t.marksCardLabel} <span className="text-destructive">*</span></Label>
-                  <Input id="marks-upload" type="file" accept=".pdf" className="h-10 text-[14px] file:text-[14px] cursor-pointer" onChange={handleMarksChange} />
+                  <Label htmlFor="marks-upload" className="text-[16px] font-bold">{t.marksCardLabel} <span className="text-destructive">*</span></Label>
+                  <Input id="marks-upload" type="file" accept=".pdf" className="h-10 text-[14px] file:text-[14px] file:cursor-pointer" onChange={handleMarksChange} />
                 </div>
                 {fileError && <p className="text-destructive text-[14px] font-bold">{fileError}</p>}
               </div>
