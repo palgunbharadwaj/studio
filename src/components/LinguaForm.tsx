@@ -76,8 +76,13 @@ export function LinguaForm() {
     form.reset({
       email: '',
       studentName: '',
+      relationship: undefined,
       fatherName: '',
       motherName: '',
+      course: undefined,
+      board: undefined,
+      pucStream: undefined,
+      combination: undefined,
       percentage: '',
       marksObtained: '',
       totalMarks: '',
@@ -85,6 +90,7 @@ export function LinguaForm() {
       yearOfPassing: '',
       scoreType: 'Percentage',
       otherCourse: '',
+      branch: undefined,
     });
     setPhotoFile(null);
     setMarksFile(null);
@@ -807,12 +813,12 @@ export function LinguaForm() {
               <div className="flex items-center gap-2 pb-1.5 border-b"><FileCheck className="w-4 h-4 text-primary" /><h2 className="font-bold text-[16px]">{t.docsTitle}</h2></div>
               <div className="space-y-2">
                 <div className="space-y-1">
-                  <Label htmlFor="photo-upload" className="text-[16px] font-bold">{t.photoLabel} <span className="text-destructive">*</span></Label>
-                  <Input id="photo-upload" type="file" accept="image/*" className="h-10 text-[14px] file:mr-4 file:py-1 file:px-3 file:rounded-md file:border file:border-solid file:border-border file:bg-secondary/50 file:text-[14px] file:font-medium file:cursor-pointer cursor-default bg-muted/5 border-border/40" onChange={handlePhotoChange} />
+                  <Label htmlFor="photo-upload" className="text-[16px] font-bold cursor-default">{t.photoLabel} <span className="text-destructive">*</span></Label>
+                  <Input id="photo-upload" type="file" accept="image/*" className="h-10 text-[14px] file:mr-4 file:py-1 file:px-3 file:rounded-md file:border file:border-solid file:border-border file:bg-secondary/50 file:text-[14px] file:font-medium cursor-pointer bg-muted/5 border-border/40" onChange={handlePhotoChange} />
                 </div>
                 <div className="space-y-1">
-                  <Label htmlFor="marks-upload" className="text-[16px] font-bold">{t.marksCardLabel} <span className="text-destructive">*</span></Label>
-                  <Input id="marks-upload" type="file" accept=".pdf" className="h-10 text-[14px] file:mr-4 file:py-1 file:px-3 file:rounded-md file:border file:border-solid file:border-border file:bg-secondary/50 file:text-[14px] file:font-medium file:cursor-pointer cursor-default bg-muted/5 border-border/40" onChange={handleMarksChange} />
+                  <Label htmlFor="marks-upload" className="text-[16px] font-bold cursor-default">{t.marksCardLabel} <span className="text-destructive">*</span></Label>
+                  <Input id="marks-upload" type="file" accept=".pdf" className="h-10 text-[14px] file:mr-4 file:py-1 file:px-3 file:rounded-md file:border file:border-solid file:border-border file:bg-secondary/50 file:text-[14px] file:font-medium cursor-pointer bg-muted/5 border-border/40" onChange={handleMarksChange} />
                 </div>
                 {fileError && <p className="text-destructive text-[14px] font-bold">{fileError}</p>}
               </div>
