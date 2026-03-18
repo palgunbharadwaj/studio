@@ -111,7 +111,7 @@ export function LinguaForm() {
   const watchedCombination = useWatch({ control: form.control, name: 'combination' });
   const watchedBranch = useWatch({ control: form.control, name: 'branch' });
 
-  // Granular Reset: Clear sub-fields when main course switches
+  // Granular Reset: Clear academic sub-fields when main course switches, preserving personal info
   useEffect(() => {
     if (selectedCourse) {
       form.setValue('board', undefined);
