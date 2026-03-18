@@ -788,11 +788,11 @@ export function LinguaForm() {
               <div className="space-y-2">
                 <div className="space-y-1">
                   <Label htmlFor="photo-upload" className="text-[16px] font-bold">{t.photoLabel} <span className="text-destructive">*</span></Label>
-                  <Input id="photo-upload" type="file" accept="image/*" className="h-10 text-[14px] file:text-[14px] file:cursor-pointer" onChange={handlePhotoChange} />
+                  <Input id="photo-upload" type="file" accept="image/*" className="h-10 text-[14px] file:text-[14px] cursor-pointer bg-muted/5 border-border/40" onChange={handlePhotoChange} />
                 </div>
                 <div className="space-y-1">
                   <Label htmlFor="marks-upload" className="text-[16px] font-bold">{t.marksCardLabel} <span className="text-destructive">*</span></Label>
-                  <Input id="marks-upload" type="file" accept=".pdf" className="h-10 text-[14px] file:text-[14px] file:cursor-pointer" onChange={handleMarksChange} />
+                  <Input id="marks-upload" type="file" accept=".pdf" className="h-10 text-[14px] file:text-[14px] cursor-pointer bg-muted/5 border-border/40" onChange={handleMarksChange} />
                 </div>
                 {fileError && <p className="text-destructive text-[14px] font-bold">{fileError}</p>}
               </div>
