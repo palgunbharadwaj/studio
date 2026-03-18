@@ -34,7 +34,7 @@ const formSchema = z.object({
   percentage: z.string().optional(),
   marksObtained: z.string().optional(),
   totalMarks: z.string().optional(),
-  yearOfPassing: z.string().min(1),
+  yearOfPassing: z.string().min(1, { message: "Year of passing is required." }),
   cgpa: z.string().optional(),
   otherCourse: z.string().optional(),
   branch: z.string().optional(),
@@ -83,6 +83,7 @@ export function LinguaForm() {
   const watchedCombination = useWatch({ control: form.control, name: 'combination' });
   const watchedBranch = useWatch({ control: form.control, name: 'branch' });
 
+  // 1. Language Switch Reset: Full Reset
   useEffect(() => {
     form.reset({
       email: '',
@@ -111,8 +112,10 @@ export function LinguaForm() {
     setResult(null);
   }, [lang, form]);
 
+  // 2. Academic Switch Reset: Reset academic sub-fields and documents
   useEffect(() => {
     if (selectedCourse) {
+      // Clear all academic details below the course selection
       form.setValue('board', undefined);
       form.setValue('pucStream', undefined);
       form.setValue('combination', undefined);
@@ -123,16 +126,19 @@ export function LinguaForm() {
       form.setValue('percentage', '');
       form.setValue('otherCourse', '');
       form.setValue('scoreType', undefined);
+      form.setValue('yearOfPassing', '');
       
-      const defaultYear = selectedCourse === 'SSLC' ? '2024-2025' : '2025-2026';
-      form.setValue('yearOfPassing', defaultYear);
-      
+      // Clear document section
       setPhotoFile(null);
       setMarksFile(null);
+      setEligibilityError(null);
+      setTotalMarksError(null);
+      setFileError(null);
       setResult(null);
     }
   }, [selectedCourse, form]);
 
+  // 3. PUC Stream Reset
   useEffect(() => {
     if (selectedStream && selectedCourse === 'PUC') {
       form.setValue('combination', undefined);
@@ -145,6 +151,7 @@ export function LinguaForm() {
     }
   }, [selectedStream, selectedCourse, form]);
 
+  // 4. Score Type Switch Reset
   useEffect(() => {
     if (scoreType) {
       form.setValue('marksObtained', '');
@@ -156,6 +163,7 @@ export function LinguaForm() {
     }
   }, [scoreType, form]);
 
+  // Calculation and Eligibility Logic
   useEffect(() => {
     setEligibilityError(null);
     setTotalMarksError(null);
@@ -659,13 +667,21 @@ export function LinguaForm() {
                   )}
 
                   <FormField control={form.control} name="yearOfPassing" render={({ field }) => {
-                    const yearLabel = selectedCourse === 'SSLC' ? '2024-2025' : '2025-2026';
+                    const year1 = '2024-2025';
+                    const year2 = '2025-2026';
+                    const options = selectedCourse === 'SSLC' ? [year1] : [year2];
                     return (
                       <FormItem className="space-y-1">
                         <FormLabel className="text-[16px] font-bold">{t.yearPassingLabel} <span className="text-destructive">*</span></FormLabel>
                         <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
-                          <div className="flex items-center space-x-1.5"><RadioGroupItem value={yearLabel} id={`year-${yearLabel}-${lang}`} className="h-4 w-4 cursor-pointer" /><Label htmlFor={`year-${yearLabel}-${lang}`} className="text-[14px] font-normal cursor-pointer">{yearLabel}</Label></div>
+                          {options.map(y => (
+                            <div key={y} className="flex items-center space-x-1.5">
+                              <RadioGroupItem value={y} id={`year-${y}-${lang}`} className="h-4 w-4 cursor-pointer" />
+                              <Label htmlFor={`year-${y}-${lang}`} className="text-[14px] font-normal cursor-pointer">{y}</Label>
+                            </div>
+                          ))}
                         </RadioGroup>
+                        <FormMessage className="text-[14px]" />
                       </FormItem>
                     );
                   }} />
