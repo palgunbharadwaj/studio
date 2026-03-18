@@ -67,6 +67,7 @@ export function LinguaForm() {
       cgpa: '',
       yearOfPassing: '',
       scoreType: 'CGPA',
+      otherCourse: '',
     },
   });
 
@@ -77,6 +78,8 @@ export function LinguaForm() {
   const cgpaValue = useWatch({ control: form.control, name: 'cgpa' });
   const scoreType = useWatch({ control: form.control, name: 'scoreType' });
   const percentageValue = useWatch({ control: form.control, name: 'percentage' });
+  const watchedCombination = useWatch({ control: form.control, name: 'combination' });
+  const watchedBranch = useWatch({ control: form.control, name: 'branch' });
 
   useEffect(() => {
     setEligibilityError(null);
@@ -433,9 +436,13 @@ export function LinguaForm() {
     if (!basicFields) return false;
     
     if (v.course === 'SSLC' && (!v.board || !v.marksObtained || !v.totalMarks)) return false;
-    if (v.course === 'PUC' && (!v.pucStream || !v.combination || !v.marksObtained || !v.totalMarks)) return false;
+    if (v.course === 'PUC') {
+      if (!v.pucStream || !v.combination || !v.marksObtained || !v.totalMarks) return false;
+      if ((v.combination === 'Other' || v.combination === 'ಇತರೆ') && !v.otherCourse) return false;
+    }
     if (['Diploma', 'Degree', 'Engineering'].includes(v.course)) {
         if (!v.branch || !v.scoreType) return false;
+        if ((v.branch === 'Other' || v.branch === 'ಇತರೆ') && !v.otherCourse) return false;
         if (v.scoreType === 'CGPA' && !v.cgpa) return false;
         if (v.scoreType === 'Percentage' && !v.percentage) return false;
     }
@@ -588,11 +595,19 @@ export function LinguaForm() {
                         <FormItem className="space-y-1">
                           <FormLabel className="text-[15px] font-bold">{label} <span className="text-destructive">*</span></FormLabel>
                           <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
-                            {options.map(c => <div key={c} className="flex items-center space-x-1.5"><RadioGroupItem value={c} id={c} className="h-4 w-4 cursor-pointer" /><Label htmlFor={c} className="text-[13px] cursor-pointer">{c}</Label></div>)}
+                            {options.map(c => <div key={c} className="flex items-center space-x-1.5"><RadioGroupItem value={c} id={c} className="h-4 w-4 cursor-pointer" /><Label htmlFor={c} className="text-[12px] cursor-pointer">{c}</Label></div>)}
                           </RadioGroup>
                         </FormItem>
                       );
                     }} />
+                  )}
+                  { (watchedCombination === 'Other' || watchedCombination === 'ಇತರೆ') && (
+                    <FormField control={form.control} name="otherCourse" render={({ field }) => (
+                      <FormItem className="space-y-1">
+                        <FormLabel className="text-[15px] font-bold">{t.otherCourseLabel} <span className="text-destructive">*</span></FormLabel>
+                        <FormControl><Input className="h-9 bg-muted/20 text-[13px]" {...field} /></FormControl>
+                      </FormItem>
+                    )} />
                   )}
                 </div>
               )}
@@ -609,6 +624,15 @@ export function LinguaForm() {
                       </RadioGroup>
                     </FormItem>
                   )} />
+
+                  { (watchedBranch === 'Other' || watchedBranch === 'ಇತರೆ') && (
+                    <FormField control={form.control} name="otherCourse" render={({ field }) => (
+                      <FormItem className="space-y-1">
+                        <FormLabel className="text-[15px] font-bold">{t.otherCourseLabel} <span className="text-destructive">*</span></FormLabel>
+                        <FormControl><Input className="h-9 bg-muted/20 text-[13px]" {...field} /></FormControl>
+                      </FormItem>
+                    )} />
+                  )}
 
                   <FormField control={form.control} name="scoreType" render={({ field }) => (
                     <FormItem className="space-y-1">
