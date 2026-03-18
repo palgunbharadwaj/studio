@@ -84,7 +84,7 @@ export function LinguaForm() {
   const watchedCombination = useWatch({ control: form.control, name: 'combination' });
   const watchedBranch = useWatch({ control: form.control, name: 'branch' });
 
-  // 1. Language Switch: Reset WHOLE form + documents
+  // 1. Language Switch: Full Reset (Everything cleared)
   useEffect(() => {
     form.reset({
       email: '',
@@ -112,7 +112,7 @@ export function LinguaForm() {
     setFileError(null);
   }, [lang, form]);
 
-  // 2. Academic Switch (Course): Reset Academic Fields + Documents, Preserve Personal
+  // 2. Academic Switch (Course): Partial Reset (Only Academic fields + Documents cleared)
   useEffect(() => {
     if (selectedCourse) {
       form.setValue('board', undefined);
