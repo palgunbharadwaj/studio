@@ -44,6 +44,7 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 export function LinguaForm() {
+  // Start with undefined so no language is selected by default
   const [lang, setLang] = useState<'kn' | 'en' | undefined>(undefined);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [result, setResult] = useState<SubmissionResult | null>(null);
@@ -71,7 +72,7 @@ export function LinguaForm() {
     },
   });
 
-  // Clear form fields when language changes
+  // Clear ALL form fields and file selections when language changes
   useEffect(() => {
     form.reset({
       email: '',
@@ -556,7 +557,7 @@ export function LinguaForm() {
       </Card>
 
       {lang && (
-        <Form {...form}>
+        <Form {...form} key={lang}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
             <Card className="shadow-sm border-none">
               <CardContent className="p-4">
