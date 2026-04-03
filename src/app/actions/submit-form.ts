@@ -17,11 +17,14 @@ export type SubmissionResult = {
 export async function submitLinguaForm(data: any): Promise<SubmissionResult> {
   const { firestore } = initializeFirebase();
   
+  // Extract large files for chunking
+  const { photoBase64, marksCardBase64, ...formData } = data;
+
   // Firestore does not accept 'undefined' values. Sanitize data before submission.
   const cleanData: Record<string, any> = {};
-  Object.keys(data).forEach((key) => {
-    if (data[key] !== undefined) {
-      cleanData[key] = data[key];
+  Object.keys(formData).forEach((key) => {
+    if (formData[key] !== undefined) {
+      cleanData[key] = formData[key];
     }
   });
 
@@ -30,22 +33,53 @@ export async function submitLinguaForm(data: any): Promise<SubmissionResult> {
     : "ದಿನಾಂಕ:23/04/2026 ರಂದು ಎಲ್ಲಾ ಮಕ್ಕಳಿಗೂ ಪುರಸ್ಕರಿಸಲಾಗುವುದು. ಹಾಗಾಗಿ ಸಂಬಂಧಪಟ್ಟ ಮಕ್ಕಳು ಹಾಗೂ ಕುಟುಂಬ ಕಡ್ಡಾಯವಾಗಿ ಭಗವಂತನ ಕೈಂಕರ್ಯಕ್ಕೆ ಹಾಜರಾಗುವುದು.";
 
   try {
-    const docRef = collection(firestore, 'registrations');
+    const parentRef = collection(firestore, 'registrations');
     
-    // Initiate write. We sanitize data to prevent the "Unsupported field value: undefined" error.
-    addDoc(docRef, {
+    console.log('Attempting Firestore write for student data...');
+    
+    // 1. Save the main student document (without the large files)
+    const docResponse = await addDoc(parentRef, {
       ...cleanData,
+      hasPhoto: !!photoBase64,
+      hasMarksCard: !!marksCardBase64,
       createdAt: serverTimestamp(),
-    }).catch(async (serverError) => {
-      const permissionError = new FirestorePermissionError({
-        path: 'registrations',
-        operation: 'create',
-        requestResourceData: cleanData,
-      });
-      errorEmitter.emit('permission-error', permissionError);
     });
 
-    // Background tasks (AI/Email) are decoupled to ensure the success UI is not blocked
+    const studentId = docResponse.id;
+    console.log('Main document SUCCESS! Student ID:', studentId);
+
+    // 2. Helper function to chunk and save files
+    const saveChunks = async (base64: string, type: 'photo' | 'marksCard') => {
+      if (!base64) return;
+      
+      const CHUNK_SIZE = 900 * 1024; // 900KB (Safe under the 1MB Firestore limit)
+      const chunkCount = Math.ceil(base64.length / CHUNK_SIZE);
+      const chunksCollection = collection(firestore, 'file_chunks');
+      
+      console.log(`Splitting ${type} (${base64.length} chars) into ${chunkCount} chunks...`);
+      
+      for (let i = 0; i < chunkCount; i++) {
+        const start = i * CHUNK_SIZE;
+        const end = Math.min(start + CHUNK_SIZE, base64.length);
+        const chunkData = base64.substring(start, end);
+        
+        await addDoc(chunksCollection, {
+          studentId,
+          type,
+          index: i,
+          totalChunks: chunkCount,
+          data: chunkData,
+          createdAt: serverTimestamp(),
+        });
+      }
+      console.log(`${type} chunks saved successfully!`);
+    };
+
+    // 3. Save chunks for both files in the background (or sequential if preferred for safety)
+    await saveChunks(photoBase64, 'photo');
+    await saveChunks(marksCardBase64, 'marksCard');
+
+    // Background tasks (AI/Email) are handled after the critical DB writes
     try {
       const submissionDetails = `
         Course: ${cleanData.course}

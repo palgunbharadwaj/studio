@@ -30,6 +30,9 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  turbopack: {
+    root: 'D:/Kulgana Pattabhisheka 2025/Form',
+  },
 };
 
 export default nextConfig;

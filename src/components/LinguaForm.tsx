@@ -82,6 +82,7 @@ export function LinguaForm() {
   const percentageValue = useWatch({ control: form.control, name: 'percentage' });
   const watchedCombination = useWatch({ control: form.control, name: 'combination' });
   const watchedBranch = useWatch({ control: form.control, name: 'branch' });
+  const selectedBoard = useWatch({ control: form.control, name: 'board' });
 
   // 1. Language Switch Reset: Full Reset of everything
   useEffect(() => {
@@ -173,17 +174,33 @@ export function LinguaForm() {
         const total = parseFloat(totalMarks);
         
         if (!isNaN(marks) && !isNaN(total) && total > 0) {
-          if (selectedCourse === 'SSLC' && totalMarks !== '625') {
-            const errorMsg = lang === 'en' ? "Total marks for SSLC must be 625." : "ಎಸ್.ಎಸ್.ಎಲ್.ಸಿ.ಗೆ ಒಟ್ಟು ಅಂಕಗಳು 625 ಆಗಿರಬೇಕು.";
-            setTotalMarksError(errorMsg);
-            form.setValue('percentage', '');
-            return;
+          // Validation based on Board and Course
+          const isState = selectedBoard?.includes('State') || selectedBoard?.includes('ರಾಜ್ಯ');
+          const isCBSE = selectedBoard?.includes('CBSE') || selectedBoard?.includes('ಸಿಬಿಎಸ್ ಇ');
+          const isICSE = selectedBoard?.includes('ICSE') || selectedBoard?.includes('ಐಸಿಎಸ್ ಇ');
+
+          if (selectedCourse === 'SSLC') {
+            const expectedTotal = isState ? 625 : (isCBSE || isICSE) ? 500 : null;
+            if (expectedTotal && total !== expectedTotal) {
+              const errorMsg = lang === 'en' 
+                ? `Total marks for SSLC (${isState ? 'State' : isCBSE ? 'CBSE' : 'ICSE'}) must be ${expectedTotal}.` 
+                : `ಎಸ್.ಎಸ್.ಎಲ್.ಸಿ. (${isState ? 'ರಾಜ್ಯ' : isCBSE ? 'ಸಿಬಿಎಸ್ ಇ' : 'ಐಸಿಎಸ್ ಇ'}) ಗೆ ಒಟ್ಟು ಅಂಕಗಳು ${expectedTotal} ಆಗಿರಬೇಕು.`;
+              setTotalMarksError(errorMsg);
+              form.setValue('percentage', '');
+              return;
+            }
           }
-          if (selectedCourse === 'PUC' && totalMarks !== '600') {
-            const errorMsg = lang === 'en' ? "Total marks for 2nd PUC must be 600." : "ದ್ವಿತೀಯ ಪಿ.ಯು.ಸಿ.ಗೆ ಒಟ್ಟು ಅಂಕಗಳು 600 ಆಗಿರಬೇಕು.";
-            setTotalMarksError(errorMsg);
-            form.setValue('percentage', '');
-            return;
+          
+          if (selectedCourse === 'PUC') {
+            const expectedTotal = isState ? 600 : isCBSE ? 500 : isICSE ? 400 : null;
+            if (expectedTotal && total !== expectedTotal) {
+              const errorMsg = lang === 'en' 
+                ? `Total marks for 2nd PUC (${isState ? 'State' : isCBSE ? 'CBSE' : 'ICSE'}) must be ${expectedTotal}.` 
+                : `ದ್ವಿತೀಯ ಪಿ.ಯು.ಸಿ. (${isState ? 'ರಾಜ್ಯ' : isCBSE ? 'ಸಿಬಿಎಸ್ ಇ' : 'ಐಸಿಎಸ್ ಇ'}) ಗೆ ಒಟ್ಟು ಅಂಕಗಳು ${expectedTotal} ಆಗಿರಬೇಕು.`;
+              setTotalMarksError(errorMsg);
+              form.setValue('percentage', '');
+              return;
+            }
           }
 
           if (marks > total) {
@@ -387,7 +404,7 @@ export function LinguaForm() {
     
     if (v.course === 'SSLC' && (!v.board || !v.marksObtained || !v.totalMarks)) return false;
     if (v.course === 'PUC') {
-      if (!v.pucStream || !v.combination || !v.marksObtained || !v.totalMarks) return false;
+      if (!v.board || !v.pucStream || !v.combination || !v.marksObtained || !v.totalMarks) return false;
       if ((v.combination === 'Other' || v.combination === 'ಇತರೆ') && !v.otherCourse) return false;
     }
     if (['Diploma', 'Degree', 'Engineering'].includes(v.course)) {
@@ -524,6 +541,14 @@ export function LinguaForm() {
 
               {selectedCourse === 'PUC' && (
                 <div className="space-y-3 pt-1">
+                  <FormField control={form.control} name="board" render={({ field }) => (
+                    <FormItem className="space-y-1">
+                      <FormLabel className="text-[16px] font-bold">{t.boardLabel} <span className="text-destructive">*</span></FormLabel>
+                      <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
+                        {t.boards.map(b => <div key={b} className="flex items-center space-x-1.5"><RadioGroupItem value={b} id={`puc-board-${b}-${lang}`} className="h-4 w-4 cursor-pointer" /><Label htmlFor={`puc-board-${b}-${lang}`} className="text-[14px] font-normal cursor-pointer">{b}</Label></div>)}
+                      </RadioGroup>
+                    </FormItem>
+                  )} />
                   <FormField control={form.control} name="pucStream" render={({ field }) => (
                     <FormItem className="space-y-1">
                       <FormLabel className="text-[16px] font-bold">{t.streamLabel} <span className="text-destructive">*</span></FormLabel>
