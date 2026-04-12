@@ -37,60 +37,71 @@ export default function AdminExportPage() {
     }
   };
 
+  const downloadBlob = (content: string, filename: string) => {
+    const BOM = '\uFEFF';
+    const blob = new Blob([BOM + content], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', filename);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const formatCSVRow = (columns: string[]) => {
+    return columns.map(col => `"${(col || '').toString().replace(/"/g, '""')}"`).join(',');
+  };
+
   const handleDownloadCSV = () => {
     if (registrations.length === 0) return;
 
-    // Headers for the CSV
     const headers = [
-      'Submission Date',
-      'Student Name',
-      'Email',
-      'Father Name',
-      'Mother Name',
-      'Relationship',
-      'Course',
-      'Year of Passing',
-      'Board',
-      'Stream',
-      'Combination',
-      'Marks Obtained',
-      'Total Marks',
-      'Percentage',
-      'CGPA',
-      'File ID (Student ID)'
+      'Submission Date', 'Student Name', 'Email', 'Father Name', 'Mother Name', 'Relationship',
+      'Course', 'Year of Passing', 'Board', 'Stream', 'Combination', 'Marks Obtained',
+      'Total Marks', 'Percentage', 'CGPA', 'File ID (Student ID)'
     ];
 
     const csvRows = registrations.map(reg => {
       const date = reg.createdAt?.toDate ? reg.createdAt.toDate().toLocaleString() : 'N/A';
-      return [
-        `"${date}"`,
-        `"${reg.studentName || ''}"`,
-        `"${reg.email || ''}"`,
-        `"${reg.fatherName || ''}"`,
-        `"${reg.motherName || ''}"`,
-        `"${reg.relationship || ''}"`,
-        `"${reg.course || ''}"`,
-        `"${reg.yearOfPassing || ''}"`,
-        `"${reg.board || ''}"`,
-        `"${reg.pucStream || ''}"`,
-        `"${reg.combination || ''}"`,
-        `"${reg.marksObtained || ''}"`,
-        `"${reg.totalMarks || ''}"`,
-        `"${reg.percentage || ''}"`,
-        `"${reg.cgpa || ''}"`,
-        `"${reg.id}"`
-      ].join(',');
+      return formatCSVRow([
+        date, reg.studentName, reg.email, reg.fatherName, reg.motherName, reg.relationship,
+        reg.course, reg.yearOfPassing, reg.board, reg.pucStream, reg.combination, reg.marksObtained,
+        reg.totalMarks, reg.percentage, reg.cgpa, reg.id
+      ]);
     });
 
     const csvContent = [headers.join(','), ...csvRows].join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', `registrations_export_${new Date().toISOString().split('T')[0]}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    downloadBlob(csvContent, `registrations_all_${new Date().toISOString().split('T')[0]}.csv`);
+  };
+
+  const handleCategorizedExport = (courseType: string) => {
+    const filtered = registrations.filter(r => r.course === courseType);
+    if (filtered.length === 0) return;
+
+    let headers: string[] = [];
+    let rowMapper: (reg: any) => string[] = () => [];
+
+    const commonHeaders = ['Student Name', 'Father Name', 'Mother Name', 'S/O or D/O', 'Email'];
+    const getCommonData = (reg: any) => [reg.studentName, reg.fatherName, reg.motherName, reg.relationship, reg.email];
+
+    if (courseType === 'SSLC') {
+      headers = [...commonHeaders, 'Board', 'Marks Obtained', 'Total Marks', 'Percentage'];
+      rowMapper = (reg) => [...getCommonData(reg), reg.board, reg.marksObtained, reg.totalMarks, reg.percentage];
+    } else if (courseType === 'PUC') {
+      headers = [...commonHeaders, 'Board', 'Stream', 'Combination', 'Marks Obtained', 'Total Marks', 'Percentage'];
+      rowMapper = (reg) => [...getCommonData(reg), reg.board, reg.pucStream, reg.combination, reg.marksObtained, reg.totalMarks, reg.percentage];
+    } else if (['Diploma', 'Degree', 'Engineering'].includes(courseType)) {
+      headers = [...commonHeaders, 'Course', 'Branch', 'Score (CGPA/%)'];
+      rowMapper = (reg) => [...getCommonData(reg), reg.course, reg.branch, reg.cgpa || reg.percentage];
+    } else {
+      headers = [...commonHeaders, 'Course Description', 'Score'];
+      rowMapper = (reg) => [...getCommonData(reg), reg.otherCourse || reg.course, reg.cgpa || reg.percentage];
+    }
+
+    const csvRows = filtered.map(reg => formatCSVRow(rowMapper(reg)));
+    const csvContent = [headers.join(','), ...csvRows].join('\n');
+    downloadBlob(csvContent, `registrations_${courseType.toLowerCase()}_${new Date().toISOString().split('T')[0]}.csv`);
   };
 
   const handleViewFile = async (studentId: string, type: 'photo' | 'marksCard', studentName: string) => {
@@ -140,10 +151,77 @@ export default function AdminExportPage() {
             <h1 className="text-2xl font-bold text-slate-900">Admin Dashboard: Pratibha Puraskar 2025</h1>
             <p className="text-slate-500">Secret URL: /admin-2025-p-puraskar-export</p>
           </div>
-          <Button onClick={handleDownloadCSV} className="font-bold gap-2">
-            <Download className="w-4 h-4" /> Export All to Excel (CSV)
+          <Button onClick={handleDownloadCSV} variant="default" className="font-bold gap-2 bg-slate-900 hover:bg-slate-800">
+            <Download className="w-4 h-4" /> Export All Data
           </Button>
         </div>
+
+        <Card className="border-none shadow-sm bg-white">
+          <CardHeader>
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Download className="w-5 h-5 text-primary" />
+              Download Categorized Reports (Relevant Columns Only)
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-6 pt-0">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+              <Button 
+                variant="outline" 
+                className="flex-1 font-semibold border-orange-200 hover:bg-orange-50 text-orange-700 h-16 flex-col gap-1"
+                onClick={() => handleCategorizedExport('SSLC')}
+                disabled={!registrations.some(r => r.course === 'SSLC')}
+              >
+                <div className="text-xs uppercase opacity-70">Category</div>
+                SSLC
+              </Button>
+              <Button 
+                variant="outline" 
+                className="flex-1 font-semibold border-blue-200 hover:bg-blue-50 text-blue-700 h-16 flex-col gap-1"
+                onClick={() => handleCategorizedExport('PUC')}
+                disabled={!registrations.some(r => r.course === 'PUC')}
+              >
+                <div className="text-xs uppercase opacity-70">Category</div>
+                2nd PUC
+              </Button>
+              <Button 
+                variant="outline" 
+                className="flex-1 font-semibold border-green-200 hover:bg-green-50 text-green-700 h-16 flex-col gap-1"
+                onClick={() => handleCategorizedExport('Diploma')}
+                disabled={!registrations.some(r => r.course === 'Diploma')}
+              >
+                <div className="text-xs uppercase opacity-70">Category</div>
+                Diploma
+              </Button>
+              <Button 
+                variant="outline" 
+                className="flex-1 font-semibold border-purple-200 hover:bg-purple-50 text-purple-700 h-16 flex-col gap-1"
+                onClick={() => handleCategorizedExport('Degree')}
+                disabled={!registrations.some(r => r.course === 'Degree')}
+              >
+                <div className="text-xs uppercase opacity-70">Category</div>
+                Degree
+              </Button>
+              <Button 
+                variant="outline" 
+                className="flex-1 font-semibold border-cyan-200 hover:bg-cyan-50 text-cyan-700 h-16 flex-col gap-1"
+                onClick={() => handleCategorizedExport('Engineering')}
+                disabled={!registrations.some(r => r.course === 'Engineering')}
+              >
+                <div className="text-xs uppercase opacity-70">Category</div>
+                Engineering
+              </Button>
+              <Button 
+                variant="outline" 
+                className="flex-1 font-semibold border-slate-200 hover:bg-slate-50 text-slate-700 h-16 flex-col gap-1"
+                onClick={() => handleCategorizedExport('Other')}
+                disabled={!registrations.some(r => r.course === 'Other')}
+              >
+                <div className="text-xs uppercase opacity-70">Category</div>
+                Other
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
 
         <Card className="border-none shadow-sm">
           <CardHeader className="bg-white border-b rounded-t-lg">
@@ -177,8 +255,8 @@ export default function AdminExportPage() {
                         <TableCell className="font-bold text-primary">
                           {reg.percentage ? `${reg.percentage}%` : reg.cgpa}
                         </TableCell>
-                        <TableCell className="text-slate-500 text-xs">
-                          {reg.createdAt?.toDate ? reg.createdAt.toDate().toLocaleDateString() : 'N/A'}
+                        <TableCell className="text-slate-500 text-xs text-nowrap">
+                          {reg.createdAt?.toDate ? reg.createdAt.toDate().toLocaleString() : 'N/A'}
                         </TableCell>
                         <TableCell className="text-right">
                           <div className="flex justify-end gap-2">
