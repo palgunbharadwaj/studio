@@ -14,6 +14,9 @@ export default function AdminExportPage() {
   const [registrations, setRegistrations] = useState<any[]>([]);
   const [viewingFile, setViewingFile] = useState<{ studentId: string, type: 'photo' | 'marksCard', name: string } | null>(null);
   const [isAssembling, setIsAssembling] = useState(false);
+  const [courseFilter, setCourseFilter] = useState<string>('All');
+
+  const displayData = registrations.filter(r => courseFilter === 'All' || r.course === courseFilter);
 
   useEffect(() => {
     fetchRegistrations();
@@ -157,63 +160,82 @@ export default function AdminExportPage() {
         </div>
 
         <Card className="border-none shadow-sm bg-white">
-          <CardHeader>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-lg flex items-center gap-2">
               <Download className="w-5 h-5 text-primary" />
-              Download Categorized Reports (Relevant Columns Only)
+              Category Filters & Reports
             </CardTitle>
+            {courseFilter !== 'All' && (
+              <div className="flex gap-2">
+                <Button 
+                  variant="default" 
+                  size="sm"
+                  className="bg-green-600 hover:bg-green-700 font-bold gap-2"
+                  onClick={() => handleCategorizedExport(courseFilter)}
+                >
+                  <Download className="w-4 h-4" /> Download {courseFilter} Report
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => setCourseFilter('All')}
+                >
+                  Show All
+                </Button>
+              </div>
+            )}
           </CardHeader>
           <CardContent className="p-6 pt-0">
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
               <Button 
-                variant="outline" 
-                className="flex-1 font-semibold border-orange-200 hover:bg-orange-50 text-orange-700 h-16 flex-col gap-1"
-                onClick={() => handleCategorizedExport('SSLC')}
+                variant={courseFilter === 'SSLC' ? 'default' : 'outline'}
+                className={`flex-1 font-semibold h-16 flex-col gap-1 ${courseFilter === 'SSLC' ? 'bg-orange-600' : 'border-orange-200 text-orange-700 hover:bg-orange-50'}`}
+                onClick={() => setCourseFilter(courseFilter === 'SSLC' ? 'All' : 'SSLC')}
                 disabled={!registrations.some(r => r.course === 'SSLC')}
               >
                 <div className="text-xs uppercase opacity-70">Category</div>
                 SSLC
               </Button>
               <Button 
-                variant="outline" 
-                className="flex-1 font-semibold border-blue-200 hover:bg-blue-50 text-blue-700 h-16 flex-col gap-1"
-                onClick={() => handleCategorizedExport('PUC')}
+                variant={courseFilter === 'PUC' ? 'default' : 'outline'}
+                className={`flex-1 font-semibold h-16 flex-col gap-1 ${courseFilter === 'PUC' ? 'bg-blue-600' : 'border-blue-200 text-blue-700 hover:bg-blue-50'}`}
+                onClick={() => setCourseFilter(courseFilter === 'PUC' ? 'All' : 'PUC')}
                 disabled={!registrations.some(r => r.course === 'PUC')}
               >
                 <div className="text-xs uppercase opacity-70">Category</div>
                 2nd PUC
               </Button>
               <Button 
-                variant="outline" 
-                className="flex-1 font-semibold border-green-200 hover:bg-green-50 text-green-700 h-16 flex-col gap-1"
-                onClick={() => handleCategorizedExport('Diploma')}
+                variant={courseFilter === 'Diploma' ? 'default' : 'outline'}
+                className={`flex-1 font-semibold h-16 flex-col gap-1 ${courseFilter === 'Diploma' ? 'bg-green-600' : 'border-green-200 text-green-700 hover:bg-green-50'}`}
+                onClick={() => setCourseFilter(courseFilter === 'Diploma' ? 'All' : 'Diploma')}
                 disabled={!registrations.some(r => r.course === 'Diploma')}
               >
                 <div className="text-xs uppercase opacity-70">Category</div>
                 Diploma
               </Button>
               <Button 
-                variant="outline" 
-                className="flex-1 font-semibold border-purple-200 hover:bg-purple-50 text-purple-700 h-16 flex-col gap-1"
-                onClick={() => handleCategorizedExport('Degree')}
+                variant={courseFilter === 'Degree' ? 'default' : 'outline'}
+                className={`flex-1 font-semibold h-16 flex-col gap-1 ${courseFilter === 'Degree' ? 'bg-purple-600' : 'border-purple-200 text-purple-700 hover:bg-purple-50'}`}
+                onClick={() => setCourseFilter(courseFilter === 'Degree' ? 'All' : 'Degree')}
                 disabled={!registrations.some(r => r.course === 'Degree')}
               >
                 <div className="text-xs uppercase opacity-70">Category</div>
                 Degree
               </Button>
               <Button 
-                variant="outline" 
-                className="flex-1 font-semibold border-cyan-200 hover:bg-cyan-50 text-cyan-700 h-16 flex-col gap-1"
-                onClick={() => handleCategorizedExport('Engineering')}
+                variant={courseFilter === 'Engineering' ? 'default' : 'outline'}
+                className={`flex-1 font-semibold h-16 flex-col gap-1 ${courseFilter === 'Engineering' ? 'bg-cyan-600' : 'border-cyan-200 text-cyan-700 hover:bg-cyan-50'}`}
+                onClick={() => setCourseFilter(courseFilter === 'Engineering' ? 'All' : 'Engineering')}
                 disabled={!registrations.some(r => r.course === 'Engineering')}
               >
                 <div className="text-xs uppercase opacity-70">Category</div>
                 Engineering
               </Button>
               <Button 
-                variant="outline" 
-                className="flex-1 font-semibold border-slate-200 hover:bg-slate-50 text-slate-700 h-16 flex-col gap-1"
-                onClick={() => handleCategorizedExport('Other')}
+                variant={courseFilter === 'Other' ? 'default' : 'outline'}
+                className={`flex-1 font-semibold h-16 flex-col gap-1 ${courseFilter === 'Other' ? 'bg-slate-600' : 'border-slate-200 text-slate-700 hover:bg-slate-50'}`}
+                onClick={() => setCourseFilter(courseFilter === 'Other' ? 'All' : 'Other')}
                 disabled={!registrations.some(r => r.course === 'Other')}
               >
                 <div className="text-xs uppercase opacity-70">Category</div>
@@ -227,7 +249,7 @@ export default function AdminExportPage() {
           <CardHeader className="bg-white border-b rounded-t-lg">
             <CardTitle className="text-lg flex items-center gap-2">
               <FileText className="w-5 h-5 text-primary" /> 
-              Recent Submissions ({registrations.length})
+              {courseFilter === 'All' ? 'Recent Submissions' : `${courseFilter} Submissions`} ({displayData.length})
             </CardTitle>
           </CardHeader>
           <CardContent className="p-0">
@@ -243,12 +265,12 @@ export default function AdminExportPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {registrations.length === 0 ? (
+                  {displayData.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={5} className="text-center py-8 text-slate-500">No submissions found.</TableCell>
+                      <TableCell colSpan={5} className="text-center py-8 text-slate-500">No {courseFilter !== 'All' ? courseFilter : ''} submissions found.</TableCell>
                     </TableRow>
                   ) : (
-                    registrations.map((reg) => (
+                    displayData.map((reg) => (
                       <TableRow key={reg.id} className="hover:bg-slate-50/50 bg-white">
                         <TableCell className="font-medium text-slate-900">{reg.studentName}</TableCell>
                         <TableCell>{reg.course}</TableCell>
