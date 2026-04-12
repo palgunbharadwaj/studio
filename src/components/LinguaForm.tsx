@@ -397,8 +397,10 @@ export function LinguaForm() {
     }
   }
 
+  const watchedValues = form.watch();
+
   const canSubmit = () => {
-    const v = form.getValues();
+    const v = watchedValues;
     const basicFields = v.studentName && v.email && v.relationship && v.fatherName && v.motherName && v.course && v.yearOfPassing;
     if (!basicFields) return false;
     
@@ -407,7 +409,7 @@ export function LinguaForm() {
       if (!v.board || !v.pucStream || !v.combination || !v.marksObtained || !v.totalMarks) return false;
       if ((v.combination === 'Other' || v.combination === 'ಇತರೆ') && !v.otherCourse) return false;
     }
-    if (['Diploma', 'Degree', 'Engineering'].includes(v.course)) {
+    if (['Diploma', 'Degree', 'Engineering'].includes(v.course || '')) {
         if (!v.branch || !v.scoreType) return false;
         if ((v.branch === 'Other' || v.branch === 'ಇತರೆ') && !v.otherCourse) return false;
         if (v.scoreType === 'CGPA' && !v.cgpa) return false;
@@ -438,7 +440,7 @@ export function LinguaForm() {
   }
 
   return (
-    <div className="space-y-2 w-full max-w-xl mx-auto pb-5 cursor-default relative">
+    <div className="space-y-2 w-full max-w-xl mx-auto pb-5 relative">
       {result && !result.success && (
         <Alert variant="destructive" className="mb-2">
           <AlertCircle className="h-4 w-4" />
@@ -466,7 +468,7 @@ export function LinguaForm() {
         </CardContent>
       </Card>
 
-      <Form {...form} key={lang}>
+      <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
           <Card className="shadow-sm border-none">
             <CardContent className="p-4">
@@ -490,8 +492,8 @@ export function LinguaForm() {
                 <FormItem className="space-y-1">
                   <FormLabel className="font-bold text-[16px]">{t.relationshipLabel} <span className="text-destructive">*</span></FormLabel>
                   <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
-                    <div className="flex items-center space-x-1.5"><RadioGroupItem value="SO" id="rel-so-p" className="h-4 w-4 cursor-pointer" /><Label htmlFor="rel-so-p" className="text-[14px] font-normal cursor-pointer">{lang === 'en' ? 'S/O (Son of)' : 'S/O (ಮಗ)'}</Label></div>
-                    <div className="flex items-center space-x-1.5"><RadioGroupItem value="DO" id="rel-do-p" className="h-4 w-4 cursor-pointer" /><Label htmlFor="rel-do-p" className="text-[14px] font-normal cursor-pointer">{lang === 'en' ? 'D/O (Daughter of)' : 'D/O (ಮಗಳು)'}</Label></div>
+                    <div className="flex items-center space-x-1.5"><RadioGroupItem value="SO" id="rel-so-p" className="h-4 w-4 cursor-pointer" /><Label htmlFor="rel-so-p" className="text-[14px] font-normal cursor-pointer">{lang === 'en' ? 'S/O (Son of)' : 'S/O (ಪುತ್ರ)'}</Label></div>
+                    <div className="flex items-center space-x-1.5"><RadioGroupItem value="DO" id="rel-do-p" className="h-4 w-4 cursor-pointer" /><Label htmlFor="rel-do-p" className="text-[14px] font-normal cursor-pointer">{lang === 'en' ? 'D/O (Daughter of)' : 'D/O (ಪುತ್ರಿ)'}</Label></div>
                   </RadioGroup>
                 </FormItem>
               )} />
