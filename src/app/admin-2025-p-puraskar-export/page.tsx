@@ -112,18 +112,18 @@ export default function AdminExportPage() {
     try {
       const base64 = await getReassembledFile(studentId, type);
       if (base64) {
-        // Handle PDF vs Image
-        if (type === 'marksCard') {
-          // Open PDF in new tab
-          const win = window.open();
-          if (win) {
+        const isPdf = base64.startsWith('data:application/pdf');
+        
+        const win = window.open();
+        if (win) {
+          win.document.title = `${studentName} - ${type === 'photo' ? 'Photo' : 'Marks Card'}`;
+          if (isPdf) {
             win.document.write(`<iframe src="${base64}" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>`);
-          }
-        } else {
-          // Open Image in new tab
-          const win = window.open();
-          if (win) {
-            win.document.write(`<img src="${base64}" style="max-width:100%; height:auto;" />`);
+          } else {
+            win.document.write(`
+              <style>body{margin:0;display:flex;justify-content:center;align-items:center;min-height:100vh;background:#f0f2f5;}</style>
+              <img src="${base64}" style="max-width:90%; height:auto; box-shadow:0 10px 25px rgba(0,0,0,0.1); border-radius:8px;" />
+            `);
           }
         }
       } else {
