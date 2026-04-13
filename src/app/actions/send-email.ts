@@ -1,34 +1,37 @@
 'use server';
 
-import { Resend } from 'resend';
+import nodemailer from 'nodemailer';
 
 /**
- * @fileOverview A server action for sending confirmation emails using Resend.
+ * @fileOverview A server action for sending confirmation emails using Gmail SMTP (Nodemailer).
  */
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Create the transporter using Gmail service
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_APP_PASSWORD,
+  },
+});
 
 export async function sendConfirmationEmail(email: string, subject: string, body: string) {
   try {
-    console.log('--- EMAIL SENDING INITIATED (RESEND) ---');
+    console.log('--- EMAIL SENDING INITIATED (GMAIL/SMTP) ---');
     console.log(`To: ${email}`);
     
-    const { data, error } = await resend.emails.send({
-      from: 'Pratibha Puraskhara <onboarding@resend.dev>',
-      to: [email],
+    // Send mail with defined transport object
+    const info = await transporter.sendMail({
+      from: `"Pratibha Puraskhara" <${process.env.GMAIL_USER}>`,
+      to: email,
       subject: subject,
       html: body,
     });
 
-    if (error) {
-      console.error('Resend API Error:', error);
-      return { success: false, error: error.message };
-    }
-
-    console.log('--- EMAIL SENT SUCCESSFULLY (RESEND) ---', data?.id);
-    return { success: true, id: data?.id };
+    console.log('--- EMAIL SENT SUCCESSFULLY (GMAIL) ---', info.messageId);
+    return { success: true, id: info.messageId };
   } catch (err) {
-    console.error('Unexpected Email Error:', err);
+    console.error('Unexpected Gmail/SMTP Error:', err);
     return { success: false, error: String(err) };
   }
 }

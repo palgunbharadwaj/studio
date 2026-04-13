@@ -1,11 +1,14 @@
-'use client';
+'use server';
 
 import { initializeFirebase } from '@/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import { errorEmitter } from '@/firebase/error-emitter';
-import { FirestorePermissionError } from '@/firebase/errors';
 import { generatePersonalizedConfirmationEmail, PersonalizedConfirmationEmailOutput } from '@/ai/flows/personalized-confirmation-email';
 import { sendConfirmationEmail } from './send-email';
+
+/**
+ * @fileOverview A server action for securely submitting the form data to Firestore 
+ * and triggering the AI confirmation email.
+ */
 
 export type SubmissionResult = {
   success: boolean;
@@ -33,9 +36,8 @@ export async function submitLinguaForm(data: any): Promise<SubmissionResult> {
     : "ದಿನಾಂಕ:23/04/2026 ರಂದು ಎಲ್ಲಾ ಮಕ್ಕಳಿಗೂ ಪುರಸ್ಕರಿಸಲಾಗುವುದು. ಹಾಗಾಗಿ ಸಂಬಂಧಪಟ್ಟ ಮಕ್ಕಳು ಹಾಗೂ ಕುಟುಂಬ ಕಡ್ಡಾಯವಾಗಿ ಭಗವಂತನ ಕೈಂಕರ್ಯಕ್ಕೆ ಹಾಜರಾಗುವುದು.";
 
   try {
+    console.log('--- SERVER SUBMISSION INITIATED ---');
     const parentRef = collection(firestore, 'registrations');
-    
-    console.log('Attempting Firestore write for student data...');
     
     // 1. Save the main student document (without the large files)
     const docResponse = await addDoc(parentRef, {
@@ -46,9 +48,9 @@ export async function submitLinguaForm(data: any): Promise<SubmissionResult> {
     });
 
     const studentId = docResponse.id;
-    console.log('Main document SUCCESS! Student ID:', studentId);
+    console.log('Main Firestore record created:', studentId);
 
-    // 2. Helper function to chunk and save files
+    // 2. Helper function to chunk and save files to Firestore
     const saveChunks = async (base64: string, type: 'photo' | 'marksCard') => {
       if (!base64) return;
       
@@ -56,7 +58,7 @@ export async function submitLinguaForm(data: any): Promise<SubmissionResult> {
       const chunkCount = Math.ceil(base64.length / CHUNK_SIZE);
       const chunksCollection = collection(firestore, 'file_chunks');
       
-      console.log(`Splitting ${type} (${base64.length} chars) into ${chunkCount} chunks...`);
+      console.log(`Writing ${type} chunks (${chunkCount})...`);
       
       for (let i = 0; i < chunkCount; i++) {
         const start = i * CHUNK_SIZE;
@@ -72,14 +74,14 @@ export async function submitLinguaForm(data: any): Promise<SubmissionResult> {
           createdAt: serverTimestamp(),
         });
       }
-      console.log(`${type} chunks saved successfully!`);
     };
 
-    // 3. Save chunks for both files in the background (or sequential if preferred for safety)
+    // 3. Save file chunks (Sequential on server for maximum reliability)
     await saveChunks(photoBase64, 'photo');
     await saveChunks(marksCardBase64, 'marksCard');
+    console.log('Document files saved successfully.');
 
-    // Background tasks (AI/Email) are handled after the critical DB writes
+    // 4. Generate AI Email and Send (Awaited on server to ensure it finishes)
     try {
       const submissionDetails = `
         Course: ${cleanData.course}
@@ -87,31 +89,33 @@ export async function submitLinguaForm(data: any): Promise<SubmissionResult> {
         Result: ${cleanData.percentage ? cleanData.percentage + '%' : cleanData.cgpa + ' CGPA'}
       `.trim();
 
-      generatePersonalizedConfirmationEmail({
+      console.log('Generating AI email content...');
+      const emailOutput = await generatePersonalizedConfirmationEmail({
         userName: cleanData.studentName,
         userEmail: cleanData.email,
         submissionDetails,
         preferredLanguage: cleanData.language as 'en' | 'kn',
-      }).then(emailData => {
-        sendConfirmationEmail(cleanData.email, emailData.subject, emailData.body);
-      }).catch(err => console.warn('AI/Email background task failed:', err));
+      });
 
-      return {
-        success: true,
-        message: successMessage,
-      };
+      console.log('Attempting to send email via Resend...');
+      await sendConfirmationEmail(cleanData.email, emailOutput.subject, emailOutput.body);
+      console.log('Email delivery triggered.');
+      
     } catch (backgroundError) {
-      console.warn('Post-submission tasks failed:', backgroundError);
-      return {
-        success: true,
-        message: successMessage,
-      };
+      // If AI/Email fails, we still return success because the student data IS saved.
+      console.warn('AI/Email non-critical failure after DB write:', backgroundError);
     }
+
+    return {
+      success: true,
+      message: successMessage,
+    };
+
   } catch (error) {
-    console.error('Submission processing failed:', error);
+    console.error('SERVER SUBMISSION CRITICAL ERROR:', error);
     return {
       success: false,
-      message: 'An error occurred during submission.',
+      message: 'An error occurred during secure submission.',
       error: error instanceof Error ? error.message : 'Unknown error',
     };
   }
