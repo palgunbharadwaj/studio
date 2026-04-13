@@ -2,8 +2,6 @@
 
 import { initializeFirebase } from '@/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
-import { generatePersonalizedConfirmationEmail, PersonalizedConfirmationEmailOutput } from '@/ai/flows/personalized-confirmation-email';
-import { sendConfirmationEmail } from './send-email';
 
 /**
  * @fileOverview A server action for securely submitting the form data to Firestore 
@@ -14,7 +12,6 @@ export type SubmissionResult = {
   success: boolean;
   message: string;
   error?: string;
-  emailData?: PersonalizedConfirmationEmailOutput;
 };
 
 export async function submitLinguaForm(data: any): Promise<SubmissionResult> {
@@ -86,56 +83,10 @@ export async function submitLinguaForm(data: any): Promise<SubmissionResult> {
     ]);
     console.log('All files saved to Firestore in parallel.');
 
-    // 4. Generate AI Email and Send (Awaited on server to ensure it finishes)
-    let emailStatus = 'sent';
-    let detailedError = '';
-    try {
-      const submissionDetails = `
-        Course: ${cleanData.course}
-        Year: ${cleanData.yearOfPassing}
-        Result: ${cleanData.percentage ? cleanData.percentage + '%' : cleanData.cgpa + ' CGPA'}
-      `.trim();
-
-      console.log('Generating AI email content...');
-      const emailOutput = await generatePersonalizedConfirmationEmail({
-        userName: cleanData.studentName,
-        userEmail: cleanData.email,
-        submissionDetails,
-        preferredLanguage: cleanData.language as 'en' | 'kn',
-      });
-
-      console.log('Attempting to send email via Gmail...');
-      const mailResult = await sendConfirmationEmail(cleanData.email, emailOutput.subject, emailOutput.body);
-      
-      if (!mailResult.success) {
-        console.warn('Email failed to send, but record is saved.');
-        emailStatus = 'failed';
-        detailedError = mailResult.error || 'SMTP Error';
-      } else {
-        console.log('Email delivery confirmed.');
-      }
-      
-    } catch (backgroundError: any) {
-      console.warn('AI/Email non-critical failure after DB write:', backgroundError);
-      emailStatus = 'failed';
-      detailedError = backgroundError?.message || String(backgroundError);
-    }
-
-    if (emailStatus === 'sent') {
-      return {
-        success: true,
-        message: cleanData.language === 'en' 
-          ? 'Submission successful! A confirmation email has been sent.' 
-          : 'ಸಲ್ಲಿಕೆ ಯಶಸ್ವಿಯಾಗಿದೆ! ದೃಢೀಕರಣ ಇಮೇಲ್ ಕಳುಹಿಸಲಾಗಿದೆ.',
-      };
-    } else {
-      // If email fails, return the Lord's service message but ADD the error for debugging
-      const debugInfo = `(Email Error: ${detailedError})`;
-      return {
-        success: true,
-        message: successMessage + " " + debugInfo,
-      };
-    }
+    return {
+      success: true,
+      message: successMessage,
+    };
 
   } catch (error) {
     console.error('SERVER SUBMISSION CRITICAL ERROR:', error);

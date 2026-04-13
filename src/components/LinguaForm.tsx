@@ -26,7 +26,6 @@ const ENGLISH_REGEX = /^[a-zA-Z0-9\s.,()#/_'"+&*-]*$/;
 
 // Basic schema without language specific refinements
 const baseSchema = z.object({
-  email: z.string().email({ message: "Please enter a valid email address." }),
   studentName: z.string().min(1, { message: "Name is required." }),
   relationship: z.enum(['SO', 'DO'], { errorMap: () => ({ message: "Relationship is required." }) }),
   fatherName: z.string().min(1, { message: "Father's name is required." }),
@@ -83,7 +82,6 @@ export function LinguaForm() {
   const form = useForm<FormValues>({
     resolver: zodResolver(dynamicSchema),
     defaultValues: {
-      email: '',
       studentName: '',
       relationship: undefined,
       fatherName: '',
@@ -114,7 +112,6 @@ export function LinguaForm() {
   // form is removed from dependencies to prevent accidental resets during re-renders
   useEffect(() => {
     form.reset({
-      email: '',
       studentName: '',
       relationship: undefined,
       fatherName: '',
@@ -430,7 +427,7 @@ export function LinguaForm() {
 
   const canSubmit = () => {
     const v = watchedValues;
-    const basicFields = v.studentName && v.email && v.relationship && v.fatherName && v.motherName && v.course && v.yearOfPassing;
+    const basicFields = v.studentName && v.relationship && v.fatherName && v.motherName && v.course && v.yearOfPassing;
     if (!basicFields) return false;
 
     // Course specific checks
@@ -503,17 +500,6 @@ export function LinguaForm() {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
-          <Card className="shadow-sm border-none">
-            <CardContent className="p-4">
-              <FormField control={form.control} name="email" render={({ field }) => (
-                <FormItem className="space-y-1">
-                  <FormLabel className="font-bold text-[16px]">{t.emailLabel} <span className="text-destructive">*</span></FormLabel>
-                  <FormControl><Input placeholder="example@email.com" className="h-10 bg-muted/20 text-[14px]" {...field} /></FormControl>
-                  <FormMessage className="text-[14px]" />
-                </FormItem>
-              )} />
-            </CardContent>
-          </Card>
 
           <Card className="shadow-sm border-none">
             <CardContent className="p-4 space-y-3">
