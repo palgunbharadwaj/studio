@@ -82,6 +82,7 @@ export async function submitLinguaForm(data: any): Promise<SubmissionResult> {
     console.log('Document files saved successfully.');
 
     // 4. Generate AI Email and Send (Awaited on server to ensure it finishes)
+    let emailStatus = 'sent';
     try {
       const submissionDetails = `
         Course: ${cleanData.course}
@@ -97,18 +98,28 @@ export async function submitLinguaForm(data: any): Promise<SubmissionResult> {
         preferredLanguage: cleanData.language as 'en' | 'kn',
       });
 
-      console.log('Attempting to send email via Resend...');
-      await sendConfirmationEmail(cleanData.email, emailOutput.subject, emailOutput.body);
-      console.log('Email delivery triggered.');
+      console.log('Attempting to send email via Gmail...');
+      const mailResult = await sendConfirmationEmail(cleanData.email, emailOutput.subject, emailOutput.body);
+      
+      if (!mailResult.success) {
+        console.warn('Email failed to send, but record is saved.');
+        emailStatus = 'failed';
+      } else {
+        console.log('Email delivery confirmed.');
+      }
       
     } catch (backgroundError) {
-      // If AI/Email fails, we still return success because the student data IS saved.
       console.warn('AI/Email non-critical failure after DB write:', backgroundError);
+      emailStatus = 'failed';
     }
+
+    const finalMessage = emailStatus === 'sent' 
+      ? (cleanData.language === 'en' ? 'Submission successful! A confirmation email has been sent.' : 'ಸಲ್ಲಿಕೆ ಯಶಸ್ವಿಯಾಗಿದೆ! ದೃಢೀಕರಣ ಇಮೇಲ್ ಕಳುಹಿಸಲಾಗಿದೆ.')
+      : successMessage; // Fallback to the Lord's service message if email fails
 
     return {
       success: true,
-      message: successMessage,
+      message: finalMessage,
     };
 
   } catch (error) {

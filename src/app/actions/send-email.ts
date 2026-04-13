@@ -10,13 +10,15 @@ import nodemailer from 'nodemailer';
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   host: 'smtp.gmail.com',
-  port: 587,
-  secure: false, // true for 465, false for other ports
+  port: 465, // Use 465 for Gmail SSL
+  secure: true,
+  pool: true, // Use a pool for faster connections
   auth: {
     user: process.env.GMAIL_USER,
     // Google App Passwords sometimes have spaces; we strip them for safety
     pass: process.env.GMAIL_APP_PASSWORD?.replace(/\s/g, ''),
   },
+  connectionTimeout: 5000, // 5 seconds
 });
 
 export async function sendConfirmationEmail(email: string, subject: string, body: string) {
