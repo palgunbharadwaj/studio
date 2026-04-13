@@ -59,7 +59,8 @@ Requirements:
 2. The subject line should be professional and clear.
 3. The body should be polite and personalized.
 4. Ensure the entire response (subject and body) is in the specified language.
-5. Set the 'language' field in the output to the language used.`,
+5. Set the 'language' field in the output to the language used.
+6. Use unique phrasing and avoid rigid templates. Change the tone and vocabulary for each generation so every email feels manually and individually written while maintaining a premium, professional feel.`,
 });
 
 const personalizedConfirmationEmailFlow = ai.defineFlow(
