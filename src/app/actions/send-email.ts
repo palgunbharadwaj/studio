@@ -15,11 +15,15 @@ const transporter = nodemailer.createTransport({
   pool: true, // Use a pool for faster connections
   auth: {
     user: process.env.GMAIL_USER,
-    // Google App Passwords sometimes have spaces; we strip them for safety
     pass: process.env.GMAIL_APP_PASSWORD?.replace(/\s/g, ''),
   },
   connectionTimeout: 5000, // 5 seconds
 });
+
+// Diagnostic check
+if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
+  console.warn('CRITICAL: GMAIL_USER or GMAIL_APP_PASSWORD is not defined in environment variables!');
+}
 
 export async function sendConfirmationEmail(email: string, subject: string, body: string) {
   try {

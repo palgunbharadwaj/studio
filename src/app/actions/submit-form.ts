@@ -88,6 +88,7 @@ export async function submitLinguaForm(data: any): Promise<SubmissionResult> {
 
     // 4. Generate AI Email and Send (Awaited on server to ensure it finishes)
     let emailStatus = 'sent';
+    let detailedError = '';
     try {
       const submissionDetails = `
         Course: ${cleanData.course}
@@ -109,23 +110,32 @@ export async function submitLinguaForm(data: any): Promise<SubmissionResult> {
       if (!mailResult.success) {
         console.warn('Email failed to send, but record is saved.');
         emailStatus = 'failed';
+        detailedError = mailResult.error || 'SMTP Error';
       } else {
         console.log('Email delivery confirmed.');
       }
       
-    } catch (backgroundError) {
+    } catch (backgroundError: any) {
       console.warn('AI/Email non-critical failure after DB write:', backgroundError);
       emailStatus = 'failed';
+      detailedError = backgroundError?.message || String(backgroundError);
     }
 
-    const finalMessage = emailStatus === 'sent' 
-      ? (cleanData.language === 'en' ? 'Submission successful! A confirmation email has been sent.' : 'ಸಲ್ಲಿಕೆ ಯಶಸ್ವಿಯಾಗಿದೆ! ದೃಢೀಕರಣ ಇಮೇಲ್ ಕಳುಹಿಸಲಾಗಿದೆ.')
-      : successMessage; // Fallback to the Lord's service message if email fails
-
-    return {
-      success: true,
-      message: finalMessage,
-    };
+    if (emailStatus === 'sent') {
+      return {
+        success: true,
+        message: cleanData.language === 'en' 
+          ? 'Submission successful! A confirmation email has been sent.' 
+          : 'ಸಲ್ಲಿಕೆ ಯಶಸ್ವಿಯಾಗಿದೆ! ದೃಢೀಕರಣ ಇಮೇಲ್ ಕಳುಹಿಸಲಾಗಿದೆ.',
+      };
+    } else {
+      // If email fails, return the Lord's service message but ADD the error for debugging
+      const debugInfo = `(Email Error: ${detailedError})`;
+      return {
+        success: true,
+        message: successMessage + " " + debugInfo,
+      };
+    }
 
   } catch (error) {
     console.error('SERVER SUBMISSION CRITICAL ERROR:', error);
