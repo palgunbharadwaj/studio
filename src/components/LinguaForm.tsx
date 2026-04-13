@@ -18,8 +18,9 @@ import { Card, CardContent } from '@/components/ui/card';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { submitLinguaForm, SubmissionResult } from '@/app/actions/submit-form';
-import { Loader2, Send, User, GraduationCap, FileCheck, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { Loader2, Send, User, GraduationCap, FileCheck, AlertCircle, CheckCircle2, Download, FileText } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { generateAcknowledgement } from '@/utils/generate-pdf';
 
 const KANNADA_REGEX = /^[\u0C80-\u0CFF\s0-9.,()#/_'"+&*-]*$/;
 const ENGLISH_REGEX = /^[a-zA-Z0-9\s.,()#/_'"+&*-]*$/;
@@ -462,7 +463,17 @@ export function LinguaForm() {
             <div className="flex justify-center"><CheckCircle2 className="w-12 h-12 text-primary" /></div>
             <h2 className="text-[16px] font-bold text-[#202124] leading-tight">{result.success && result.message?.includes('Submission successful') ? t.successTitle : (lang === 'en' ? 'Submission Result' : 'ಸಲ್ಲಿಕೆ ಫಲಿತಾಂಶ')}</h2>
             <p className="text-[14px] text-[#202124] font-bold leading-relaxed">{result.message || t.successMessage}</p>
-            <Button onClick={() => window.location.reload()} className="h-10 px-8 text-[14px] font-bold">Done</Button>
+            <div className="flex flex-col sm:flex-row justify-center gap-3 pt-2">
+              <Button 
+                onClick={() => generateAcknowledgement({ ...watchedValues, language: lang } as any, result.studentId || 'N/A')} 
+                variant="outline" 
+                className="h-10 px-6 text-[14px] font-bold border-primary text-primary hover:bg-primary/5"
+              >
+                <FileText className="mr-2 h-4 w-4" />
+                Download PDF
+              </Button>
+              <Button onClick={() => window.location.reload()} className="h-10 px-8 text-[14px] font-bold">Done</Button>
+            </div>
           </CardContent>
         </Card>
       </div>

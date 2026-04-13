@@ -4,13 +4,13 @@ import { initializeFirebase } from '@/firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 /**
- * @fileOverview A server action for securely submitting the form data to Firestore 
- * and triggering the AI confirmation email.
+ * @fileOverview A server action for securely submitting the form data to Firestore.
  */
 
 export type SubmissionResult = {
   success: boolean;
   message: string;
+  studentId?: string;
   error?: string;
 };
 
@@ -86,6 +86,7 @@ export async function submitLinguaForm(data: any): Promise<SubmissionResult> {
     return {
       success: true,
       message: successMessage,
+      studentId,
     };
 
   } catch (error) {
