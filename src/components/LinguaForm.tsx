@@ -424,36 +424,38 @@ export function LinguaForm() {
     }
   }
 
-  const watchedValues = form.watch();
-
   const canSubmit = () => {
-    const v = watchedValues;
-    const basicFields = v.studentName && v.relationship && v.fatherName && v.motherName && v.course && v.yearOfPassing;
-    if (!basicFields) return false;
+    // We use getValues for the most up-to-date data, and the useWatch hooks at the top ensure this re-renders on change.
+    const v = form.getValues();
+    const basicFields = v.studentName && v.fatherName && v.motherName && v.yearOfPassing;
+    if (!basicFields || !v.relationship || !selectedCourse) return false;
 
     // Course specific checks
-    if (v.course === 'SSLC') {
-      if (!v.board || !v.marksObtained || !v.totalMarks) return false;
-    } else if (v.course === 'PUC') {
-      if (!v.board || !v.pucStream || !v.combination || !v.marksObtained || !v.totalMarks) return false;
-      const isOtherComb = (v.combination === 'Other' || v.combination === 'ಇತರೆ');
+    if (selectedCourse === 'SSLC') {
+      if (!selectedBoard || !v.marksObtained || !v.totalMarks) return false;
+    } else if (selectedCourse === 'PUC') {
+      if (!selectedBoard || !selectedStream || !watchedCombination || !v.marksObtained || !v.totalMarks) return false;
+      const isOtherComb = (watchedCombination === 'Other' || watchedCombination === 'ಇತರೆ');
       if (isOtherComb && !v.otherCourse) return false;
-    } else if (['Diploma', 'Degree', 'Engineering'].includes(v.course || '')) {
-      if (!v.branch || !v.scoreType) return false;
-      const isOtherBranch = (v.branch === 'Other' || v.branch === 'ಇತರೆ');
+    } else if (['Diploma', 'Degree', 'Engineering'].includes(selectedCourse || '')) {
+      if (!watchedBranch || !scoreType) return false;
+      const isOtherBranch = (watchedBranch === 'Other' || watchedBranch === 'ಇತರೆ');
       if (isOtherBranch && !v.otherCourse) return false;
-      if (v.scoreType === 'CGPA' && !v.cgpa) return false;
-      if (v.scoreType === 'Percentage' && !v.percentage) return false;
-    } else if (v.course === 'Other') {
-      if (!v.otherCourse || !v.scoreType) return false;
-      if (v.scoreType === 'CGPA' && !v.cgpa) return false;
-      if (v.scoreType === 'Percentage' && (!v.marksObtained || !v.totalMarks)) return false;
+      if (scoreType === 'CGPA' && !v.cgpa) return false;
+      if (scoreType === 'Percentage' && !v.percentage) return false;
+    } else if (selectedCourse === 'Other') {
+      if (!v.otherCourse || !scoreType) return false;
+      if (scoreType === 'CGPA' && !v.cgpa) return false;
+      if (scoreType === 'Percentage' && (!v.marksObtained || !v.totalMarks)) return false;
     }
     
     // Document checks
     if (!photoFile || !marksFile) return false;
     return true;
   };
+
+  // For PDF generation, we need watched values
+  const watchedValues = form.watch();
 
   if (result?.success) {
     return (
@@ -485,7 +487,9 @@ export function LinguaForm() {
       {result && !result.success && (
         <Alert variant="destructive" className="mb-2">
           <AlertCircle className="h-4 w-4" />
-          <AlertDescription>{result.message}</AlertDescription>
+          <AlertDescription>
+            {result.message} {result.error && <span className="block mt-1 text-xs opacity-70">Error: {result.error}</span>}
+          </AlertDescription>
         </Alert>
       )}
       <Card className="shadow-sm border-none">

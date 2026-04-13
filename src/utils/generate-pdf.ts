@@ -53,13 +53,13 @@ export const generateAcknowledgement = (data: SubmissionData, studentId: string)
 
   // 3. Header
   doc.setFontSize(18);
-  const trustName = isKn 
+  const trustName = isKn
     ? "ಶ್ರೀ ಜಲವಾಸುದೇವ ಶ್ರೀವೈಷ್ಣವ ಸೇವಾ ಟ್ರಸ್ಟ್(ರಿ),ಕುಲಗಣಂ"
     : "Sri Jalavasudeva Srivaishnava Seva Trust(R), Kulganam";
   doc.text(trustName, 105, 30, { align: 'center' });
 
   doc.setFontSize(14);
-  const headerText = isKn 
+  const headerText = isKn
     ? "ಪ್ರತಿಭಾ ಪುರಸ್ಕಾರ 2025-2026: ಸಲ್ಲಿಕೆಯ ದೃಢೀಕರಣ"
     : "Prathibha Puraskara 2025-2026: Acknowledgement";
   doc.text(headerText, 105, 40, { align: 'center' });
@@ -69,7 +69,7 @@ export const generateAcknowledgement = (data: SubmissionData, studentId: string)
   // 4. Submission Details
   let y = 60;
   const lineHeight = 10;
-  
+
   const addField = (label: string, value: string | undefined) => {
     if (!value) return;
     doc.setFontSize(11);
@@ -106,7 +106,7 @@ export const generateAcknowledgement = (data: SubmissionData, studentId: string)
   addField(t.comb, data.combination);
   addField(t.branch, data.branch);
   y += 5;
-  
+
   if (data.scoreType === 'CGPA') {
     addField(t.cgpa, data.cgpa);
   } else {
@@ -114,7 +114,7 @@ export const generateAcknowledgement = (data: SubmissionData, studentId: string)
     addField(t.total, data.totalMarks);
     addField(t.pct, data.percentage);
   }
-  
+
   addField(t.year, data.yearOfPassing);
 
   // 6. Important Note
@@ -124,15 +124,15 @@ export const generateAcknowledgement = (data: SubmissionData, studentId: string)
   doc.setFont('helvetica', 'bold');
   if (isKn) doc.setFont('NotoSansKannada');
   doc.text(noteTitle, 20, y);
-  
+
   y += 6;
   doc.setFontSize(9);
   doc.setFont('helvetica', 'normal');
   if (isKn) doc.setFont('NotoSansKannada');
-  const noteMessage = isKn 
+  const noteMessage = isKn
     ? "ದಿನಾಂಕ:23/04/2026 ರಂದು ಎಲ್ಲಾ ಮಕ್ಕಳಿಗೂ ಪುರಸ್ಕರಿಸಲಾಗುವುದು. ಸಂಬಂಧಪಟ್ಟ ಮಕ್ಕಳು ಹಾಗೂ ಕುಟುಂಬ ಕಡ್ಡಾಯವಾಗಿ ಹಾಜರಾಗುವುದು."
     : "Award distribution is on 23/04/2026. All students and families are requested to attend the service.";
-  
+
   const splitNote = doc.splitTextToSize(noteMessage, 160);
   doc.text(splitNote, 20, y);
 
