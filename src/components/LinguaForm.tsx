@@ -111,6 +111,7 @@ export function LinguaForm() {
   const selectedBoard = useWatch({ control: form.control, name: 'board' });
 
   // 1. Language Switch Reset: Full Reset of everything
+  // form is removed from dependencies to prevent accidental resets during re-renders
   useEffect(() => {
     form.reset({
       email: '',
@@ -137,7 +138,7 @@ export function LinguaForm() {
     setTotalMarksError(null);
     setFileError(null);
     setResult(null);
-  }, [lang, form]);
+  }, [lang]); // Removed 'form' from dependencies
 
   // 2. Academic Switch Reset: Reset academic fields and documents while preserving personal details
   useEffect(() => {
@@ -432,22 +433,26 @@ export function LinguaForm() {
     const basicFields = v.studentName && v.email && v.relationship && v.fatherName && v.motherName && v.course && v.yearOfPassing;
     if (!basicFields) return false;
 
-    if (v.course === 'SSLC' && (!v.board || !v.marksObtained || !v.totalMarks)) return false;
-    if (v.course === 'PUC') {
+    // Course specific checks
+    if (v.course === 'SSLC') {
+      if (!v.board || !v.marksObtained || !v.totalMarks) return false;
+    } else if (v.course === 'PUC') {
       if (!v.board || !v.pucStream || !v.combination || !v.marksObtained || !v.totalMarks) return false;
-      if ((v.combination === 'Other' || v.combination === 'ಇತರೆ') && !v.otherCourse) return false;
-    }
-    if (['Diploma', 'Degree', 'Engineering'].includes(v.course || '')) {
+      const isOtherComb = (v.combination === 'Other' || v.combination === 'ಇತರೆ');
+      if (isOtherComb && !v.otherCourse) return false;
+    } else if (['Diploma', 'Degree', 'Engineering'].includes(v.course || '')) {
       if (!v.branch || !v.scoreType) return false;
-      if ((v.branch === 'Other' || v.branch === 'ಇತರೆ') && !v.otherCourse) return false;
+      const isOtherBranch = (v.branch === 'Other' || v.branch === 'ಇತರೆ');
+      if (isOtherBranch && !v.otherCourse) return false;
       if (v.scoreType === 'CGPA' && !v.cgpa) return false;
       if (v.scoreType === 'Percentage' && !v.percentage) return false;
-    }
-    if (v.course === 'Other') {
+    } else if (v.course === 'Other') {
       if (!v.otherCourse || !v.scoreType) return false;
       if (v.scoreType === 'CGPA' && !v.cgpa) return false;
       if (v.scoreType === 'Percentage' && (!v.marksObtained || !v.totalMarks)) return false;
     }
+    
+    // Document checks
     if (!photoFile || !marksFile) return false;
     return true;
   };
