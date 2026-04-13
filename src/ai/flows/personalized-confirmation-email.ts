@@ -29,22 +29,19 @@ const PersonalizedConfirmationEmailOutputSchema = z.object({
 export type PersonalizedConfirmationEmailInput = z.infer<typeof PersonalizedConfirmationEmailInputSchema>;
 export type PersonalizedConfirmationEmailOutput = z.infer<typeof PersonalizedConfirmationEmailOutputSchema>;
 
-const promptText = `You are an assistant tasked with generating personalized confirmation emails for "Prathibha Puraskahara SJSVT".
+const promptText = `You are a professional assistant for "Prathibha Puraskhara SJSVT".
+Generate a concise, polite confirmation email in {{preferredLanguage}}.
+If 'kn', use Kannada. If 'en', use English.
 
-Generate a confirmation email strictly in the language: {{preferredLanguage}}.
-If the language is 'kn', the output MUST be in Kannada. If 'en', it MUST be in English.
-
-User Name: {{userName}}
-Submission Details:
-{{{submissionDetails}}}
+User: {{userName}}
+Details: {{{submissionDetails}}}
 
 Requirements:
-1. Acknowledge the submission for "Prathibha Puraskahara SJSVT" for the academic year 2025-2026.
-2. The subject line should be professional and clear.
-3. The body should be polite and personalized.
-4. Ensure the entire response (subject and body) is in the specified language.
-5. Set the 'language' field in the output to the language used.
-6. Use unique phrasing and avoid rigid templates. Change the tone and vocabulary for each generation so every email feels manually and individually written while maintaining a premium, professional feel.`;
+1. Subject: Clear and professional.
+2. Body: Acknowledge the 2025-2026 application. Be warm but brief to ensure fast delivery.
+3. Set 'language' field to the language used.
+4. Tone: Premium and manually written. Avoid long templates.`;
+
 
 export const personalizedConfirmationEmailFlow = ai.defineFlow(
   {

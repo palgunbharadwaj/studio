@@ -50,36 +50,41 @@ export async function submitLinguaForm(data: any): Promise<SubmissionResult> {
     const studentId = docResponse.id;
     console.log('Main Firestore record created:', studentId);
 
-    // 2. Helper function to chunk and save files to Firestore
+    // 2. Helper function to chunk and save files to Firestore (Parallelized)
     const saveChunks = async (base64: string, type: 'photo' | 'marksCard') => {
       if (!base64) return;
       
-      const CHUNK_SIZE = 900 * 1024; // 900KB (Safe under the 1MB Firestore limit)
+      const CHUNK_SIZE = 900 * 1024;
       const chunkCount = Math.ceil(base64.length / CHUNK_SIZE);
       const chunksCollection = collection(firestore, 'file_chunks');
       
-      console.log(`Writing ${type} chunks (${chunkCount})...`);
+      console.log(`Uploading ${type} (${chunkCount} chunks) in parallel...`);
       
+      const chunkPromises = [];
       for (let i = 0; i < chunkCount; i++) {
         const start = i * CHUNK_SIZE;
         const end = Math.min(start + CHUNK_SIZE, base64.length);
         const chunkData = base64.substring(start, end);
         
-        await addDoc(chunksCollection, {
+        chunkPromises.push(addDoc(chunksCollection, {
           studentId,
           type,
           index: i,
           totalChunks: chunkCount,
           data: chunkData,
           createdAt: serverTimestamp(),
-        });
+        }));
       }
+      
+      await Promise.all(chunkPromises);
     };
 
-    // 3. Save file chunks (Sequential on server for maximum reliability)
-    await saveChunks(photoBase64, 'photo');
-    await saveChunks(marksCardBase64, 'marksCard');
-    console.log('Document files saved successfully.');
+    // 3. Save file chunks (Parallelized for both files for maximum speed)
+    await Promise.all([
+      saveChunks(photoBase64, 'photo'),
+      saveChunks(marksCardBase64, 'marksCard')
+    ]);
+    console.log('All files saved to Firestore in parallel.');
 
     // 4. Generate AI Email and Send (Awaited on server to ensure it finishes)
     let emailStatus = 'sent';
