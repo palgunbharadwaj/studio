@@ -118,7 +118,10 @@ export default function AdminExportPage() {
         if (win) {
           win.document.title = `${studentName} - ${type === 'photo' ? 'Photo' : 'Marks Card'}`;
           if (isPdf) {
-            win.document.write(`<iframe src="${base64}" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>`);
+            win.document.write(`
+              <style>html,body{margin:0;padding:0;height:100%;width:100%;overflow:hidden;}iframe{width:100%;height:100%;border:none;}</style>
+              <iframe src="${base64}" allowfullscreen></iframe>
+            `);
           } else {
             win.document.write(`
               <style>body{margin:0;display:flex;justify-content:center;align-items:center;min-height:100vh;background:#f0f2f5;}</style>
