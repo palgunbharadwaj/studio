@@ -9,9 +9,13 @@ import nodemailer from 'nodemailer';
 // Create the transporter using Gmail service
 const transporter = nodemailer.createTransport({
   service: 'gmail',
+  host: 'smtp.gmail.com',
+  port: 587,
+  secure: false, // true for 465, false for other ports
   auth: {
     user: process.env.GMAIL_USER,
-    pass: process.env.GMAIL_APP_PASSWORD,
+    // Google App Passwords sometimes have spaces; we strip them for safety
+    pass: process.env.GMAIL_APP_PASSWORD?.replace(/\s/g, ''),
   },
 });
 
