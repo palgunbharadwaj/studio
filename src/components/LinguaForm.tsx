@@ -1,16 +1,16 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { 
-  Form, 
-  FormControl, 
-  FormField, 
-  FormItem, 
-  FormLabel, 
-  FormMessage 
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -21,7 +21,11 @@ import { submitLinguaForm, SubmissionResult } from '@/app/actions/submit-form';
 import { Loader2, Send, User, GraduationCap, FileCheck, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
-const formSchema = z.object({
+const KANNADA_REGEX = /^[\u0C80-\u0CFF\s0-9.,()#/_'"+&*-]*$/;
+const ENGLISH_REGEX = /^[a-zA-Z0-9\s.,()#/_'"+&*-]*$/;
+
+// Basic schema without language specific refinements
+const baseSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address." }),
   studentName: z.string().min(1, { message: "Name is required." }),
   relationship: z.enum(['SO', 'DO'], { required_error: "Relationship is required." }),
@@ -41,21 +45,43 @@ const formSchema = z.object({
   scoreType: z.enum(['CGPA', 'Percentage']).optional(),
 });
 
-type FormValues = z.infer<typeof formSchema>;
+type FormValues = z.infer<typeof baseSchema>;
 
 export function LinguaForm() {
   const [lang, setLang] = useState<'kn' | 'en'>('kn');
+
+  // Create dynamic dynamic schema based on lang
+  const dynamicSchema = useMemo(() => {
+    return baseSchema.superRefine((data, ctx) => {
+      const regex = lang === 'kn' ? KANNADA_REGEX : ENGLISH_REGEX;
+      const msg = lang === 'kn' ? "ದಯವಿಟ್ಟು ಕನ್ನಡದಲ್ಲಿ ಮಾತ್ರ ನಮೂದಿಸಿ" : "Please enter in English only";
+
+      const fieldsToCheck = ['studentName', 'fatherName', 'motherName', 'otherCourse', 'branch'] as const;
+
+      fieldsToCheck.forEach(field => {
+        const val = data[field];
+        if (val && !regex.test(val)) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: msg,
+            path: [field]
+          });
+        }
+      });
+    });
+  }, [lang]);
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [result, setResult] = useState<SubmissionResult | null>(null);
   const [eligibilityError, setEligibilityError] = useState<string | null>(null);
   const [totalMarksError, setTotalMarksError] = useState<string | null>(null);
-  
+
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [marksFile, setMarksFile] = useState<File | null>(null);
   const [fileError, setFileError] = useState<string | null>(null);
 
   const form = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(dynamicSchema),
     defaultValues: {
       email: '',
       studentName: '',
@@ -127,7 +153,7 @@ export function LinguaForm() {
       form.setValue('otherCourse', '');
       form.setValue('scoreType', undefined); // Explicitly reset score type
       form.setValue('yearOfPassing', '');
-      
+
       setPhotoFile(null);
       setMarksFile(null);
       setEligibilityError(null);
@@ -172,30 +198,30 @@ export function LinguaForm() {
       if (marksObtained && totalMarks) {
         const marks = parseFloat(marksObtained);
         const total = parseFloat(totalMarks);
-        
-        if (!isNaN(marks) && !isNaN(total) && total > 0) {
+
+        if (!isNaN(marks) && !isNaN(total) && total > 0 && marks >= 0) {
           // Validation based on Board and Course
           const isState = selectedBoard?.includes('State') || selectedBoard?.includes('ರಾಜ್ಯ');
           const isCBSE = selectedBoard?.includes('CBSE') || selectedBoard?.includes('ಸಿಬಿಎಸ್ ಇ');
           const isICSE = selectedBoard?.includes('ICSE') || selectedBoard?.includes('ಐಸಿಎಸ್ ಇ');
 
           if (selectedCourse === 'SSLC') {
-            const expectedTotal = isState ? 625 : (isCBSE || isICSE) ? 500 : null;
+            const expectedTotal = isState ? 625 : null;
             if (expectedTotal && total !== expectedTotal) {
-              const errorMsg = lang === 'en' 
-                ? `Total marks for SSLC (${isState ? 'State' : isCBSE ? 'CBSE' : 'ICSE'}) must be ${expectedTotal}.` 
+              const errorMsg = lang === 'en'
+                ? `Total marks for SSLC (${isState ? 'State' : isCBSE ? 'CBSE' : 'ICSE'}) must be ${expectedTotal}.`
                 : `ಎಸ್.ಎಸ್.ಎಲ್.ಸಿ. (${isState ? 'ರಾಜ್ಯ' : isCBSE ? 'ಸಿಬಿಎಸ್ ಇ' : 'ಐಸಿಎಸ್ ಇ'}) ಗೆ ಒಟ್ಟು ಅಂಕಗಳು ${expectedTotal} ಆಗಿರಬೇಕು.`;
               setTotalMarksError(errorMsg);
               form.setValue('percentage', '');
               return;
             }
           }
-          
+
           if (selectedCourse === 'PUC') {
-            const expectedTotal = isState ? 600 : isCBSE ? 500 : isICSE ? 400 : null;
+            const expectedTotal = isState ? 600 : null;
             if (expectedTotal && total !== expectedTotal) {
-              const errorMsg = lang === 'en' 
-                ? `Total marks for 2nd PUC (${isState ? 'State' : isCBSE ? 'CBSE' : 'ICSE'}) must be ${expectedTotal}.` 
+              const errorMsg = lang === 'en'
+                ? `Total marks for 2nd PUC (${isState ? 'State' : isCBSE ? 'CBSE' : 'ICSE'}) must be ${expectedTotal}.`
                 : `ದ್ವಿತೀಯ ಪಿ.ಯು.ಸಿ. (${isState ? 'ರಾಜ್ಯ' : isCBSE ? 'ಸಿಬಿಎಸ್ ಇ' : 'ಐಸಿಎಸ್ ಇ'}) ಗೆ ಒಟ್ಟು ಅಂಕಗಳು ${expectedTotal} ಆಗಿರಬೇಕು.`;
               setTotalMarksError(errorMsg);
               form.setValue('percentage', '');
@@ -216,8 +242,8 @@ export function LinguaForm() {
 
           let minRequired = (selectedCourse === 'PUC') ? 85 : 90;
           if (calculatedPercentage < minRequired) {
-            const errorMsg = lang === 'en' 
-              ? `Minimum ${minRequired}% marks required for eligibility.` 
+            const errorMsg = lang === 'en'
+              ? `Minimum ${minRequired}% marks required for eligibility.`
               : `ಅರ್ಹತೆಗಾಗಿ ಕನಿಷ್ಠ ${minRequired}% ಅಂಕಗಳು ಅಗತ್ಯವಿದೆ.`;
             setEligibilityError(errorMsg);
           }
@@ -246,9 +272,9 @@ export function LinguaForm() {
 
   const translations = {
     en: {
-      trustName: "Sri Jalavasudeva Srivaishnava Seva Trust (R), Kulaganam",
-      headerBold: "Pratibha Puraskar 2025-2026:",
-      headerDesc: "Temple-level award for students who have scored more than 85% in the P.U.C. examinations held in March and April of the years 2025 and 2026, and for those who have secured a rank or more than 90% marks in S.S.L.C. / Degree / Job-oriented education.",
+      trustName: "ಶ್ರೀ ಜಲವಾಸುದೇವ ಶ್ರೀವೈಷ್ಣವ ಸೇವಾ ಟ್ರಸ್ಟ್(ರಿ),ಕುಲಗಣಂ",
+      headerBold: "ಪ್ರತಿಭಾ ಪುರಸ್ಕಾರ 2025-2026:",
+      headerDesc: "2025 ಮತ್ತು 2026ರ ಸಾಲಿನ ಮಾರ್ಚಿ ಮತ್ತು ಏಪ್ರಿಲ್ ನಲ್ಲಿ ನಡೆದ ಪಿ.ಯು.ಸಿ ಪರೀಕ್ಷೆಯಲ್ಲಿ ಶೇ.85 ಕ್ಕಿಂತ ಹಾಗೂ ಎಸ್.ಎಸ್.ಎಲ್.ಸಿ/ಪದವಿ/ಉದ್ಯೋಗಾಧಾರಿತ ಶಿಕ್ಷಣದಲ್ಲಿ ರ್‍ಯಾಂಕ್‌ ಅಥವಾ ಶೇ.90 ಕ್ಕಿಂತ ಹೆಚ್ಚು ಅಂಕ ಪಡೆದ ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ದೇವಾಲಯದ ಮಟ್ಟದಲ್ಲಿ ಪುರಸ್ಕಾರ",
       langLabel: "Choose Language / ಭಾಷೆ ಆಯ್ಕೆಮಾಡಿ",
       personalDetailsHeader: "Personal Details",
       academicDetailsHeader: "Academic Details",
@@ -273,8 +299,8 @@ export function LinguaForm() {
       cgpaLabel: "CGPA",
       otherCourseLabel: "Please specify other course",
       docsTitle: "Documents",
-      photoLabel: "Photo (JPG/JPEG, max 10MB)",
-      marksCardLabel: "Marks Card (PDF only, max 10MB)",
+      photoLabel: "Photo (JPG/JPEG/PDF, max 10MB)",
+      marksCardLabel: "Marks Card (JPG/JPEG/PDF, max 10MB)",
       submitButton: "Submit",
       processing: "Processing...",
       successTitle: "Your application for the Pratibha Puraskar 2025-2026 has been received. Thank you.",
@@ -290,8 +316,8 @@ export function LinguaForm() {
     },
     kn: {
       trustName: "ಶ್ರೀ ಜಲವಾಸುದೇವ ಶ್ರೀವೈಷ್ಣವ ಸೇವಾ ಟ್ರಸ್ಟ್(ರಿ),ಕುಲಗಣಂ",
-      headerBold: "ಪತಿಭಾ ಪುರಸ್ಕಾರ 2025-2026:",
-      headerDesc: "2025 ಮತ್ತು 2026ರ ಸಾಲಿನ ಮಾರ್ಚಿ ಮತ್ತು ಏಪ್ರಿಲ್ ನಲ್ಲಿ ನಡೆದ ಪಿ.ಯು.ಸಿ ಪರೀಕ್ಷೆಯಲ್ಲಿ ಶೇ.85 ಕ್ಕಿಂತ ಹಾಗೂ ಎಸ್.ಎಸ್.ಎಲ್.ಸಿ/ಪದವಿ/ಉದ್ಯೋಗಾಧಾರಿತ ಶಿಕ್ಷಣದಲ್ಲಿ ರ‍್ಯಾಂಕ್‌ ಅಥವಾ ಶೇ.90 ಕ್ಕಿಂತ ಹೆಚ್ಚು ಅಂಕ ಪಡೆದ ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ದೇವಾಲಯದ ಮಟ್ಟದಲ್ಲಿ ಪುರಸ್ಕಾರ",
+      headerBold: "ಪ್ರತಿಭಾ ಪುರಸ್ಕಾರ 2025-2026:",
+      headerDesc: "2025 ಮತ್ತು 2026ರ ಸಾಲಿನ ಮಾರ್ಚಿ ಮತ್ತು ಏಪ್ರಿಲ್ ನಲ್ಲಿ ನಡೆದ ಪಿ.ಯು.ಸಿ ಪರೀಕ್ಷೆಯಲ್ಲಿ ಶೇ.85 ಕ್ಕಿಂತ ಹಾಗೂ ಎಸ್.ಎಸ್.ಎಲ್.ಸಿ/ಪದವಿ/ಉದ್ಯೋಗಾಧಾರಿತ ಶಿಕ್ಷಣದಲ್ಲಿ ರ್‍ಯಾಂಕ್‌ ಅಥವಾ ಶೇ.90 ಕ್ಕಿಂತ ಹೆಚ್ಚು ಅಂಕ ಪಡೆದ ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ದೇವಾಲಯದ ಮಟ್ಟದಲ್ಲಿ ಪುರಸ್ಕಾರ",
       langLabel: "Choose Language / ಭಾಷೆ ಆಯ್ಕೆಮಾಡಿ",
       personalDetailsHeader: "ವೈಯಕ್ತಿಕ ವಿವರಗಳು",
       academicDetailsHeader: "ಶೈಕ್ಷಣಿಕ ವಿವರಗಳು",
@@ -316,8 +342,8 @@ export function LinguaForm() {
       cgpaLabel: "ಸಿಜಿಪಿಎ (CGPA)",
       otherCourseLabel: "ಇತರೆ ಕೋರ್ಸ್ ವಿವರ",
       docsTitle: "ದಾಖಲೆಗಳು",
-      photoLabel: "ಫೋಟೋ (JPG/JPEG, ಗರಿಷ್ಠ 10MB)",
-      marksCardLabel: "ಅಂಕಪಟ್ಟಿ (PDF ಮಾತ್ರ, ಗರಿಷ್ಠ 10MB)",
+      photoLabel: "ಫೋಟೋ (JPG/JPEG/PDF, ಗರಿಷ್ಠ 10MB)",
+      marksCardLabel: "ಅಂಕಪಟ್ಟಿ (JPG/JPEG/PDF, ಗರಿಷ್ಠ 10MB)",
       submitButton: "ಸಲ್ಲಿಸಿ",
       processing: "ಪ್ರಕ್ರಿಯೆಯಲ್ಲಿದೆ...",
       successTitle: "ಪ್ರತಿಭಾ ಪುರಸ್ಕಾರ 2025-2026 ಕ್ಕಾಗಿ ನಿಮ್ಮ ಅರ್ಜಿಯನ್ನು ಸ್ವೀಕರಿಸಲಾಗಿದೆ. ಧನ್ಯವಾದಗಳು.",
@@ -347,8 +373,9 @@ export function LinguaForm() {
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (!file.type.startsWith('image/')) {
-        setFileError(lang === 'en' ? "Please upload an image file." : "ದಯವಿಟ್ಟು ಚಿತ್ರದ ಫೈಲ್ ಅನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ.");
+      const allowedTypes = ['image/jpeg', 'application/pdf'];
+      if (!allowedTypes.includes(file.type)) {
+        setFileError(lang === 'en' ? "Please upload a JPG/JPEG or PDF file." : "ದಯವಿಟ್ಟು JPG/JPEG ಅಥವಾ PDF ಫೈಲ್ ಅನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ.");
         setPhotoFile(null);
         e.target.value = '';
       } else {
@@ -361,8 +388,9 @@ export function LinguaForm() {
   const handleMarksChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.type !== 'application/pdf') {
-        setFileError(lang === 'en' ? "Please upload a PDF file." : "ದಯವಿಟ್ಟು PDF ಫೈಲ್ ಅನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ.");
+      const allowedTypes = ['image/jpeg', 'application/pdf'];
+      if (!allowedTypes.includes(file.type)) {
+        setFileError(lang === 'en' ? "Please upload a JPG/JPEG or PDF file." : "ದಯವಿಟ್ಟು JPG/JPEG ಅಥವಾ PDF ಫೈಲ್ ಅನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ.");
         setMarksFile(null);
         e.target.value = '';
       } else {
@@ -403,22 +431,22 @@ export function LinguaForm() {
     const v = watchedValues;
     const basicFields = v.studentName && v.email && v.relationship && v.fatherName && v.motherName && v.course && v.yearOfPassing;
     if (!basicFields) return false;
-    
+
     if (v.course === 'SSLC' && (!v.board || !v.marksObtained || !v.totalMarks)) return false;
     if (v.course === 'PUC') {
       if (!v.board || !v.pucStream || !v.combination || !v.marksObtained || !v.totalMarks) return false;
       if ((v.combination === 'Other' || v.combination === 'ಇತರೆ') && !v.otherCourse) return false;
     }
     if (['Diploma', 'Degree', 'Engineering'].includes(v.course || '')) {
-        if (!v.branch || !v.scoreType) return false;
-        if ((v.branch === 'Other' || v.branch === 'ಇತರೆ') && !v.otherCourse) return false;
-        if (v.scoreType === 'CGPA' && !v.cgpa) return false;
-        if (v.scoreType === 'Percentage' && !v.percentage) return false;
+      if (!v.branch || !v.scoreType) return false;
+      if ((v.branch === 'Other' || v.branch === 'ಇತರೆ') && !v.otherCourse) return false;
+      if (v.scoreType === 'CGPA' && !v.cgpa) return false;
+      if (v.scoreType === 'Percentage' && !v.percentage) return false;
     }
     if (v.course === 'Other') {
-        if (!v.otherCourse || !v.scoreType) return false;
-        if (v.scoreType === 'CGPA' && !v.cgpa) return false;
-        if (v.scoreType === 'Percentage' && (!v.marksObtained || !v.totalMarks)) return false;
+      if (!v.otherCourse || !v.scoreType) return false;
+      if (v.scoreType === 'CGPA' && !v.cgpa) return false;
+      if (v.scoreType === 'Percentage' && (!v.marksObtained || !v.totalMarks)) return false;
     }
     if (!photoFile || !marksFile) return false;
     return true;
@@ -517,12 +545,12 @@ export function LinguaForm() {
                       <div key={c} className="flex items-center space-x-1.5">
                         <RadioGroupItem value={c} id={`course-${c}-${lang}`} className="h-4 w-4 cursor-pointer" />
                         <Label htmlFor={`course-${c}-${lang}`} className="text-[14px] font-normal cursor-pointer">
-                          {c === 'PUC' ? (lang === 'en' ? '2nd PUC' : 'ದ್ವಿತೀಯ ಪಿ.ಯು.ಸಿ') : 
-                           c === 'SSLC' ? (lang === 'en' ? 'SSLC / 10th' : 'ಎಸ್.ಎಸ್.ಎಲ್.ಸಿ. / 10 ನೇ ತರಗತಿ') : 
-                           c === 'Diploma' ? (lang === 'en' ? 'Diploma' : 'ಡಿಪ್ಲೊಮಾ') :
-                           c === 'Degree' ? (lang === 'en' ? 'Degree' : 'ಪದವಿ') :
-                           c === 'Engineering' ? (lang === 'en' ? 'Engineering' : 'ಇಂಜಿನಿಯರಿಂಗ್') : 
-                           (lang === 'en' ? 'Other' : 'ಇತರೆ')}
+                          {c === 'PUC' ? (lang === 'en' ? '2nd PUC' : 'ದ್ವಿತೀಯ ಪಿ.ಯು.ಸಿ') :
+                            c === 'SSLC' ? (lang === 'en' ? 'SSLC / 10th' : 'ಎಸ್.ಎಸ್.ಎಲ್.ಸಿ. / 10 ನೇ ತರಗತಿ') :
+                              c === 'Diploma' ? (lang === 'en' ? 'Diploma' : 'ಡಿಪ್ಲೊಮಾ') :
+                                c === 'Degree' ? (lang === 'en' ? 'Degree' : 'ಪದವಿ') :
+                                  c === 'Engineering' ? (lang === 'en' ? 'Engineering' : 'ಇಂಜಿನಿಯರಿಂಗ್') :
+                                    (lang === 'en' ? 'Other' : 'ಇತರೆ')}
                         </Label>
                       </div>
                     ))}
@@ -574,7 +602,7 @@ export function LinguaForm() {
                       );
                     }} />
                   )}
-                  { (watchedCombination === 'Other' || watchedCombination === 'ಇತರೆ') && (
+                  {(watchedCombination === 'Other' || watchedCombination === 'ಇತರೆ') && (
                     <FormField control={form.control} name="otherCourse" render={({ field }) => (
                       <FormItem className="space-y-1"><FormLabel className="text-[16px] font-bold">{t.otherCourseLabel} <span className="text-destructive">*</span></FormLabel><FormControl><Input className="h-10 bg-muted/20 text-[14px]" {...field} /></FormControl></FormItem>
                     )} />
@@ -595,7 +623,7 @@ export function LinguaForm() {
                     </FormItem>
                   )} />
 
-                  { (watchedBranch === 'Other' || watchedBranch === 'ಇತರೆ') && (
+                  {(watchedBranch === 'Other' || watchedBranch === 'ಇತರೆ') && (
                     <FormField control={form.control} name="otherCourse" render={({ field }) => (
                       <FormItem className="space-y-1"><FormLabel className="text-[16px] font-bold">{t.otherCourseLabel} <span className="text-destructive">*</span></FormLabel><FormControl><Input className="h-10 bg-muted/20 text-[14px]" {...field} /></FormControl></FormItem>
                     )} />
@@ -615,7 +643,7 @@ export function LinguaForm() {
                     <FormField control={form.control} name="cgpa" render={({ field }) => (
                       <FormItem className="space-y-1">
                         <FormLabel className="text-[16px] font-bold">{t.cgpaLabel} <span className="text-destructive">*</span></FormLabel>
-                        <FormControl><Input type="number" step="0.01" className="h-10 bg-muted/20 text-[14px]" {...field} /></FormControl>
+                        <FormControl><Input type="number" min="0" step="0.01" className="h-10 bg-muted/20 text-[14px]" {...field} /></FormControl>
                         {eligibilityError && (
                           <Alert variant="destructive" className="py-1 px-2 mt-1 flex items-center gap-2 border-destructive/20 bg-destructive/5"><AlertCircle className="h-4 w-4 shrink-0" /><AlertDescription className="leading-tight font-medium text-[14px]">{eligibilityError}</AlertDescription></Alert>
                         )}
@@ -627,7 +655,7 @@ export function LinguaForm() {
                     <FormField control={form.control} name="percentage" render={({ field }) => (
                       <FormItem className="space-y-1">
                         <FormLabel className="text-[16px] font-bold">{t.percentageLabel} <span className="text-destructive">*</span></FormLabel>
-                        <FormControl><Input type="number" step="0.01" className="h-10 bg-muted/20 text-[14px]" {...field} /></FormControl>
+                        <FormControl><Input type="number" min="0" step="0.01" className="h-10 bg-muted/20 text-[14px]" {...field} /></FormControl>
                         {eligibilityError && (
                           <Alert variant="destructive" className="py-1 px-2 mt-1 flex items-center gap-2 border-destructive/20 bg-destructive/5"><AlertCircle className="h-4 w-4 shrink-0" /><AlertDescription className="leading-tight font-medium text-[14px]">{eligibilityError}</AlertDescription></Alert>
                         )}
@@ -657,7 +685,7 @@ export function LinguaForm() {
                     <FormField control={form.control} name="cgpa" render={({ field }) => (
                       <FormItem className="space-y-1">
                         <FormLabel className="text-[16px] font-bold">{t.cgpaLabel} <span className="text-destructive">*</span></FormLabel>
-                        <FormControl><Input type="number" step="0.01" className="h-10 bg-muted/20 text-[14px]" {...field} /></FormControl>
+                        <FormControl><Input type="number" min="0" step="0.01" className="h-10 bg-muted/20 text-[14px]" {...field} /></FormControl>
                         {eligibilityError && (
                           <Alert variant="destructive" className="py-1 px-2 mt-1 flex items-center gap-2 border-destructive/20 bg-destructive/5"><AlertCircle className="h-4 w-4 shrink-0" /><AlertDescription className="leading-tight font-medium text-[14px]">{eligibilityError}</AlertDescription></Alert>
                         )}
@@ -672,12 +700,12 @@ export function LinguaForm() {
                   {((['SSLC', 'PUC'].includes(selectedCourse)) || (selectedCourse === 'Other' && scoreType === 'Percentage')) && (
                     <>
                       <FormField control={form.control} name="marksObtained" render={({ field }) => (
-                        <FormItem className="space-y-1"><FormLabel className="text-[16px] font-bold">{t.marksObtainedLabel} <span className="text-destructive">*</span></FormLabel><FormControl><Input type="number" className="h-10 bg-muted/20 text-[14px]" {...field} /></FormControl></FormItem>
+                        <FormItem className="space-y-1"><FormLabel className="font-bold text-[16px]">{t.marksObtainedLabel} <span className="text-destructive">*</span></FormLabel><FormControl><Input type="number" min="0" className="h-10 bg-muted/20 text-[14px]" {...field} /></FormControl></FormItem>
                       )} />
                       <FormField control={form.control} name="totalMarks" render={({ field }) => (
                         <FormItem className="space-y-1">
                           <FormLabel className="text-[16px] font-bold">{t.totalMarksLabel} <span className="text-destructive">*</span></FormLabel>
-                          <FormControl><Input type="number" className="h-10 bg-muted/20 text-[14px]" {...field} /></FormControl>
+                          <FormControl><Input type="number" min="0" className="h-10 bg-muted/20 text-[14px]" {...field} /></FormControl>
                           {totalMarksError && <p className="font-medium pt-1 text-destructive text-[14px]">{totalMarksError}</p>}
                         </FormItem>
                       )} />
@@ -696,7 +724,9 @@ export function LinguaForm() {
                   <FormField control={form.control} name="yearOfPassing" render={({ field }) => {
                     const year1 = '2024-2025';
                     const year2 = '2025-2026';
-                    const options = selectedCourse === 'SSLC' ? [year1] : [year2];
+                    const options = selectedCourse === 'SSLC' ? [year1] : 
+                                   (['Diploma', 'Degree', 'Engineering'].includes(selectedCourse || '')) ? [year1, year2] : 
+                                   [year2];
                     return (
                       <FormItem className="space-y-1">
                         <FormLabel className="text-[16px] font-bold">{t.yearPassingLabel} <span className="text-destructive">*</span></FormLabel>
@@ -723,11 +753,11 @@ export function LinguaForm() {
               <div className="space-y-2">
                 <div className="space-y-1">
                   <Label htmlFor="photo" className="text-[16px] font-bold cursor-default">{t.photoLabel} <span className="text-destructive">*</span></Label>
-                  <Input id="photo" type="file" accept="image/*" className="h-10 text-[14px] file:mr-4 file:py-1 file:px-3 file:rounded-md file:border file:border-solid file:border-border file:bg-secondary/50 file:text-[14px] file:font-medium cursor-pointer file:cursor-pointer bg-muted/5 border-border/40" onChange={handlePhotoChange} />
+                  <Input id="photo" type="file" accept=".jpg,.jpeg,.pdf" className="h-10 text-[14px] file:mr-4 file:py-1 file:px-3 file:rounded-md file:border file:border-solid file:border-border file:bg-secondary/50 file:text-[14px] file:font-medium cursor-pointer file:cursor-pointer bg-muted/5 border-border/40" onChange={handlePhotoChange} />
                 </div>
                 <div className="space-y-1">
                   <Label htmlFor="marks" className="text-[16px] font-bold cursor-default">{t.marksCardLabel} <span className="text-destructive">*</span></Label>
-                  <Input id="marks" type="file" accept=".pdf" className="h-10 text-[14px] file:mr-4 file:py-1 file:px-3 file:rounded-md file:border file:border-solid file:border-border file:bg-secondary/50 file:text-[14px] file:font-medium cursor-pointer file:cursor-pointer bg-muted/5 border-border/40" onChange={handleMarksChange} />
+                  <Input id="marks" type="file" accept=".pdf,.jpg,.jpeg" className="h-10 text-[14px] file:mr-4 file:py-1 file:px-3 file:rounded-md file:border file:border-solid file:border-border file:bg-secondary/50 file:text-[14px] file:font-medium cursor-pointer file:cursor-pointer bg-muted/5 border-border/40" onChange={handleMarksChange} />
                 </div>
                 {fileError && <p className="text-destructive text-[14px] font-bold">{fileError}</p>}
               </div>
