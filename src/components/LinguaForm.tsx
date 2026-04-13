@@ -28,10 +28,10 @@ const ENGLISH_REGEX = /^[a-zA-Z0-9\s.,()#/_'"+&*-]*$/;
 const baseSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address." }),
   studentName: z.string().min(1, { message: "Name is required." }),
-  relationship: z.enum(['SO', 'DO'], { required_error: "Relationship is required." }),
+  relationship: z.enum(['SO', 'DO'], { errorMap: () => ({ message: "Relationship is required." }) }),
   fatherName: z.string().min(1, { message: "Father's name is required." }),
   motherName: z.string().min(1, { message: "Mother's name is required." }),
-  course: z.enum(['SSLC', 'PUC', 'Diploma', 'Degree', 'Engineering', 'Other'], { required_error: "Course is required." }),
+  course: z.enum(['SSLC', 'PUC', 'Diploma', 'Degree', 'Engineering', 'Other'], { errorMap: () => ({ message: "Course is required." }) }),
   board: z.string().optional(),
   pucStream: z.string().optional(),
   combination: z.string().optional(),
