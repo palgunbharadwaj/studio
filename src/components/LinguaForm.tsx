@@ -373,8 +373,14 @@ export function LinguaForm() {
     const file = e.target.files?.[0];
     if (file) {
       const allowedTypes = ['image/jpeg', 'application/pdf'];
+      const MAX_SIZE = 4 * 1024 * 1024; // 4MB
+
       if (!allowedTypes.includes(file.type)) {
         setFileError(lang === 'en' ? "Please upload a JPG/JPEG or PDF file." : "ದಯವಿಟ್ಟು JPG/JPEG ಅಥವಾ PDF ಫೈಲ್ ಅನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ.");
+        setPhotoFile(null);
+        e.target.value = '';
+      } else if (file.size > MAX_SIZE) {
+        setFileError(lang === 'en' ? "Photo size must be less than 4MB." : "ಫೋಟೋ ಗಾತ್ರವು 4MB ಗಿಂತ ಕಡಿಮೆ ಇರಬೇಕು.");
         setPhotoFile(null);
         e.target.value = '';
       } else {
@@ -388,8 +394,14 @@ export function LinguaForm() {
     const file = e.target.files?.[0];
     if (file) {
       const allowedTypes = ['image/jpeg', 'application/pdf'];
+      const MAX_SIZE = 4 * 1024 * 1024; // 4MB
+
       if (!allowedTypes.includes(file.type)) {
         setFileError(lang === 'en' ? "Please upload a JPG/JPEG or PDF file." : "ದಯವಿಟ್ಟು JPG/JPEG ಅಥವಾ PDF ಫೈಲ್ ಅನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ.");
+        setMarksFile(null);
+        e.target.value = '';
+      } else if (file.size > MAX_SIZE) {
+        setFileError(lang === 'en' ? "Marks card size must be less than 4MB." : "ಅಂಕಪಟ್ಟಿ ಗಾತ್ರವು 4MB ಗಿಂತ ಕಡಿಮೆ ಇರಬೇಕು.");
         setMarksFile(null);
         e.target.value = '';
       } else {
@@ -418,7 +430,11 @@ export function LinguaForm() {
       setResult(response);
     } catch (err) {
       console.error('Submission catch:', err);
-      setResult({ success: false, message: 'Submission failed.', error: String(err) });
+      setResult({ 
+        success: false, 
+        message: lang === 'en' ? 'Submission failed due to a network error.' : 'ನೆಟ್‌ವರ್ಕ್ ದೋಷದಿಂದಾಗಿ ಸಲ್ಲಿಕೆ ವಿಫಲವಾಗಿದೆ.', 
+        error: err instanceof Error ? err.message : String(err) 
+      });
     } finally {
       setIsSubmitting(false);
     }
