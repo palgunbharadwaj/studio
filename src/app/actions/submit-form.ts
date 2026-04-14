@@ -14,11 +14,38 @@ export type SubmissionResult = {
   error?: string;
 };
 
+export async function uploadFileChunk(payload: {
+  studentId: string;
+  type: 'photo' | 'marksCard';
+  index: number;
+  totalChunks: number;
+  chunkData: string;
+}): Promise<{ success: boolean; error?: string }> {
+  try {
+    const { firestore } = initializeFirebase();
+    const chunksCollection = collection(firestore, 'file_chunks');
+    
+    await addDoc(chunksCollection, {
+      studentId: payload.studentId,
+      type: payload.type,
+      index: payload.index,
+      totalChunks: payload.totalChunks,
+      data: payload.chunkData,
+      createdAt: serverTimestamp(),
+    });
+    
+    return { success: true };
+  } catch (error) {
+    console.error('CHUNK UPLOAD ERROR:', error);
+    return { success: false, error: error instanceof Error ? error.message : String(error) };
+  }
+}
+
 export async function submitLinguaForm(data: any): Promise<SubmissionResult> {
   try {
     console.log('--- SERVER SUBMISSION INITIATED ---');
 
-    // 0. Validate Environment Variables (Critical for Deployed Environments)
+    // 0. Validate Environment Variables
     const requiredEnvVars = [
       'NEXT_PUBLIC_FIREBASE_API_KEY',
       'NEXT_PUBLIC_FIREBASE_PROJECT_ID',
@@ -26,18 +53,17 @@ export async function submitLinguaForm(data: any): Promise<SubmissionResult> {
     ];
     const missingVars = requiredEnvVars.filter(v => !process.env[v]);
     if (missingVars.length > 0) {
-      throw new Error(`Server configuration error: Missing environment variables (${missingVars.join(', ')}). Please check your hosting provide's secret settings.`);
+      throw new Error(`Server configuration error: Missing environment variables (${missingVars.join(', ')}).`);
     }
 
     const { firestore } = initializeFirebase();
     
-    // Extract large files for chunking
-    const { photoBase64, marksCardBase64, ...formData } = data;
+    // Extract file flags (Base64 is no longer sent to this action)
+    const { hasPhoto, hasMarksCard, ...formData } = data;
 
-    // Firestore does not accept 'undefined' values. Sanitize data before submission.
+    // Sanitize data
     const cleanData: Record<string, any> = {};
     Object.keys(formData).forEach((key) => {
-      // Filter out undefined and null to be safe for all Firestore environments
       if (formData[key] !== undefined && formData[key] !== null && formData[key] !== '') {
         cleanData[key] = formData[key];
       }
@@ -49,59 +75,17 @@ export async function submitLinguaForm(data: any): Promise<SubmissionResult> {
 
     const parentRef = collection(firestore, 'registrations');
     
-    // 1. Pre-generate the document ID so we can start file uploads immediately in parallel
-    // This removes the need to wait for the main record before starting chunk uploads
+    // 1. Generate and save the main document
     const registrationRef = doc(parentRef);
     const studentId = registrationRef.id;
-    console.log('Generated Student ID:', studentId);
 
-    // 2. Prepare the main document promise
-    const mainDocPromise = setDoc(registrationRef, {
+    await setDoc(registrationRef, {
       ...cleanData,
-      hasPhoto: !!photoBase64,
-      hasMarksCard: !!marksCardBase64,
+      hasPhoto,
+      hasMarksCard,
       createdAt: serverTimestamp(),
     });
-
-    // 3. Helper function to generate chunk promises
-    const getChunkPromises = (base64: string, type: 'photo' | 'marksCard') => {
-      if (!base64) return [];
-      
-      const CHUNK_SIZE = 950 * 1024; 
-      const chunkCount = Math.ceil(base64.length / CHUNK_SIZE);
-      const chunksCollection = collection(firestore, 'file_chunks');
-      
-      const promises = [];
-      for (let i = 0; i < chunkCount; i++) {
-        const start = i * CHUNK_SIZE;
-        const end = Math.min(start + CHUNK_SIZE, base64.length);
-        const chunkData = base64.substring(start, end);
-        
-        promises.push(addDoc(chunksCollection, {
-          studentId,
-          type,
-          index: i,
-          totalChunks: chunkCount,
-          data: chunkData,
-          createdAt: serverTimestamp(),
-        }));
-      }
-      return promises;
-    };
-
-    // 4. Trigger ALL writes (Main + Photo Chunks + Marks Chunks) simultaneously
-    console.log('Sending all data to Firestore in parallel...');
-    const photoPromises = getChunkPromises(photoBase64, 'photo');
-    const marksPromises = getChunkPromises(marksCardBase64, 'marksCard');
     
-    await Promise.all([
-      mainDocPromise,
-      ...photoPromises,
-      ...marksPromises
-    ]);
-    
-    console.log('All records and chunks saved successfully.');
-
     return {
       success: true,
       message: successMessage,
@@ -112,9 +96,7 @@ export async function submitLinguaForm(data: any): Promise<SubmissionResult> {
     console.error('SERVER SUBMISSION CRITICAL ERROR:', error);
     return {
       success: false,
-      message: error instanceof Error && error.message.includes('configuration error') 
-        ? error.message 
-        : 'An error occurred during submission. If this persists, please try with smaller files or check your internet connection.',
+      message: 'An error occurred during submission. If this persists, please try with smaller files or check your internet connection.',
       error: error instanceof Error ? error.message : 'Unknown error',
     };
   }

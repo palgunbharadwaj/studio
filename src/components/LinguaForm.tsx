@@ -17,7 +17,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
-import { submitLinguaForm, SubmissionResult } from '@/app/actions/submit-form';
+import { submitLinguaForm, uploadFileChunk, SubmissionResult } from '@/app/actions/submit-form';
 import { Loader2, Send, User, GraduationCap, FileCheck, AlertCircle, CheckCircle2, Download, FileText } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { generateAcknowledgement } from '@/utils/generate-pdf';
@@ -353,16 +353,51 @@ export function LinguaForm() {
 
     setIsSubmitting(true);
     setResult(null);
-    try {
-      const photoBase64 = await fileToBase64(photoFile);
-      const marksCardBase64 = await fileToBase64(marksFile);
 
+    try {
+      // 1. Submit main record first to get studentId
       const response = await submitLinguaForm({
         ...values,
         language: lang,
-        photoBase64,
-        marksCardBase64,
+        hasPhoto: true,
+        hasMarksCard: true,
       });
+
+      if (!response.success || !response.studentId) {
+        setResult(response);
+        return;
+      }
+
+      const studentId = response.studentId;
+
+      // 2. Helper to handle chunking in background
+      const CHUNK_SIZE = 950 * 1024; // 1MB chunks
+      const uploadInChunks = async (file: File, type: 'photo' | 'marksCard') => {
+        const base64 = await fileToBase64(file);
+        const chunkCount = Math.ceil(base64.length / CHUNK_SIZE);
+        
+        // We use serial upload (one by one) to be extremely safe against network congestion
+        for (let i = 0; i < chunkCount; i++) {
+          const start = i * CHUNK_SIZE;
+          const end = Math.min(start + CHUNK_SIZE, base64.length);
+          const chunkData = base64.substring(start, end);
+          
+          const chunkRes = await uploadFileChunk({
+            studentId,
+            type,
+            index: i,
+            totalChunks: chunkCount,
+            chunkData,
+          });
+          
+          if (!chunkRes.success) throw new Error(chunkRes.error || `Upload failed for ${type}`);
+        }
+      };
+
+      // 3. Upload both files in background (one after another)
+      await uploadInChunks(photoFile, 'photo');
+      await uploadInChunks(marksFile, 'marksCard');
+
       setResult(response);
     } catch (err) {
       console.error('Submission catch:', err);
@@ -701,10 +736,12 @@ export function LinguaForm() {
                 <div className="space-y-1">
                   <Label htmlFor="photo" className="text-[16px] font-bold cursor-default">{t.photoLabel} <span className="text-destructive">*</span></Label>
                   <Input id="photo" type="file" accept=".jpg,.jpeg,.pdf" className="h-10 text-[14px] file:mr-4 file:py-1 file:px-3 file:rounded-md file:border file:border-solid file:border-border file:bg-secondary/50 file:text-[14px] file:font-medium cursor-pointer file:cursor-pointer bg-muted/5 border-border/40" onChange={handlePhotoChange} />
+                  {photoFile && <p className="text-[12px] text-green-600 font-bold ml-1">File Size: {(photoFile.size / (1024 * 1024)).toFixed(2)} MB</p>}
                 </div>
                 <div className="space-y-1">
                   <Label htmlFor="marks" className="text-[16px] font-bold cursor-default">{t.marksCardLabel} <span className="text-destructive">*</span></Label>
                   <Input id="marks" type="file" accept=".pdf,.jpg,.jpeg" className="h-10 text-[14px] file:mr-4 file:py-1 file:px-3 file:rounded-md file:border file:border-solid file:border-border file:bg-secondary/50 file:text-[14px] file:font-medium cursor-pointer file:cursor-pointer bg-muted/5 border-border/40" onChange={handleMarksChange} />
+                  {marksFile && <p className="text-[12px] text-green-600 font-bold ml-1">File Size: {(marksFile.size / (1024 * 1024)).toFixed(2)} MB</p>}
                 </div>
                 {fileError && <p className="text-destructive text-[14px] font-bold">{fileError}</p>}
               </div>
