@@ -24,10 +24,17 @@ export async function getReassembledFile(studentId: string, type: 'photo' | 'mar
       return null;
     }
     
-    // 1. Sort chunks by index in memory to avoid the need for a composite index
-    const sortedDocs = querySnapshot.docs
-      .map(doc => doc.data())
-      .sort((a, b) => (a.index || 0) - (b.index || 0));
+    // 1. Deduplicate and sort chunks by index
+    const uniqueChunks = new Map<number, any>();
+    querySnapshot.docs.forEach(doc => {
+      const data = doc.data();
+      if (typeof data.index === 'number') {
+        uniqueChunks.set(data.index, data);
+      }
+    });
+
+    const sortedDocs = Array.from(uniqueChunks.values())
+      .sort((a, b) => a.index - b.index);
     
     // 2. Validation: Check if we have all the chunks
     // We get the expected total from the first chunk found

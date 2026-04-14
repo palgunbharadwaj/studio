@@ -277,8 +277,8 @@ export function LinguaForm() {
       cgpaLabel: "CGPA",
       otherCourseLabel: "Please specify other course",
       docsTitle: "Documents",
-      photoLabel: "Photo (JPG/JPEG/PDF, max 10MB)",
-      marksCardLabel: "Marks Card (JPG/JPEG/PDF, max 10MB)",
+      photoLabel: "Photo (JPG/JPEG/PDF, max 2MB)",
+      marksCardLabel: "Marks Card (JPG/JPEG/PDF, max 2MB)",
       submitButton: "Submit",
       processing: "Processing...",
       successTitle: "Your application for the Pratibha Puraskar 2025-2026 has been received. Thank you.",
@@ -309,14 +309,14 @@ export function LinguaForm() {
     const file = e.target.files?.[0];
     if (file) {
       const allowedTypes = ['image/jpeg', 'application/pdf'];
-      const MAX_SIZE = 10 * 1024 * 1024; // 10MB
+      const MAX_SIZE = 2 * 1024 * 1024; // 2MB
 
       if (!allowedTypes.includes(file.type)) {
         setFileError(lang === 'en' ? "Please upload a JPG/JPEG or PDF file." : "ದಯವಿಟ್ಟು JPG/JPEG ಅಥವಾ PDF ಫೈಲ್ ಅನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ.");
         setPhotoFile(null);
         e.target.value = '';
       } else if (file.size > MAX_SIZE) {
-        setFileError(lang === 'en' ? "Photo size must be less than 10MB." : "ಫೋಟೋ ಗಾತ್ರವು 10MB ಗಿಂತ ಕಡಿಮೆ ಇರಬೇಕು.");
+        setFileError(lang === 'en' ? "Photo size must be less than 2MB." : "ಫೋಟೋ ಗಾತ್ರವು 2MB ಗಿಂತ ಕಡಿಮೆ ಇರಬೇಕು.");
         setPhotoFile(null);
         e.target.value = '';
       } else {
@@ -330,14 +330,14 @@ export function LinguaForm() {
     const file = e.target.files?.[0];
     if (file) {
       const allowedTypes = ['image/jpeg', 'application/pdf'];
-      const MAX_SIZE = 10 * 1024 * 1024; // 10MB
+      const MAX_SIZE = 2 * 1024 * 1024; // 2MB
 
       if (!allowedTypes.includes(file.type)) {
         setFileError(lang === 'en' ? "Please upload a JPG/JPEG or PDF file." : "ದಯವಿಟ್ಟು JPG/JPEG ಅಥವಾ PDF ಫೈಲ್ ಅನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿ.");
         setMarksFile(null);
         e.target.value = '';
       } else if (file.size > MAX_SIZE) {
-        setFileError(lang === 'en' ? "Marks card size must be less than 10MB." : "ಅಂಕಪಟ್ಟಿ ಗಾತ್ರವು 10MB ಗಿಂತ ಕಡಿಮೆ ಇರಬೇಕು.");
+        setFileError(lang === 'en' ? "Marks card size must be less than 2MB." : "ಅಂಕಪಟ್ಟಿ ಗಾತ್ರವು 2MB ಗಿಂತ ಕಡಿಮೆ ಇರಬೇಕು.");
         setMarksFile(null);
         e.target.value = '';
       } else {

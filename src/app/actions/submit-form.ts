@@ -23,9 +23,10 @@ export async function uploadFileChunk(payload: {
 }): Promise<{ success: boolean; error?: string }> {
   try {
     const { firestore } = initializeFirebase();
-    const chunksCollection = collection(firestore, 'file_chunks');
+    const chunkId = `${payload.studentId}_${payload.type}_${payload.index}`;
+    const chunkDocRef = doc(firestore, 'file_chunks', chunkId);
     
-    await addDoc(chunksCollection, {
+    await setDoc(chunkDocRef, {
       studentId: payload.studentId,
       type: payload.type,
       index: payload.index,
