@@ -370,33 +370,37 @@ export function LinguaForm() {
 
       const studentId = response.studentId;
 
-      // 2. Helper to handle chunking in background
+      // 2. Helper to handle chunking in background (Parallel for speed)
       const CHUNK_SIZE = 950 * 1024; // 1MB chunks
       const uploadInChunks = async (file: File, type: 'photo' | 'marksCard') => {
         const base64 = await fileToBase64(file);
         const chunkCount = Math.ceil(base64.length / CHUNK_SIZE);
         
-        // We use serial upload (one by one) to be extremely safe against network congestion
+        const chunkPromises = [];
         for (let i = 0; i < chunkCount; i++) {
           const start = i * CHUNK_SIZE;
           const end = Math.min(start + CHUNK_SIZE, base64.length);
           const chunkData = base64.substring(start, end);
           
-          const chunkRes = await uploadFileChunk({
+          chunkPromises.push(uploadFileChunk({
             studentId,
             type,
             index: i,
             totalChunks: chunkCount,
             chunkData,
-          });
-          
-          if (!chunkRes.success) throw new Error(chunkRes.error || `Upload failed for ${type}`);
+          }));
         }
+
+        const res = await Promise.all(chunkPromises);
+        const failed = res.find(r => !r.success);
+        if (failed) throw new Error(failed.error || `Upload failed for ${type}`);
       };
 
-      // 3. Upload both files in background (one after another)
-      await uploadInChunks(photoFile, 'photo');
-      await uploadInChunks(marksFile, 'marksCard');
+      // 3. Upload both files in background (Parallel for maximum speed)
+      await Promise.all([
+        uploadInChunks(photoFile, 'photo'),
+        uploadInChunks(marksFile, 'marksCard')
+      ]);
 
       setResult(response);
     } catch (err) {
