@@ -24,11 +24,20 @@ export async function getReassembledFile(studentId: string, type: 'photo' | 'mar
       return null;
     }
     
-    // Sort chunks by index in memory to avoid the need for a composite index
+    // 1. Sort chunks by index in memory to avoid the need for a composite index
     const sortedDocs = querySnapshot.docs
       .map(doc => doc.data())
       .sort((a, b) => (a.index || 0) - (b.index || 0));
     
+    // 2. Validation: Check if we have all the chunks
+    // We get the expected total from the first chunk found
+    const expectedTotal = sortedDocs[0].totalChunks;
+    if (sortedDocs.length !== expectedTotal) {
+      console.error(`Re-assembly failed: Found ${sortedDocs.length} of ${expectedTotal} chunks for ${type}`);
+      return null;
+    }
+    
+    // 3. Concatenate the data
     let fullBase64 = '';
     sortedDocs.forEach((doc) => {
       fullBase64 += doc.data;

@@ -107,22 +107,47 @@ export default function AdminExportPage() {
     downloadBlob(csvContent, `registrations_${courseType.toLowerCase()}_${new Date().toISOString().split('T')[0]}.csv`);
   };
 
+  const base64ToBlob = (base64Data: string) => {
+    // Split the base64 string to get the type and the actual data
+    const parts = base64Data.split(';base64,');
+    if (parts.length !== 2) return null;
+    
+    const contentType = parts[0].split(':')[1];
+    const byteCharacters = atob(parts[1]);
+    const byteArrays = [];
+    
+    for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+      const slice = byteCharacters.slice(offset, offset + 512);
+      const byteNumbers = new Array(slice.length);
+      for (let i = 0; i < slice.length; i++) {
+        byteNumbers[i] = slice.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      byteArrays.push(byteArray);
+    }
+    
+    return new Blob(byteArrays, { type: contentType });
+  };
+
   const handleViewFile = async (studentId: string, type: 'photo' | 'marksCard', studentName: string) => {
     setIsAssembling(true);
     try {
       const base64 = await getReassembledFile(studentId, type);
       if (base64) {
+        const blob = base64ToBlob(base64);
+        if (!blob) throw new Error('Failed to convert file to Blob');
+        
+        const blobUrl = URL.createObjectURL(blob);
         const isPdf = base64.startsWith('data:application/pdf');
         
-        const win = window.open();
-        if (win) {
-          win.document.title = `${studentName} - ${type === 'photo' ? 'Photo' : 'Marks Card'}`;
-          if (isPdf) {
-            win.document.write(`
-              <style>html,body{margin:0;padding:0;height:100%;width:100%;overflow:hidden;}iframe{width:100%;height:100%;border:none;}</style>
-              <iframe src="${base64}" allowfullscreen></iframe>
-            `);
-          } else {
+        if (isPdf) {
+          // PDFs work best when opened directly in a new tab as a Blob URL
+          window.open(blobUrl, '_blank');
+        } else {
+          // Photos work best in a customized window to ensure no cropping
+          const win = window.open();
+          if (win) {
+            win.document.title = `${studentName} - Photo`;
             win.document.write(`
               <style>
                 body { 
@@ -142,12 +167,14 @@ export default function AdminExportPage() {
                   background: white;
                 }
               </style>
-              <img src="${base64}" />
+              <img src="${blobUrl}" />
             `);
+            // Revoke the blob URL when the window is closed to free up memory
+            win.onunload = () => URL.revokeObjectURL(blobUrl);
           }
         }
       } else {
-        alert('File not found or re-assembly failed.');
+        alert('File not found or re-assembly failed (some pieces might be missing).');
       }
     } catch (err) {
       console.error('View error:', err);
