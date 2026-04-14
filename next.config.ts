@@ -5,10 +5,10 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  turbopack: {
+    root: process.cwd(),
+  },
   experimental: {
-    turbopack: {
-      root: '.',
-    },
     serverActions: {
       bodySizeLimit: '10mb',
     },
