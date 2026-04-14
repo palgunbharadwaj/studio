@@ -48,13 +48,13 @@ const baseSchema = z.object({
 type FormValues = z.infer<typeof baseSchema>;
 
 export function LinguaForm() {
-  const [lang, setLang] = useState<'kn' | 'en'>('kn');
+  const lang: 'en' = 'en';
 
   // Create dynamic dynamic schema based on lang
   const dynamicSchema = useMemo(() => {
     return baseSchema.superRefine((data, ctx) => {
-      const regex = lang === 'kn' ? KANNADA_REGEX : ENGLISH_REGEX;
-      const msg = lang === 'kn' ? "ದಯವಿಟ್ಟು ಕನ್ನಡದಲ್ಲಿ ಮಾತ್ರ ನಮೂದಿಸಿ" : "Please enter in English only";
+      const regex = ENGLISH_REGEX;
+      const msg = "Please enter in English only";
 
       const fieldsToCheck = ['studentName', 'fatherName', 'motherName', 'otherCourse', 'branch'] as const;
 
@@ -109,34 +109,13 @@ export function LinguaForm() {
   const watchedBranch = useWatch({ control: form.control, name: 'branch' });
   const selectedBoard = useWatch({ control: form.control, name: 'board' });
 
-  // 1. Language Switch Reset: Full Reset of everything
-  // form is removed from dependencies to prevent accidental resets during re-renders
+  // 1. Logic Persistence: We maintain errors and results clean state.
   useEffect(() => {
-    form.reset({
-      studentName: '',
-      relationship: undefined,
-      fatherName: '',
-      motherName: '',
-      course: undefined,
-      board: undefined,
-      pucStream: undefined,
-      combination: undefined,
-      percentage: '',
-      marksObtained: '',
-      totalMarks: '',
-      cgpa: '',
-      yearOfPassing: '',
-      scoreType: undefined,
-      otherCourse: '',
-      branch: undefined,
-    });
-    setPhotoFile(null);
-    setMarksFile(null);
+    setResult(null);
     setEligibilityError(null);
     setTotalMarksError(null);
     setFileError(null);
-    setResult(null);
-  }, [lang]); // Removed 'form' from dependencies
+  }, [lang]);
 
   // 2. Academic Switch Reset: Reset academic fields and documents while preserving personal details
   useEffect(() => {
@@ -267,7 +246,7 @@ export function LinguaForm() {
         }
       }
     }
-  }, [marksObtained, totalMarks, cgpaValue, percentageValue, selectedCourse, lang, form, scoreType]);
+  }, [marksObtained, totalMarks, cgpaValue, percentageValue, selectedCourse, lang, form, scoreType, selectedBoard]);
 
   const translations = {
     en: {
@@ -312,53 +291,10 @@ export function LinguaForm() {
       engineeringCourses: ['CSE (Computer Science and Engineering)', 'AIML (Artificial Intelligence and Machine Learning)', 'ISE (Information Science and Engineering)', 'ECE (Electronics and Communication Engineering)', 'EEE (Electrical and Electronics Engineering)', 'Mechanical (Mechanical Engineering)', 'Civil (Civil Engineering)', 'IP (Industrial Production Engineering)', 'EIE (Electronics and Instrumentation Engineering)', 'ECS (Electronics and Computer Science Engineering)', 'ECE (Electronics and Computer Engineering)', 'CSBS (Computer Science and Business Systems)', 'Mechatronics (Mechatronics Engineering)', 'Automobile (Automobile Engineering)', 'Aerospace (Aerospace Engineering)', 'Chemical (Chemical Engineering)', 'Biotechnology (Biotechnology Engineering)', 'Data Science (Data Science and Engineering)', 'AI & Data Science (Artificial Intelligence and Data Science Engineering)', 'Robotics & Automation (Robotics and Automation Engineering)', 'Other'],
       diplomaCourses: ['Diploma in Computer Science & Engineering (CSE)', 'Diploma in Electronics & Communication Engineering (ECE)', 'Diploma in Electrical & Electronics Engineering (EEE)', 'Diploma in Mechanical Engineering', 'Diploma in Civil Engineering', 'Diploma in Automobile Engineering', 'Other'],
       degreeCourses: ['D.Pharma (Diploma in Pharmacy)', 'B.Pharma (Bachelor of Pharmacy)', 'B.Sc (Bachelor of Science)', 'B.Com (Bachelor of Commerce)', 'B.A (Bachelor of Arts)', 'BCA (Bachelor of Computer Applications)', 'BBA (Bachelor of Business Administration)', 'BSW (Bachelor of Social Work)', 'B.Sc Nursing (Bachelor of Science in Nursing)', 'Other']
-    },
-    kn: {
-      trustName: "ಶ್ರೀ ಜಲವಾಸುದೇವ ಶ್ರೀವೈಷ್ಣವ ಸೇವಾ ಟ್ರಸ್ಟ್(ರಿ),ಕುಲಗಣಂ",
-      headerBold: "ಪ್ರತಿಭಾ ಪುರಸ್ಕಾರ 2025-2026:",
-      headerDesc: "2025 ಮತ್ತು 2026ರ ಸಾಲಿನ ಮಾರ್ಚಿ ಮತ್ತು ಏಪ್ರಿಲ್ ನಲ್ಲಿ ನಡೆದ ಪಿ.ಯು.ಸಿ ಪರೀಕ್ಷೆಯಲ್ಲಿ ಶೇ.85 ಕ್ಕಿಂತ ಹಾಗೂ ಎಸ್.ಎಸ್.ಎಲ್.ಸಿ/ಪದವಿ/ಉದ್ಯೋಗಾಧಾರಿತ ಶಿಕ್ಷಣದಲ್ಲಿ ರ್‍ಯಾಂಕ್‌ ಅಥವಾ ಶೇ.90 ಕ್ಕಿಂತ ಹೆಚ್ಚು ಅಂಕ ಪಡೆದ ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ದೇವಾಲಯದ ಮಟ್ಟದಲ್ಲಿ ಪುರಸ್ಕಾರ",
-      langLabel: "Choose Language / ಭಾಷೆ ಆಯ್ಕೆಮಾಡಿ",
-      personalDetailsHeader: "ವೈಯಕ್ತಿಕ ವಿವರಗಳು",
-      academicDetailsHeader: "ಶೈಕ್ಷಣಿಕ ವಿವರಗಳು",
-      emailLabel: "ಇಮೇಲ್",
-      studentNameLabel: "ವಿದ್ಯಾರ್ಥಿಯ ಹೆಸರು",
-      relationshipLabel: "S/O ಅಥವಾ D/O",
-      fatherNameLabel: "ತಂದೆಯ ಹೆಸರು",
-      motherNameLabel: "ತಾಯಿಯ ಹೆಸರು",
-      courseLabel: "ಕೋರ್ಸ್",
-      boardLabel: "ಮಂಡಳಿ",
-      streamLabel: "ವಿಭಾಗ",
-      combinationLabel: "ವಿಭಾಗ",
-      scienceCombination: "ವಿಜ್ಞಾನ ವಿಭಾಗ",
-      commerceCombination: "ವಾಣಿಜ್ಯ ವಿಭಾಗ",
-      artsCombination: "ಕಲೆ ವಿಭಾಗ",
-      branchLabel: "ವಿಭಾಗ",
-      scoreTypeLabel: "ಅಂಕಗಳ ಪ್ರಕಾರವನ್ನು ಆರಿಸಿ",
-      percentageLabel: "ಶೇಕಡಾ (%)",
-      marksObtainedLabel: "ಗಳಿಸಿದ ಅಂಕಗಳು",
-      totalMarksLabel: "ಒಟ್ಟು ಅಂಕಗಳು",
-      yearPassingLabel: "ಉತ್ತೀರ್ಣರಾದ ವರ್ಷ",
-      cgpaLabel: "ಸಿಜಿಪಿಎ (CGPA)",
-      otherCourseLabel: "ಇತರೆ ಕೋರ್ಸ್ ವಿವರ",
-      docsTitle: "ದಾಖಲೆಗಳು",
-      photoLabel: "ಫೋಟೋ (JPG/JPEG/PDF, ಗರಿಷ್ಠ 10MB)",
-      marksCardLabel: "ಅಂಕಪಟ್ಟಿ (JPG/JPEG/PDF, ಗರಿಷ್ಠ 10MB)",
-      submitButton: "ಸಲ್ಲಿಸಿ",
-      processing: "ಪ್ರಕ್ರಿಯೆಯಲ್ಲಿದೆ...",
-      successTitle: "ಪ್ರತಿಭಾ ಪುರಸ್ಕಾರ 2025-2026 ಕ್ಕಾಗಿ ನಿಮ್ಮ ಅರ್ಜಿಯನ್ನು ಸ್ವೀಕರಿಸಲಾಗಿದೆ. ಧನ್ಯವಾದಗಳು.",
-      successMessage: "ದಿನಾಂಕ:23/04/2026 ರಂದು ಎಲ್ಲಾ ಮಕ್ಕಳಿಗೂ ಪುರಸ್ಕರಿಸಲಾಗುವುದು. ಹಾಗಾಗಿ ಸಂಬಂಧಪಟ್ಟ ಮಕ್ಕಳು ಹಾಗೂ ಕುಟುಂಬ ಕಡ್ಡಾಯವಾಗಿ ಭಗವಂತನ ಕೈಂಕರ್ಯಕ್ಕೆ ಹಾಜರಾಗುವುದು.",
-      requiredNote: "* ಕಡ್ಡಾಯ ಪ್ರಶ್ನೆಯನ್ನು ಸೂಚಿಸುತ್ತದೆ",
-      boards: ['ರಾಜ್ಯ (State)', 'ಸಿಬಿಎಸ್ ಇ (CBSE)', 'ಐಸಿಎಸ್ ಇ (ICSE)'],
-      scienceCombinations: ['PCMB (ಭೌತಶಾಸ್ತ್ರ, ರಸಾಯನಶಾಸ್ತ್ರ, ಗಣಿತ, ಜೀವಶಾಸ್ತ್ರ)', 'PCMC (ಭೌತಶಾಸ್ತ್ರ, ರಸಾಯನಶಾಸ್ತ್ರ, ಗಣಿತ, ಕಂಪ್ಯೂಟರ್ ಸೈನ್ಸ್)', 'PCME (ಭೌತಶಾಸ್ತ್ರ, ರಸಾಯನಶಾಸ್ತ್ರ, ಗಣಿತ, ಎಲೆಕ್ಟ್ರಾನಿಕ್ಸ್)', 'PCMS (ಭೌತಶಾಸ್ತ್ರ, ರಸಾಯನಶಾಸ್ತ್ರ, ಗಣಿತ, ಸಂಖ್ಯಾಶಾಸ್ತ್ರ)', 'PCMH (ಭೌತಶಾಸ್ತ್ರ, ರಸಾಯನಶಾಸ್ತ್ರ, ಗಣಿತ, ಗೃಹ ವಿಜ್ಞಾನ)', 'PCAG (ಭೌತಶಾಸ್ತ್ರ, ರಸಾಯನಶಾಸ್ತ್ರ, ಕೃಷಿ ವಿಜ್ಞಾನ, ಗಣಿತ ಅಥವಾ ಜೀವಶಾಸ್ತ್ರ)', 'ಇತರೆ'],
-      commerceCombinations: ['ECBA (ಅರ್ಥಶಾಸ್ತ್ರ, ವಾಣಿಜ್ಯ, ವ್ಯವಹಾರ ಅಧ್ಯಯನಗಳು, ಲೆಕ್ಕಶಾಸ್ತ್ರ)', 'EBAC (ಅರ್ಥಶಾಸ್ತ್ರ, ವ್ಯವಹಾರ ಅಧ್ಯಯನಗಳು, ಲೆಕ್ಕಶಾಸ್ತ್ರ, ಕಂಪ್ಯೂಟರ್ ಸೈನ್ಸ್)', 'ESBA (ಅರ್ಥಶಾಸ್ತ್ರ, ಸಮಾಜಶಾಸ್ತ್ರ, ವ್ಯವಹಾರ ಅಧ್ಯಯನಗಳು, ಲೆಕ್ಕಶಾಸ್ತ್ರ)', 'EGBA (ಅರ್ಥಶಾಸ್ತ್ರ, ಭೂಗೋಳಶಾಸ್ತ್ರ, ವ್ಯವಹಾರ ಅಧ್ಯಯನಗಳು, ಲೆಕ್ಕಶಾಸ್ತ್ರ)', 'EMBA (ಅರ್ಥಶಾಸ್ತ್ರ, ಗಣಿತ, ವ್ಯವಹಾರ ಅಧ್ಯಯನಗಳು, ಲೆಕ್ಕಶಾಸ್ತ್ರ)', 'ECSA (ಅರ್ಥಶಾಸ್ತ್ರ, ಕಂಪ್ಯೂಟರ್ ಸೈನ್ಸ್, ಸಂಖ್ಯಾಶಾಸ್ತ್ರ, ಲೆಕ್ಕಶಾಸ್ತ್ರ)', 'ಇತರೆ'],
-      artsCombinations: ['HEPS (ಇತಿಹಾಸ, ಅರ್ಥಶಾಸ್ತ್ರ, ರಾಜಕೀಯ ವಿಜ್ಞಾನ, ಸಮಾಜಶಾಸ್ತ್ರ)', 'HEPPsy (ಇತಿಹಾಸ, ಅರ್ಥಶಾಸ್ತ್ರ, ರಾಜಕೀಯ ವಿಜ್ಞಾನ, ಮನೋವಿಜ್ಞಾನ)', 'HESP (ಇತಿಹಾಸ, ಅರ್ಥಶಾಸ್ತ್ರ, ಸಮಾಜಶಾಸ್ತ್ರ, ಮನೋವಿಜ್ಞಾನ)', 'HEBA (ಇತಿಹಾಸ, ಅರ್ಥಶಾಸ್ತ್ರ, ವ್ಯವಹಾರ ಅಧ್ಯಯನಗಳು, ಲೆಕ್ಕಶಾಸ್ತ್ರ)', 'HEGG (ಇತಿಹಾಸ, ಅರ್ಥಶಾಸ್ತ್ರ, ಭೂಗೋಳಶಾಸ್ತ್ರ, ಭೂಗರ್ಭಶಾಸ್ತ್ರ)', 'HESF (ಇತಿಹಾಸ, ಅರ್ಥಶಾಸ್ತ್ರ, ಸಮಾಜಶಾಸ್ತ್ರ, ಲಲಿತಕಲೆಗಳು)', 'ಇತರೆ'],
-      engineeringCourses: ['CSE (ಕಂಪ್ಯೂಟರ್ ಸೈನ್ಸ್ ಮತ್ತು ಇಂಜಿನಿಯರಿಂಗ್)', 'AIML (ಕೃತಕ ಬುದ್ಧಿಮತ್ತೆ ಮತ್ತು ಯಂತ್ರ ಕಲಿಕೆ)', 'ISE (ಮಾಹಿತಿ ವಿಜ್ಞಾನ ಮತ್ತು ಇಂಜಿನಿಯರಿಂಗ್)', 'ECE (ಎಲೆಕ್ಟ್ರಾನಿಕ್ಸ್ ಮತ್ತು ಸಂವಹನ ಇಂಜಿನಿಯರಿಂಗ್)', 'EEE (ವಿದ್ಯುತ್ ಮತ್ತು ಎಲೆಕ್ಟ್ರಾನಿಕ್ಸ್ ಇಂಜಿನಿಯರಿಂಗ್)', 'Mechanical (ಮೆಕ್ಯಾನಿಕಲ್ ಇಂಜಿನಿಯರಿಂಗ್)', 'Civil (ಸಿವಿಲ್ ಇಂಜಿನಿಯರಿಂಗ್)', 'IP (ಕೈಗಾರಿಕಾ ಉತ್ಪಾದನಾ ಇಂಜಿನಿಯರಿಂಗ್)', 'EIE (ಎಲೆಕ್ಟ್ರಾನಿಕ್ಸ್ ಮತ್ತು ಇನ್ಸ್ಟ್ರುಮೆಂಟೇಶನ್ ಇಂಜಿನಿಯರಿಂಗ್)', 'ECS (ಎಲೆಕ್ಟ್ರಾನಿಕ್ಸ್ ಮತ್ತು ಕಂಪ್ಯೂಟರ್ ಸೈನ್ಸ್ ಇಂಜಿನಿಯರಿಂಗ್)', 'ECE (ಎಲೆಕ್ಟ್ರಾನಿಕ್ಸ್ ಮತ್ತು ಕಂಪ್ಯೂಟರ್ ಇಂಜಿನಿಯರಿಂಗ್)', 'CSBS (ಕಂಪ್ಯೂಟರ್ ಸೈನ್ಸ್ ಮತ್ತು ವ್ಯವಹಾರ ವ್ಯವಸ್ಥೆಗಳು)', 'Mechatronics (ಮೆಕಾಟ್ರಾನಿಕ್ಸ್ ಇಂಜಿನಿಯರಿಂಗ್)', 'Automobile (ಆಟೋಮೊಬೈಲ್ ಇಂಜಿನಿಯರಿಂಗ್)', 'Aerospace (ಏರೋಸ್ಪೇಸ್ ಇಂಜಿನಿಯರಿಂಗ್)', 'Chemical (ರಾಸಾಯನಿಕ ಇಂಜಿನಿಯರಿಂಗ್)', 'Biotechnology (ಜೈವಿಕ ತಂತ್ರಜ್ಞಾನ ಇಂಜಿನಿಯರಿಂಗ್)', 'Data Science (ದತ್ತಾಂಶ ವಿಜ್ಞಾನ ಮತ್ತು ಇಂಜಿನಿಯರಿಂಗ್)', 'AI & Data Science (ಕೃತಕ ಬುದ್ಧಿಮತ್ತೆ ಮತ್ತು ದತ್ತಾಂಶ ವಿಜ್ಞಾನ ಇಂಜಿನಿಯರಿಂಗ್)', 'Robotics & Automation (ರೋಬೋಟಿಕ್ಸ್ ಮತ್ತು ಆಟೊಮೇಷನ್ ಇಂಜಿನಿಯರಿಂಗ್)', 'ಇತರೆ'],
-      diplomaCourses: ['ಕಂಪ್ಯೂಟರ್ ಸೈನ್ಸ್ ಮತ್ತು ಇಂಜಿನಿಯರಿಂಗ್ ಡಿಪ್ಲೊಮಾ', 'ಎಲೆಕ್ಟ್ರಾನಿಕ್ಸ್ ಮತ್ತು ಕಮ್ಯುನಿಕೇಷನ್ ಇಂಜಿನಿಯರಿಂಗ್ ಡಿಪ್ಲೊಮಾ', 'ಎಲೆಕ್ಟ್ರಿಕಲ್ ಮತ್ತು ಎಲೆಕ್ಟ್ರಾನಿಕ್ಸ್ ಇಂಜಿನಿಯರಿಂಗ್ ಡಿಪ್ಲೊಮಾ', 'ಮೆಕ್ಯಾನಿಕಲ್ ಇಂಜಿನಿಯರಿಂಗ್ ಡಿಪ್ಲೊಮಾ', 'ಸಿವಿಲ್ ಇಂಜಿನಿಯರಿಂಗ್ ಡಿಪ್ಲೊಮಾ', 'ಆಟೋಮೊಬೈಲ್ ಇಂಜಿನಿಯರಿಂಗ್ ಡಿಪ್ಲೊಮಾ', 'ಇತರೆ'],
-      degreeCourses: ['ಡಿ.ಫಾರ್ಮ (ಡಿಪ್ಲೊಮಾ ಇನ್ ಫಾರ್ಮಸಿ)', 'ಬಿ.ಫಾರ್ಮ (ಬ್ಯಾಚುಲರ್ ಆಫ್ ಫಾರ್ಮಸಿ)', 'ಬಿ.ಎಸ್ಸಿ (ಬ್ಯಾಚುಲರ್ ಆಫ್ ಸೈನ್ಸ್)', 'ಬಿ.ಕಾಂ (ಬ್ಯಾಚುಲರ್ ಆಫ್ ಕಾಮರ್ಸ್)', 'ಬಿ.ಎ (ಬ್ಯಾಚುಲರ್ ಆಫ್ ಆರ್ಟ್ಸ್)', 'ಬಿ.ಸಿ.ಎ (ಬ್ಯಾಚುಲರ್ ಆಫ್ ಕಂಪ್ಯೂಟರ್ ಅಪ್ಲಿಕೇಶನ್ಸ್)', 'ಬಿ.ಬಿ.ಎ (ಬ್ಯಾಚುಲರ್ ಆಫ್ ಬಿಸಿನೆಸ್ ಅಡ್ಮಿನಿಸ್ಟ್ರೇಷನ್)', 'ಬಿ.ಎಸ್.ಡಬ್ಲ್ಯೂ (ಬ್ಯಾಚುಲರ್ ಆಫ್ ಸೋಷಿಯಲ್ ವರ್ಕ್)', 'ಬಿ.ಎಸ್ಸಿ ನರ್ಸಿಂಗ್ (ಬ್ಯಾಚುಲರ್ ಆಫ್ ಸೈನ್ಸ್ ಇನ್ ನರ್ಸಿಂಗ್)', 'ಇತರೆ']
     }
   };
 
-  const t = translations[lang];
+  const t = translations.en;
 
   const fileToBase64 = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -517,17 +453,6 @@ export function LinguaForm() {
         </CardContent>
       </Card>
 
-      <Card className="shadow-sm border-none">
-        <CardContent className="p-4">
-          <div className="space-y-2">
-            <Label className="font-bold text-[#202124] text-[16px]">{t.langLabel} <span className="text-destructive">*</span></Label>
-            <RadioGroup value={lang} onValueChange={(v) => setLang(v as 'en' | 'kn')} className="flex flex-col gap-1.5">
-              <div className="flex items-center space-x-2.5 py-0.5"><RadioGroupItem value="kn" id="lang-kn-radio" className="h-4 w-4 cursor-pointer" /><Label htmlFor="lang-kn-radio" className="font-normal text-[14px] cursor-pointer">ಕನ್ನಡ</Label></div>
-              <div className="flex items-center space-x-2.5 py-0.5"><RadioGroupItem value="en" id="lang-en-radio" className="h-4 w-4 cursor-pointer" /><Label htmlFor="lang-en-radio" className="font-normal text-[14px] cursor-pointer">English</Label></div>
-            </RadioGroup>
-          </div>
-        </CardContent>
-      </Card>
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
@@ -585,7 +510,7 @@ export function LinguaForm() {
                   <FormItem className="space-y-1">
                     <FormLabel className="text-[16px] font-bold">{t.boardLabel} <span className="text-destructive">*</span></FormLabel>
                     <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
-                      {t.boards.map(b => <div key={b} className="flex items-center space-x-1.5"><RadioGroupItem value={b} id={`board-${b}-${lang}`} className="h-4 w-4 cursor-pointer" /><Label htmlFor={`board-${b}-${lang}`} className="text-[14px] font-normal cursor-pointer">{b}</Label></div>)}
+                      {t.boards.map((b: string) => <div key={b} className="flex items-center space-x-1.5"><RadioGroupItem value={b} id={`board-${b}-${lang}`} className="h-4 w-4 cursor-pointer" /><Label htmlFor={`board-${b}-${lang}`} className="text-[14px] font-normal cursor-pointer">{b}</Label></div>)}
                     </RadioGroup>
                   </FormItem>
                 )} />
@@ -597,7 +522,7 @@ export function LinguaForm() {
                     <FormItem className="space-y-1">
                       <FormLabel className="text-[16px] font-bold">{t.boardLabel} <span className="text-destructive">*</span></FormLabel>
                       <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
-                        {t.boards.map(b => <div key={b} className="flex items-center space-x-1.5"><RadioGroupItem value={b} id={`puc-board-${b}-${lang}`} className="h-4 w-4 cursor-pointer" /><Label htmlFor={`puc-board-${b}-${lang}`} className="text-[14px] font-normal cursor-pointer">{b}</Label></div>)}
+                        {t.boards.map((b: string) => <div key={b} className="flex items-center space-x-1.5"><RadioGroupItem value={b} id={`puc-board-${b}-${lang}`} className="h-4 w-4 cursor-pointer" /><Label htmlFor={`puc-board-${b}-${lang}`} className="text-[14px] font-normal cursor-pointer">{b}</Label></div>)}
                       </RadioGroup>
                     </FormItem>
                   )} />
@@ -605,8 +530,8 @@ export function LinguaForm() {
                     <FormItem className="space-y-1">
                       <FormLabel className="text-[16px] font-bold">{t.streamLabel} <span className="text-destructive">*</span></FormLabel>
                       <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
-                        {['Science', 'Commerce', 'Arts'].map(s => (
-                          <div key={s} className="flex items-center space-x-1.5"><RadioGroupItem value={s} id={`stream-${s}-${lang}`} className="h-4 w-4 cursor-pointer" /><Label htmlFor={`stream-${s}-${lang}`} className="text-[14px] font-normal cursor-pointer">{lang === 'en' ? s : (s === 'Science' ? 'ವಿಜ್ಞಾನ' : s === 'Commerce' ? 'ವಾಣಿಜ್ಯ' : 'ಕಲೆ')}</Label></div>
+                        {['Science', 'Commerce', 'Arts'].map((s: string) => (
+                          <div key={s} className="flex items-center space-x-1.5"><RadioGroupItem value={s} id={`stream-${s}-${lang}`} className="h-4 w-4 cursor-pointer" /><Label htmlFor={`stream-${s}-${lang}`} className="text-[14px] font-normal cursor-pointer">{s}</Label></div>
                         ))}
                       </RadioGroup>
                     </FormItem>
@@ -618,7 +543,7 @@ export function LinguaForm() {
                         <FormItem className="space-y-1">
                           <FormLabel className="text-[16px] font-bold">{lang === 'en' ? 'Combination' : 'ವಿಭಾಗ'} <span className="text-destructive">*</span></FormLabel>
                           <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
-                            {options.map((c, idx) => <div key={idx} className="flex items-center space-x-1.5"><RadioGroupItem value={c} id={`comb-${idx}-${lang}`} className="h-4 w-4 cursor-pointer" /><Label htmlFor={`comb-${idx}-${lang}`} className="text-[14px] cursor-pointer">{c}</Label></div>)}
+                            {options.map((c: string, idx: number) => <div key={idx} className="flex items-center space-x-1.5"><RadioGroupItem value={c} id={`comb-${idx}-${lang}`} className="h-4 w-4 cursor-pointer" /><Label htmlFor={`comb-${idx}-${lang}`} className="text-[14px] cursor-pointer">{c}</Label></div>)}
                           </RadioGroup>
                         </FormItem>
                       );
@@ -638,7 +563,7 @@ export function LinguaForm() {
                     <FormItem className="space-y-1">
                       <FormLabel className="text-[16px] font-bold">{t.branchLabel} <span className="text-destructive">*</span></FormLabel>
                       <RadioGroup value={field.value} onValueChange={field.onChange} className="flex flex-col gap-1.5">
-                        {(selectedCourse === 'Engineering' ? t.engineeringCourses : selectedCourse === 'Diploma' ? t.diplomaCourses : selectedCourse === 'Degree' ? t.degreeCourses : []).map((c, idx) => (
+                        {(selectedCourse === 'Engineering' ? t.engineeringCourses : selectedCourse === 'Diploma' ? t.diplomaCourses : selectedCourse === 'Degree' ? t.degreeCourses : []).map((c: string, idx: number) => (
                           <div key={idx} className="flex items-center space-x-1.5"><RadioGroupItem value={c} id={`branch-${idx}-${lang}`} className="h-4 w-4 cursor-pointer" /><Label htmlFor={`branch-${idx}-${lang}`} className="text-[14px] cursor-pointer">{c}</Label></div>
                         ))}
                       </RadioGroup>
@@ -787,7 +712,7 @@ export function LinguaForm() {
           </Card>
 
           <div className="flex pt-1">
-            <Button type="submit" className="w-full h-11 font-bold text-[16px]" disabled={isSubmitting || !!eligibilityError || !!totalMarksError || !!fileError || !canSubmit()}>
+            <Button type="submit" className="w-full h-11 font-bold text-[16px]" disabled={isSubmitting}>
               {isSubmitting ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> {t.processing}</> : <><Send className="mr-2 h-4 w-4" /> {t.submitButton}</>}
             </Button>
           </div>
