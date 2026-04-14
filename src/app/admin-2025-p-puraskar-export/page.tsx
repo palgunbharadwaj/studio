@@ -124,8 +124,25 @@ export default function AdminExportPage() {
             `);
           } else {
             win.document.write(`
-              <style>body{margin:0;display:flex;justify-content:center;align-items:center;min-height:100vh;background:#f0f2f5;}</style>
-              <img src="${base64}" style="max-width:90%; height:auto; box-shadow:0 10px 25px rgba(0,0,0,0.1); border-radius:8px;" />
+              <style>
+                body { 
+                  margin: 0; 
+                  padding: 40px 20px; 
+                  display: flex; 
+                  flex-direction: column; 
+                  align-items: center; 
+                  background: #f0f2f5; 
+                  min-height: 100vh;
+                }
+                img { 
+                  max-width: 95%; 
+                  height: auto; 
+                  box-shadow: 0 10px 25px rgba(0,0,0,0.2); 
+                  border-radius: 8px; 
+                  background: white;
+                }
+              </style>
+              <img src="${base64}" />
             `);
           }
         }

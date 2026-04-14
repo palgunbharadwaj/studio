@@ -1,7 +1,7 @@
 'use server';
 
 import { initializeFirebase } from '@/firebase';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, doc, setDoc } from 'firebase/firestore';
 
 /**
  * @fileOverview A server action for securely submitting the form data to Firestore.
@@ -49,35 +49,35 @@ export async function submitLinguaForm(data: any): Promise<SubmissionResult> {
 
     const parentRef = collection(firestore, 'registrations');
     
-    // 1. Save the main student document (without the large files)
-    const docResponse = await addDoc(parentRef, {
+    // 1. Pre-generate the document ID so we can start file uploads immediately in parallel
+    // This removes the need to wait for the main record before starting chunk uploads
+    const registrationRef = doc(parentRef);
+    const studentId = registrationRef.id;
+    console.log('Generated Student ID:', studentId);
+
+    // 2. Prepare the main document promise
+    const mainDocPromise = setDoc(registrationRef, {
       ...cleanData,
       hasPhoto: !!photoBase64,
       hasMarksCard: !!marksCardBase64,
       createdAt: serverTimestamp(),
     });
 
-    const studentId = docResponse.id;
-    console.log('Main Firestore record created:', studentId);
-
-    // 2. Helper function to chunk and save files to Firestore
-    const saveChunks = async (base64: string, type: 'photo' | 'marksCard') => {
-      if (!base64) return;
+    // 3. Helper function to generate chunk promises
+    const getChunkPromises = (base64: string, type: 'photo' | 'marksCard') => {
+      if (!base64) return [];
       
-      // Increased chunk size closer to 1MB limit for fewer writes and better performance
       const CHUNK_SIZE = 950 * 1024; 
       const chunkCount = Math.ceil(base64.length / CHUNK_SIZE);
       const chunksCollection = collection(firestore, 'file_chunks');
       
-      console.log(`Uploading ${type} (${chunkCount} chunks)...`);
-      
-      const chunkPromises = [];
+      const promises = [];
       for (let i = 0; i < chunkCount; i++) {
         const start = i * CHUNK_SIZE;
         const end = Math.min(start + CHUNK_SIZE, base64.length);
         const chunkData = base64.substring(start, end);
         
-        chunkPromises.push(addDoc(chunksCollection, {
+        promises.push(addDoc(chunksCollection, {
           studentId,
           type,
           index: i,
@@ -86,16 +86,21 @@ export async function submitLinguaForm(data: any): Promise<SubmissionResult> {
           createdAt: serverTimestamp(),
         }));
       }
-      
-      await Promise.all(chunkPromises);
+      return promises;
     };
 
-    // 3. Save file chunks
+    // 4. Trigger ALL writes (Main + Photo Chunks + Marks Chunks) simultaneously
+    console.log('Sending all data to Firestore in parallel...');
+    const photoPromises = getChunkPromises(photoBase64, 'photo');
+    const marksPromises = getChunkPromises(marksCardBase64, 'marksCard');
+    
     await Promise.all([
-      saveChunks(photoBase64, 'photo'),
-      saveChunks(marksCardBase64, 'marksCard')
+      mainDocPromise,
+      ...photoPromises,
+      ...marksPromises
     ]);
-    console.log('All files saved to Firestore.');
+    
+    console.log('All records and chunks saved successfully.');
 
     return {
       success: true,
