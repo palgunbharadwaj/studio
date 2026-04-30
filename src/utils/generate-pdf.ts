@@ -16,7 +16,9 @@ interface SubmissionData {
   studentName: string;
   relationship: string;
   fatherName: string;
+  fatherPhone: string;
   motherName: string;
+  motherPhone: string;
   course: string;
   board?: string;
   pucStream?: string;
@@ -82,7 +84,9 @@ export const generateAcknowledgement = (data: SubmissionData, studentId: string)
     name: isKn ? "ವಿದ್ಯಾರ್ಥಿಯ ಹೆಸರು" : "Student Name",
     rel: isKn ? "ತಂದೆ/ತಾಯಿ" : "Relationship",
     father: isKn ? "ತಂದೆಯ ಹೆಸರು" : "Father Name",
+    fatherPhone: isKn ? "ತಂದೆಯ ಫೋನ್ ಸಂಖ್ಯೆ" : "Father Phone",
     mother: isKn ? "ತಾಯಿಯ ಹೆಸರು" : "Mother Name",
+    motherPhone: isKn ? "ತಾಯಿಯ ಫೋನ್ ಸಂಖ್ಯೆ" : "Mother Phone",
     course: isKn ? "ಕೋರ್ಸ್" : "Course",
     board: isKn ? "ಮಂಡಳಿ" : "Board",
     stream: isKn ? "ವಿಭಾಗ" : "Stream",
@@ -98,7 +102,9 @@ export const generateAcknowledgement = (data: SubmissionData, studentId: string)
   addField(t.name, data.studentName);
   addField(t.rel, data.relationship === 'SO' ? (isKn ? 'S/O (ಪುತ್ರ)' : 'S/O') : (isKn ? 'D/O (ಪುತ್ರಿ)' : 'D/O'));
   addField(t.father, data.fatherName);
+  addField(t.fatherPhone, data.fatherPhone);
   addField(t.mother, data.motherName);
+  addField(t.motherPhone, data.motherPhone);
   y += 5;
   addField(t.course, data.course);
   addField(t.board, data.board);

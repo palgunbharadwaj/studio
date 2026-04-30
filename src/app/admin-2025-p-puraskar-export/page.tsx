@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { initializeFirebase } from '@/firebase';
-import { collection, query, getDocs, orderBy } from 'firebase/firestore';
+import { collection, query, getDocs, orderBy, deleteDoc, doc } from 'firebase/firestore';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Loader2, Download, Eye, FileText, ImageIcon } from 'lucide-react';
+import { Loader2, Download, Eye, FileText, ImageIcon, Trash2 } from 'lucide-react';
 import { getReassembledFile } from '@/app/actions/file-viewer';
 
 export default function AdminExportPage() {
@@ -60,7 +60,7 @@ export default function AdminExportPage() {
     if (registrations.length === 0) return;
 
     const headers = [
-      'Submission Date', 'Student Name', 'Email', 'Father Name', 'Mother Name', 'Relationship',
+      'Submission Date', 'Student Name', 'Email', 'Father Name', 'Father Phone', 'Mother Name', 'Mother Phone', 'Relationship',
       'Course', 'Year of Passing', 'Board', 'Stream', 'Combination', 'Marks Obtained',
       'Total Marks', 'Percentage', 'CGPA', 'File ID (Student ID)'
     ];
@@ -68,7 +68,7 @@ export default function AdminExportPage() {
     const csvRows = registrations.map(reg => {
       const date = reg.createdAt?.toDate ? reg.createdAt.toDate().toLocaleString() : 'N/A';
       return formatCSVRow([
-        date, reg.studentName, reg.email, reg.fatherName, reg.motherName, reg.relationship,
+        date, reg.studentName, reg.email, reg.fatherName, reg.fatherPhone, reg.motherName, reg.motherPhone, reg.relationship,
         reg.course, reg.yearOfPassing, reg.board, reg.pucStream, reg.combination, reg.marksObtained,
         reg.totalMarks, reg.percentage, reg.cgpa, reg.id
       ]);
@@ -85,8 +85,8 @@ export default function AdminExportPage() {
     let headers: string[] = [];
     let rowMapper: (reg: any) => string[] = () => [];
 
-    const commonHeaders = ['Student Name', 'Father Name', 'Mother Name', 'S/O or D/O', 'Email'];
-    const getCommonData = (reg: any) => [reg.studentName, reg.fatherName, reg.motherName, reg.relationship, reg.email];
+    const commonHeaders = ['Student Name', 'Father Name', 'Father Phone', 'Mother Name', 'Mother Phone', 'S/O or D/O', 'Email'];
+    const getCommonData = (reg: any) => [reg.studentName, reg.fatherName, reg.fatherPhone, reg.motherName, reg.motherPhone, reg.relationship, reg.email];
 
     if (courseType === 'SSLC') {
       headers = [...commonHeaders, 'Board', 'Marks Obtained', 'Total Marks', 'Percentage'];
@@ -179,6 +179,25 @@ export default function AdminExportPage() {
     } catch (err) {
       console.error('View error:', err);
       alert('Error loading file.');
+    } finally {
+      setIsAssembling(false);
+    }
+  };
+
+  const handleDelete = async (registrationId: string) => {
+    if (!confirm('Are you sure you want to delete this registration? This cannot be undone.')) return;
+    
+    setIsAssembling(true);
+    try {
+      const { firestore } = initializeFirebase();
+      await deleteDoc(doc(firestore, 'registrations', registrationId));
+      
+      // Also delete related chunks if needed, but for now just the main record
+      setRegistrations(prev => prev.filter(r => r.id !== registrationId));
+      alert('Registration deleted successfully.');
+    } catch (err) {
+      console.error('Delete error:', err);
+      alert('Error deleting registration. Check your Firestore rules.');
     } finally {
       setIsAssembling(false);
     }
@@ -353,6 +372,16 @@ export default function AdminExportPage() {
                                 PDF
                               </Button>
                             )}
+                            <Button 
+                              variant="destructive" 
+                              size="sm" 
+                              className="h-8 gap-1.5" 
+                              onClick={() => handleDelete(reg.id)}
+                              disabled={isAssembling}
+                            >
+                              <Trash2 className="w-3 h-3" />
+                              Delete
+                            </Button>
                           </div>
                         </TableCell>
                       </TableRow>

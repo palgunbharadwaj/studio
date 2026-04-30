@@ -30,7 +30,9 @@ const baseSchema = z.object({
   studentName: z.string().min(1, { message: "Name is required." }),
   relationship: z.enum(['SO', 'DO'], { errorMap: () => ({ message: "Relationship is required." }) }),
   fatherName: z.string().min(1, { message: "Father's name is required." }),
+  fatherPhone: z.string().length(10, { message: "Please enter a valid 10-digit phone number" }).regex(/^[0-9]+$/, { message: "Only numbers are allowed." }),
   motherName: z.string().min(1, { message: "Mother's name is required." }),
+  motherPhone: z.string().length(10, { message: "Please enter a valid 10-digit phone number" }).regex(/^[0-9]+$/, { message: "Only numbers are allowed." }),
   course: z.enum(['SSLC', 'PUC', 'Diploma', 'Degree', 'Engineering', 'Other'], { errorMap: () => ({ message: "Course is required." }) }),
   board: z.string().optional(),
   pucStream: z.string().optional(),
@@ -86,7 +88,9 @@ export function LinguaForm() {
       studentName: '',
       relationship: undefined,
       fatherName: '',
+      fatherPhone: '',
       motherName: '',
+      motherPhone: '',
       course: undefined,
       percentage: '',
       marksObtained: '',
@@ -260,7 +264,9 @@ export function LinguaForm() {
       studentNameLabel: "Student Name",
       relationshipLabel: "S/O or D/O",
       fatherNameLabel: "Father Name",
+      fatherPhoneLabel: "Father Phone Number",
       motherNameLabel: "Mother Name",
+      motherPhoneLabel: "Mother Phone Number",
       courseLabel: "Course",
       boardLabel: "Board",
       streamLabel: "Stream",
@@ -277,8 +283,10 @@ export function LinguaForm() {
       cgpaLabel: "CGPA",
       otherCourseLabel: "Please specify other course",
       docsTitle: "Documents",
-      photoLabel: "Photo (JPG/JPEG/PDF, max 2MB)",
+      photoLabel: "Student Passport Size Photo (JPG/JPEG/PDF, max 2MB)",
       marksCardLabel: "Marks Card (JPG/JPEG/PDF, max 2MB)",
+      fatherPhoneLabel: "Father's Phone Number",
+      motherPhoneLabel: "Mother's Phone Number",
       submitButton: "Submit",
       processing: "Processing...",
       successTitle: "Your application for the Pratibha Puraskar 2025-2026 has been received. Thank you.",
@@ -286,7 +294,7 @@ export function LinguaForm() {
       requiredNote: "* Indicates required question",
       boards: ['State', 'CBSE', 'ICSE'],
       scienceCombinations: ['PCMB (Physics, Chemistry, Mathematics, Biology)', 'PCMC (Physics, Chemistry, Mathematics, Computer Science)', 'PCME (Physics, Chemistry, Mathematics, Electronics)', 'PCMS (Physics, Chemistry, Mathematics, Statistics)', 'PCMH (Physics, Chemistry, Mathematics, Home Science)', 'PCAG (Physics, Chemistry, Agriculture, Mathematics/Biology)', 'Other'],
-      commerceCombinations: ['EGBA (Economics, Geography, Business Studies, Accountancy)', 'ECBA (Economics, Commerce, Business Studies, Accountancy)', 'ESBA (Economics, Sociology, Business Studies, Accountancy)', 'EBAC (Economics, Business Studies, Accountancy, Computer Science)', 'EMBA (Economics, Mathematics, Business Studies, Accountancy)', 'ECSA (Economics, Computer Science, Statistics, Accountancy)', 'Other'],
+      commerceCombinations: ['EGBA (Economics, Geography, Business Studies, Accountancy)', 'ECBA (Economics, Commerce, Business Studies, Accountancy)', 'ESBA (Economics, Sociology, Business Studies, Accountancy)', 'EBAC (Economics, Business Studies, Accountancy, Computer Science)', 'EMBA (Economics, Mathematics, Business Studies, Accountancy)', 'ECSA (Economics, Computer Science, Statistics, Accountancy)', 'EBAS (Economics, Business Studies, Accountancy, and Statistics)', 'Other'],
       artsCombinations: ['HEPS (History, Economics, Political Science, Sociology)', 'HEPPsy (History, Economics, Political Science, Psychology)', 'HESP (History, Economics, Sociology, Psychology)', 'HEBA (History, Economics, Business, Accountancy)', 'HEGG (History, Economics, Geography, Geology)', 'HESF (History, Economics, Sociology, Fine Arts)', 'Other'],
       engineeringCourses: ['CSE (Computer Science and Engineering)', 'AIML (Artificial Intelligence and Machine Learning)', 'ISE (Information Science and Engineering)', 'ECE (Electronics and Communication Engineering)', 'EEE (Electrical and Electronics Engineering)', 'Mechanical (Mechanical Engineering)', 'Civil (Civil Engineering)', 'IP (Industrial Production Engineering)', 'EIE (Electronics and Instrumentation Engineering)', 'ECS (Electronics and Computer Science Engineering)', 'ECE (Electronics and Computer Engineering)', 'CSBS (Computer Science and Business Systems)', 'Mechatronics (Mechatronics Engineering)', 'Automobile (Automobile Engineering)', 'Aerospace (Aerospace Engineering)', 'Chemical (Chemical Engineering)', 'Biotechnology (Biotechnology Engineering)', 'Data Science (Data Science and Engineering)', 'AI & Data Science (Artificial Intelligence and Data Science Engineering)', 'Robotics & Automation (Robotics and Automation Engineering)', 'Other'],
       diplomaCourses: ['Diploma in Computer Science & Engineering (CSE)', 'Diploma in Electronics & Communication Engineering (ECE)', 'Diploma in Electrical & Electronics Engineering (EEE)', 'Diploma in Mechanical Engineering', 'Diploma in Civil Engineering', 'Diploma in Automobile Engineering', 'Other'],
@@ -358,6 +366,8 @@ export function LinguaForm() {
       // 1. Submit main record first to get studentId
       const response = await submitLinguaForm({
         ...values,
+        fatherPhone: `+91 ${values.fatherPhone}`,
+        motherPhone: `+91 ${values.motherPhone}`,
         language: lang,
         hasPhoto: true,
         hasMarksCard: true,
@@ -418,7 +428,7 @@ export function LinguaForm() {
   const canSubmit = () => {
     // We use getValues for the most up-to-date data, and the useWatch hooks at the top ensure this re-renders on change.
     const v = form.getValues();
-    const basicFields = v.studentName && v.fatherName && v.motherName && v.yearOfPassing;
+    const basicFields = v.studentName && v.fatherName && v.fatherPhone && v.motherName && v.motherPhone && v.yearOfPassing;
     if (!basicFields || !v.relationship || !selectedCourse) return false;
 
     // Course specific checks
@@ -514,8 +524,54 @@ export function LinguaForm() {
               <FormField control={form.control} name="fatherName" render={({ field }) => (
                 <FormItem className="space-y-1"><FormLabel className="font-bold text-[16px]">{t.fatherNameLabel} <span className="text-destructive">*</span></FormLabel><FormControl><Input className="h-10 bg-muted/20 text-[14px]" {...field} /></FormControl></FormItem>
               )} />
+              <FormField control={form.control} name="fatherPhone" render={({ field }) => (
+                <FormItem className="space-y-1">
+                  <FormLabel className="font-bold text-[16px]">{t.fatherPhoneLabel} <span className="text-destructive">*</span></FormLabel>
+                  <FormControl>
+                    <div className="flex group">
+                      <div className="flex items-center justify-center px-3 bg-muted border border-r-0 rounded-l-md text-muted-foreground text-[14px] font-bold h-10 border-border/40 group-focus-within:border-primary/50 transition-colors">
+                        +91
+                      </div>
+                      <Input 
+                        type="tel"
+                        placeholder="Enter 10 digits"
+                        className="h-10 bg-muted/20 text-[14px] rounded-l-none border-l-0 focus-visible:ring-0 focus-visible:border-primary" 
+                        {...field} 
+                        onChange={(e) => {
+                          const val = e.target.value.replace(/[^0-9]/g, '').slice(0, 10);
+                          field.onChange(val);
+                        }}
+                      />
+                    </div>
+                  </FormControl>
+                  <FormMessage className="text-[12px]" />
+                </FormItem>
+              )} />
               <FormField control={form.control} name="motherName" render={({ field }) => (
-                <FormItem className="space-y-1"><FormLabel className="font-bold text-[16px]">{lang === 'en' ? 'Mother Name' : 'ತಾಯಿಯ ಹೆಸರು'} <span className="text-destructive">*</span></FormLabel><FormControl><Input className="h-10 bg-muted/20 text-[14px]" {...field} /></FormControl></FormItem>
+                <FormItem className="space-y-1"><FormLabel className="font-bold text-[16px]">{t.motherNameLabel} <span className="text-destructive">*</span></FormLabel><FormControl><Input className="h-10 bg-muted/20 text-[14px]" {...field} /></FormControl></FormItem>
+              )} />
+              <FormField control={form.control} name="motherPhone" render={({ field }) => (
+                <FormItem className="space-y-1">
+                  <FormLabel className="font-bold text-[16px]">{t.motherPhoneLabel} <span className="text-destructive">*</span></FormLabel>
+                  <FormControl>
+                    <div className="flex group">
+                      <div className="flex items-center justify-center px-3 bg-muted border border-r-0 rounded-l-md text-muted-foreground text-[14px] font-bold h-10 border-border/40 group-focus-within:border-primary/50 transition-colors">
+                        +91
+                      </div>
+                      <Input 
+                        type="tel"
+                        placeholder="Enter 10 digits"
+                        className="h-10 bg-muted/20 text-[14px] rounded-l-none border-l-0 focus-visible:ring-0 focus-visible:border-primary" 
+                        {...field} 
+                        onChange={(e) => {
+                          const val = e.target.value.replace(/[^0-9]/g, '').slice(0, 10);
+                          field.onChange(val);
+                        }}
+                      />
+                    </div>
+                  </FormControl>
+                  <FormMessage className="text-[12px]" />
+                </FormItem>
               )} />
             </CardContent>
           </Card>
